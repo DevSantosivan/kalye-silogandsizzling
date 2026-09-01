@@ -1,0 +1,208 @@
+<section class="cart-page">
+  <!-- HEADER -->
+  <div class="page-heading">
+    <p class="kicker">YOUR ORDER</p>
+
+    <h1>
+      Review your
+      <span>order.</span>
+    </h1>
+
+    <p>One last look before we start cooking.</p>
+  </div>
+
+  <div class="cart-layout">
+    <main class="cart-main">
+      <!-- ORDER TYPE -->
+      <section class="order-type">
+        <div class="section-label">
+          <span>01</span>
+
+          <div>
+            <strong>How are you eating?</strong>
+            <small>Choose your order type.</small>
+          </div>
+        </div>
+
+        <div class="type-options">
+          <button
+            type="button"
+            [class.active]="orderType() === 'dine-in'"
+            (click)="setOrderType('dine-in')"
+          >
+            <span class="option-icon">
+              <i class="bx bx-restaurant"></i>
+            </span>
+
+            <div>
+              <strong>Dine-in</strong>
+              <small>Eat at the store</small>
+            </div>
+
+            @if (orderType() === "dine-in") {
+              <b class="selected-icon">
+                <i class="bx bx-check"></i>
+              </b>
+            }
+          </button>
+
+          <button
+            type="button"
+            [class.active]="orderType() === 'takeout'"
+            (click)="setOrderType('takeout')"
+          >
+            <span class="option-icon">
+              <i class="bx bx-package"></i>
+            </span>
+
+            <div>
+              <strong>Takeout</strong>
+              <small>Pick up your order</small>
+            </div>
+
+            @if (orderType() === "takeout") {
+              <b class="selected-icon">
+                <i class="bx bx-check"></i>
+              </b>
+            }
+          </button>
+        </div>
+      </section>
+
+      <!-- ITEMS -->
+      <section class="items-section">
+        <div class="items-head">
+          <div>
+            <strong>Your items</strong>
+
+            <span>
+              {{ items().length }}
+              {{ items().length === 1 ? "item" : "items" }}
+            </span>
+          </div>
+
+          <a routerLink="/menu">
+            <i class="bx bx-plus"></i>
+            Add more
+          </a>
+        </div>
+
+        @for (item of items(); track item.id) {
+          <article class="cart-item">
+            <!-- IMAGE -->
+            <div class="item-image">
+              <img [src]="item.image" [alt]="item.name" loading="lazy" />
+            </div>
+
+            <!-- INFO -->
+            <div class="item-info">
+              <h2>{{ item.name }}</h2>
+
+              <span>₱{{ item.price }} each</span>
+            </div>
+
+            <!-- QUANTITY -->
+            <div class="quantity">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                (click)="decrease(item.id)"
+              >
+                <i class="bx bx-minus"></i>
+              </button>
+
+              <strong>
+                {{ item.quantity }}
+              </strong>
+
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                (click)="increase(item.id)"
+              >
+                <i class="bx bx-plus"></i>
+              </button>
+            </div>
+
+            <!-- TOTAL -->
+            <strong class="line-total">
+              ₱{{ item.price * item.quantity }}
+            </strong>
+          </article>
+        }
+
+        @if (items().length === 0) {
+          <div class="empty-cart">
+            <div class="empty-icon">
+              <i class="bx bx-shopping-bag"></i>
+            </div>
+
+            <h2>Your cart is empty.</h2>
+
+            <p>Add something delicious from our menu.</p>
+
+            <a routerLink="/menu">
+              Browse menu
+              <i class="bx bx-right-arrow-alt"></i>
+            </a>
+          </div>
+        }
+      </section>
+
+      <a routerLink="/menu" class="back-menu">
+        <i class="bx bx-left-arrow-alt"></i>
+        Continue ordering
+      </a>
+    </main>
+
+    <!-- SUMMARY -->
+    <aside class="summary">
+      <div class="summary-title">
+        <span>ORDER SUMMARY</span>
+
+        <h2>Almost ready.</h2>
+      </div>
+
+      <div class="summary-items">
+        @for (item of items(); track item.id) {
+          <div>
+            <span> {{ item.quantity }} × {{ item.name }} </span>
+
+            <strong> ₱{{ item.price * item.quantity }} </strong>
+          </div>
+        }
+      </div>
+
+      <div class="summary-line"></div>
+
+      <div class="summary-row">
+        <span>Subtotal</span>
+
+        <strong> ₱{{ subtotal() }} </strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Service fee</span>
+
+        <strong>₱0</strong>
+      </div>
+
+      <div class="total-row">
+        <span>Total</span>
+
+        <strong> ₱{{ subtotal() }} </strong>
+      </div>
+
+      <a routerLink="/checkout" class="checkout-button">
+        <span>Continue to checkout</span>
+
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+
+      <p class="secure">
+        <i class="bx bx-lock-alt"></i>
+        Secure checkout · Your information is protected.
+      </p>
+    </aside>
+  </div>
+</section>

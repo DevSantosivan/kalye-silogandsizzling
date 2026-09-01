@@ -1,1 +1,89 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap");
+
+/* =========================================
+   GLOBAL THEME
+========================================= */
+
+:root {
+  --bg: #f7f5f1;
+  --surface: #ffffff;
+
+  --ink: #171716;
+  --text: #514d48;
+  --muted: #77716b;
+
+  --gold: #bf8113;
+  --gold-dark: #9b680d;
+  --gold-soft: #fff4e7;
+
+  --line: #e3ded6;
+  --line-dark: #dfdad3;
+
+  --available: #5d9969;
+  --available-soft: #edf6ef;
+
+  --unavailable: #918b84;
+  --unavailable-soft: #f1efec;
+}
+
+/* =========================================
+   RESET
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family: "DM Sans", sans-serif;
+
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* =========================================
+   GLOBAL ELEMENTS
+========================================= */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--gold);
+  color: #fff;
+}
+
+/* =========================================
+   NOTIFICATION
+========================================= */
+
+.notification-dot {
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  top: 7px;
+  right: 7px;
+
+  border: 2px solid #fff;
+  border-radius: 50%;
+
+  background: #e54832;
+}

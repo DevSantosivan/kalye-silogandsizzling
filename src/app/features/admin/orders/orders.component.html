@@ -1,0 +1,341 @@
+<div class="orders-page">
+  <!-- =========================
+       PAGE HEADER
+  ========================== -->
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <span class="eyebrow">ORDER MANAGEMENT</span>
+        <h1>Orders</h1>
+        <p>Manage and monitor all customer orders.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="export-btn" type="button">
+          <i class="bx bx-export"></i>
+          <span>Export</span>
+        </button>
+
+        <button class="new-order-btn" type="button">
+          <i class="bx bx-plus"></i>
+          <span>New Order</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       SUMMARY CARDS
+  ========================== -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-receipt"></i>
+        </div>
+
+        <span class="summary-label"> TODAY'S ORDERS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ todayOrders }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-trending-up"></i>
+        <span>Orders received today</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon pending-icon">
+          <i class="bx bx-time-five"></i>
+        </div>
+
+        <span class="summary-label"> NEW ORDERS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ pendingOrders }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot pending"></span>
+        <span>Waiting for confirmation</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon preparing-icon">
+          <i class="bx bx-loader-circle"></i>
+        </div>
+
+        <span class="summary-label"> PREPARING </span>
+      </div>
+
+      <div class="summary-value">
+        {{ preparingOrders }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot preparing"></span>
+        <span>Currently being prepared</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon completed-icon">
+          <i class="bx bx-check-circle"></i>
+        </div>
+
+        <span class="summary-label"> COMPLETED </span>
+      </div>
+
+      <div class="summary-value">
+        {{ completedOrders }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot completed"></span>
+        <span>Successfully completed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       ORDERS CARD
+  ========================== -->
+  <section class="orders-card">
+    <!-- =========================
+         TOOLBAR
+    ========================== -->
+    <div class="orders-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>All Orders</h2>
+          <span>{{ filteredOrders.length }}</span>
+        </div>
+
+        <!-- STATUS FILTERS -->
+        <div class="filters">
+          @for (filter of filters; track filter) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeFilter === filter"
+              (click)="setFilter(filter)"
+            >
+              {{ filter }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- SEARCH + FILTER -->
+      <div class="toolbar-right">
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search order or customer"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button
+              type="button"
+              class="clear-search"
+              aria-label="Clear search"
+              (click)="searchTerm = ''; currentPage = 1"
+            >
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+
+        <button type="button" class="filter-icon-btn" aria-label="More filters">
+          <i class="bx bx-filter-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================
+         TABLE
+    ========================== -->
+    <div class="orders-table">
+      <!-- TABLE HEADER -->
+      <div class="table-head">
+        <span>ORDER</span>
+        <span>CUSTOMER</span>
+        <span>TYPE</span>
+        <span>ITEMS</span>
+        <span>TOTAL</span>
+        <span>PAYMENT</span>
+        <span>STATUS</span>
+        <span></span>
+      </div>
+
+      <!-- TABLE ROWS -->
+      @for (order of paginatedOrders; track order.id) {
+        <div class="table-row" [class.order-new]="order.status === 'New'">
+          <!-- ORDER -->
+          <div class="order-cell">
+            <strong>
+              {{ order.id }}
+            </strong>
+          </div>
+
+          <!-- CUSTOMER -->
+          <div class="customer">
+            <div class="avatar">
+              {{ order.customer.charAt(0) }}
+            </div>
+
+            <div class="customer-info">
+              <strong>
+                {{ order.customer }}
+              </strong>
+
+              <small>
+                {{ order.time }}
+              </small>
+            </div>
+          </div>
+
+          <!-- TYPE -->
+          <div class="type-cell">
+            @if (order.type === "Dine In") {
+              <i class="bx bx-restaurant"></i>
+            } @else {
+              <i class="bx bx-shopping-bag"></i>
+            }
+
+            <span>
+              {{ order.type }}
+            </span>
+          </div>
+
+          <!-- ITEMS -->
+          <span class="items-count"> {{ order.items }} items </span>
+
+          <!-- TOTAL -->
+          <strong class="order-total">
+            {{ formatCurrency(order.total) }}
+          </strong>
+
+          <!-- PAYMENT -->
+          <span class="payment" [class.pending]="order.payment === 'Pending'">
+            <span class="badge-dot"></span>
+
+            {{ order.payment }}
+          </span>
+
+          <!-- STATUS -->
+          <span
+            class="status"
+            [class.new]="order.status === 'New'"
+            [class.preparing]="order.status === 'Preparing'"
+            [class.ready]="order.status === 'Ready'"
+            [class.completed]="order.status === 'Completed'"
+            [class.cancelled]="order.status === 'Cancelled'"
+          >
+            <span class="badge-dot"></span>
+
+            {{ order.status }}
+          </span>
+
+          <!-- ACTIONS -->
+          <button class="more" type="button" aria-label="Order actions">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </button>
+        </div>
+      }
+
+      <!-- =========================
+           EMPTY STATE
+      ========================== -->
+      @if (paginatedOrders.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="bx bx-search-alt"></i>
+          </div>
+
+          <strong> No orders found </strong>
+
+          <span> Try changing your search or filter. </span>
+
+          @if (searchTerm || activeFilter !== "All") {
+            <button
+              type="button"
+              class="reset-search"
+              (click)="searchTerm = ''; activeFilter = 'All'; currentPage = 1"
+            >
+              Clear filters
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- =========================
+         TABLE FOOTER / PAGINATION
+    ========================== -->
+    <div class="table-footer">
+      <!-- RESULTS COUNT -->
+      <span class="results-count">
+        @if (filteredOrders.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>{{ filteredOrders.length }}</strong>
+          orders
+        } @else {
+          No orders found
+        }
+      </span>
+
+      <!-- PAGINATION -->
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <!-- PREVIOUS -->
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          <!-- PAGE NUMBERS -->
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <!-- NEXT -->
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</div>

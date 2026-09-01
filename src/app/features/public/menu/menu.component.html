@@ -1,0 +1,219 @@
+<section class="menu-page">
+  <!-- =========================================
+       MENU INTRO
+  ========================================== -->
+
+  <header class="menu-header">
+    <div class="heading-copy">
+      <p class="kicker">KALYE SILOG</p>
+
+      <h1>
+        Pick your
+        <span>ulam.</span>
+      </h1>
+
+      <p class="description">
+        Craving something good? Choose your meal, customize your order, and
+        we'll cook it fresh for you.
+      </p>
+    </div>
+
+    <!-- ORDER TYPE -->
+
+    <div class="order-selector">
+      <span class="selector-label">ORDER TYPE</span>
+
+      <div class="order-options">
+        <button
+          type="button"
+          [class.active]="orderType() === 'dine-in'"
+          (click)="selectOrderType('dine-in')"
+        >
+          <i class="bx bx-restaurant"></i>
+          <span>Dine-in</span>
+        </button>
+
+        <button
+          type="button"
+          [class.active]="orderType() === 'takeout'"
+          (click)="selectOrderType('takeout')"
+        >
+          <i class="bx bx-package"></i>
+          <span>Takeout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================
+       SEARCH + MENU TOOLS
+  ========================================== -->
+
+  <div class="menu-tools">
+    <!-- SEARCH -->
+
+    <div class="search-box">
+      <i class="bx bx-search search-icon"></i>
+
+      <input
+        type="text"
+        placeholder="Search your favorite meal..."
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+
+      @if (searchTerm()) {
+        <button
+          type="button"
+          class="clear-search"
+          aria-label="Clear search"
+          (click)="searchTerm.set('')"
+        >
+          <i class="bx bx-x"></i>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- =========================================
+       CATEGORIES
+  ========================================== -->
+
+  <div class="category-wrapper">
+    <div class="category-heading">
+      <span>MENU</span>
+
+      <small>
+        {{ filteredProducts().length }}
+        {{ filteredProducts().length === 1 ? "item" : "items" }}
+      </small>
+    </div>
+
+    <div class="categories">
+      @for (category of categories; track category) {
+        <button
+          type="button"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- =========================================
+       MENU GRID
+  ========================================== -->
+
+  @if (filteredProducts().length > 0) {
+    <div class="menu-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <article
+          class="product-card"
+          [class.not-available]="!product.available"
+        >
+          <!-- IMAGE -->
+
+          <div class="product-image">
+            @if (product.popular) {
+              <span class="popular">BEST SELLER</span>
+            }
+
+            <img [src]="product.image" [alt]="product.name" loading="lazy" />
+
+            @if (product.available) {
+              <span class="availability available"> AVAILABLE </span>
+            } @else {
+              <span class="availability unavailable"> NOT AVAILABLE </span>
+            }
+          </div>
+
+          <!-- BODY -->
+
+          <div class="product-body">
+            <div class="product-title">
+              <h2>
+                {{ product.name }}
+              </h2>
+
+              <strong> ₱{{ product.price }} </strong>
+            </div>
+
+            <p>
+              {{ product.description }}
+            </p>
+
+            <!-- ADD BUTTON -->
+
+            <button
+              type="button"
+              class="add-button"
+              [disabled]="!product.available"
+              (click)="addToCart(product)"
+            >
+              @if (product.available) {
+                <span>Add to order</span>
+                <b>
+                  <i class="bx bx-plus"></i>
+                </b>
+              } @else {
+                <span>Currently unavailable</span>
+                <b>
+                  <i class="bx bx-minus"></i>
+                </b>
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- =========================================
+         EMPTY SEARCH
+    ========================================== -->
+
+    <div class="empty-menu">
+      <div class="empty-icon">
+        <i class="bx bx-search-alt"></i>
+      </div>
+
+      <h2>No meals found.</h2>
+
+      <p>
+        We couldn't find anything matching "<strong>{{ searchTerm() }}</strong
+        >".
+      </p>
+
+      <button type="button" (click)="searchTerm.set('')">Clear search</button>
+    </div>
+  }
+</section>
+
+<!-- =========================================
+     FLOATING CART
+========================================== -->
+
+@if (cartCount() > 0) {
+  <div class="floating-cart">
+    <div class="cart-info">
+      <div class="cart-icon">
+        <i class="bx bx-shopping-bag"></i>
+      </div>
+
+      <div>
+        <strong>
+          {{ cartCount() }}
+          {{ cartCount() === 1 ? "item" : "items" }}
+        </strong>
+
+        <span> Ready for checkout </span>
+      </div>
+    </div>
+
+    <a routerLink="/cart">
+      View cart
+      <span>→</span>
+    </a>
+  </div>
+}

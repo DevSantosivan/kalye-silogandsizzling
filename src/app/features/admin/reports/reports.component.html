@@ -1,0 +1,54 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">BUSINESS INSIGHTS</span>
+      <h1>Reports</h1>
+      <p>Generate reports and understand your business performance.</p>
+    </div>
+  </div>
+
+  <div class="report-grid">
+    @for (report of reports; track report.title) {
+      <article class="report-card">
+        <div class="report-icon">
+          {{ report.icon }}
+        </div>
+
+        <div class="report-content">
+          <h2>
+            {{ report.title }}
+          </h2>
+
+          <p>
+            {{ report.description }}
+          </p>
+        </div>
+
+        <button>View report →</button>
+      </article>
+    }
+  </div>
+
+  <div class="quick-report">
+    <div>
+      <span class="eyebrow">QUICK EXPORT</span>
+
+      <h2>Need a report for your records?</h2>
+
+      <p>Select a period and export your business data.</p>
+    </div>
+
+    <div class="export-actions">
+      <select>
+        <option>Today</option>
+        <option>This week</option>
+        <option>This month</option>
+        <option>This year</option>
+      </select>
+
+      <button>⤓ Export CSV</button>
+
+      <button>⎙ Print</button>
+    </div>
+  </div>
+</section>

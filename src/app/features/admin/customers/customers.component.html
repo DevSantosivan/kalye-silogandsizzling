@@ -1,0 +1,350 @@
+<section class="page">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"> CUSTOMER MANAGEMENT </span>
+
+      <h1>Customers</h1>
+
+      <p>See customer activity and purchase history.</p>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-group"></i>
+        </div>
+
+        <span class="summary-label"> TOTAL CUSTOMERS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalCustomers }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-user"></i>
+        <span>Registered customers</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon new-icon">
+          <i class="bx bx-user-plus"></i>
+        </div>
+
+        <span class="summary-label"> NEW CUSTOMERS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ newCustomers }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot new"></span>
+        <span>First-time customers</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon returning-icon">
+          <i class="bx bx-refresh"></i>
+        </div>
+
+        <span class="summary-label"> RETURNING </span>
+      </div>
+
+      <div class="summary-value">{{ returningRate }}%</div>
+
+      <div class="summary-meta">
+        <span class="summary-dot returning"></span>
+        <span>Returning customer rate</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon spend-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+
+        <span class="summary-label"> AVG. SPEND </span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(averageSpend) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-trending-up"></i>
+        <span>Average per customer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CUSTOMER SECTION
+  ====================================================== -->
+
+  <section class="customer-section">
+    <!-- TOOLBAR -->
+
+    <div class="customer-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>Customer List</h2>
+
+          <span>
+            {{ filteredCustomers.length }}
+          </span>
+        </div>
+
+        <!-- FILTERS -->
+
+        <div class="filters">
+          @for (filter of customerFilters; track filter) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeFilter === filter"
+              (click)="setFilter(filter)"
+            >
+              {{ filter }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+
+      <div class="toolbar-right">
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search customer"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button
+              type="button"
+              class="clear-search"
+              aria-label="Clear search"
+              (click)="clearSearch()"
+            >
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================
+         TABLE
+    ================================================== -->
+
+    <div class="customer-table-wrapper">
+      <div class="customer-table">
+        <!-- HEADER -->
+
+        <div class="table-head">
+          <span>CUSTOMER</span>
+
+          <span>PHONE</span>
+
+          <span>ORDERS</span>
+
+          <span>TOTAL SPENT</span>
+
+          <span>LAST ORDER</span>
+
+          <span></span>
+        </div>
+
+        <!-- ROWS -->
+
+        @for (customer of paginatedCustomers; track customer.id) {
+          <div class="table-row">
+            <!-- CUSTOMER -->
+
+            <div class="customer-cell">
+              <div class="avatar">
+                {{ getInitials(customer.name) }}
+              </div>
+
+              <div class="customer-info">
+                <strong>
+                  {{ customer.name }}
+                </strong>
+
+                <small>
+                  {{ customer.email }}
+                </small>
+              </div>
+            </div>
+
+            <!-- PHONE -->
+
+            <span class="phone-cell">
+              {{ customer.phone }}
+            </span>
+
+            <!-- ORDERS -->
+
+            <div class="orders-cell">
+              <strong>
+                {{ customer.orders }}
+              </strong>
+
+              <small>
+                {{ customer.orders === 1 ? "order" : "orders" }}
+              </small>
+            </div>
+
+            <!-- TOTAL SPENT -->
+
+            <strong class="spent-cell">
+              {{ formatCurrency(customer.spent) }}
+            </strong>
+
+            <!-- LAST ORDER -->
+
+            <div class="last-order">
+              <span>
+                {{ customer.lastOrder }}
+              </span>
+
+              @if (customer.type === "New") {
+                <small class="new-label"> New customer </small>
+              } @else {
+                <small class="returning-label"> Returning </small>
+              }
+            </div>
+
+            <!-- ACTIONS -->
+
+            <div class="action-wrapper">
+              <button
+                type="button"
+                class="more"
+                aria-label="Customer actions"
+                (click)="toggleActionMenu(customer.id)"
+              >
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+
+              @if (openMenuId === customer.id) {
+                <div class="action-menu">
+                  <button type="button" (click)="viewCustomer(customer)">
+                    <i class="bx bx-user"></i>
+                    <span>View details</span>
+                  </button>
+
+                  <button type="button" (click)="editCustomer(customer)">
+                    <i class="bx bx-edit-alt"></i>
+                    <span>Edit</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="danger"
+                    (click)="deleteCustomer(customer)"
+                  >
+                    <i class="bx bx-trash"></i>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- EMPTY -->
+
+        @if (paginatedCustomers.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-group"></i>
+            </div>
+
+            <strong> No customers found </strong>
+
+            <span> Try changing your search or filter. </span>
+
+            @if (searchTerm || activeFilter !== "All") {
+              <button type="button" class="reset-btn" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <div class="table-footer">
+      <span class="results-count">
+        @if (filteredCustomers.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>{{ filteredCustomers.length }}</strong>
+          customers
+        } @else {
+          No customers found
+        }
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>

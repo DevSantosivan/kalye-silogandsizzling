@@ -1,0 +1,361 @@
+<section class="page">
+  <!-- ==========================================
+       PAGE HEADER
+  =========================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"> PRODUCT MANAGEMENT </span>
+
+      <h1>Menu</h1>
+
+      <p>Manage meals, prices and availability.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="addMenuItem()">
+      <i class="bx bx-plus"></i>
+      <span>Add menu item</span>
+    </button>
+  </div>
+
+  <!-- ==========================================
+       SUMMARY
+  =========================================== -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-food-menu"></i>
+        </div>
+
+        <span class="summary-label"> TOTAL ITEMS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalItems }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-layer"></i>
+        <span>Items in your menu</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon available-icon">
+          <i class="bx bx-check-circle"></i>
+        </div>
+
+        <span class="summary-label"> AVAILABLE </span>
+      </div>
+
+      <div class="summary-value">
+        {{ availableItems }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot available"></span>
+        <span>Currently available</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon unavailable-icon">
+          <i class="bx bx-x-circle"></i>
+        </div>
+
+        <span class="summary-label"> UNAVAILABLE </span>
+      </div>
+
+      <div class="summary-value">
+        {{ unavailableItems }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot unavailable"></span>
+        <span>Currently unavailable</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon sold-icon">
+          <i class="bx bx-trending-up"></i>
+        </div>
+
+        <span class="summary-label"> TOTAL SOLD </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalSold }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-bar-chart-alt-2"></i>
+        <span>Total items sold</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MENU CARD
+  =========================================== -->
+
+  <section class="menu-section">
+    <!-- TOOLBAR -->
+
+    <div class="menu-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>Menu Items</h2>
+
+          <span>
+            {{ filteredItems.length }}
+          </span>
+        </div>
+
+        <!-- CATEGORY FILTER -->
+
+        <div class="filters">
+          @for (category of categories; track category) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeCategory === category"
+              (click)="setCategory(category)"
+            >
+              {{ category }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- SEARCH -->
+
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search menu item"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button
+              type="button"
+              class="clear-search"
+              aria-label="Clear search"
+              (click)="clearSearch()"
+            >
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+
+        <!-- AVAILABILITY -->
+
+        <select
+          class="availability-select"
+          [value]="activeAvailability"
+          (change)="setAvailability($any($event.target).value)"
+        >
+          @for (filter of availabilityFilters; track filter) {
+            <option [value]="filter">
+              {{ filter }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- ========================================
+         MENU GRID
+    ========================================= -->
+
+    <div class="menu-grid">
+      @for (item of paginatedItems; track item.id) {
+        <article class="menu-card">
+          <!-- IMAGE -->
+
+          <div class="food-image">
+            <img [src]="item.image" [alt]="item.name" />
+
+            @if (!item.available) {
+              <span class="unavailable">
+                <i class="bx bx-x-circle"></i>
+                Unavailable
+              </span>
+            } @else {
+              <span class="available-badge">
+                <i class="bx bx-check"></i>
+                Available
+              </span>
+            }
+          </div>
+
+          <!-- CONTENT -->
+
+          <div class="menu-content">
+            <div class="menu-top">
+              <span class="category">
+                {{ item.category }}
+              </span>
+
+              <!-- ACTION -->
+
+              <div class="action-wrapper">
+                <button
+                  type="button"
+                  class="more"
+                  aria-label="Menu item actions"
+                  (click)="toggleActionMenu(item.id)"
+                >
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+
+                @if (openMenuId === item.id) {
+                  <div class="action-menu">
+                    <button type="button" (click)="editItem(item)">
+                      <i class="bx bx-edit-alt"></i>
+                      <span>Edit</span>
+                    </button>
+
+                    <button type="button" (click)="toggleAvailability(item)">
+                      @if (item.available) {
+                        <i class="bx bx-hide"></i>
+                        <span> Set unavailable </span>
+                      } @else {
+                        <i class="bx bx-show"></i>
+                        <span> Set available </span>
+                      }
+                    </button>
+
+                    <button
+                      type="button"
+                      class="danger"
+                      (click)="deleteItem(item)"
+                    >
+                      <i class="bx bx-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <h2>
+              {{ item.name }}
+            </h2>
+
+            <p>
+              {{ item.description }}
+            </p>
+
+            <div class="menu-bottom">
+              <strong>
+                {{ formatCurrency(item.price) }}
+              </strong>
+
+              <span class="sold-count"> {{ item.sold }} sold </span>
+            </div>
+          </div>
+        </article>
+      }
+
+      <!-- ========================================
+           EMPTY STATE
+      ========================================= -->
+
+      @if (paginatedItems.length === 0) {
+        <div class="empty-menu">
+          <div class="empty-menu-icon">
+            <i class="bx bx-food-menu"></i>
+          </div>
+
+          <strong> No menu items found </strong>
+
+          <span> Try changing your search or filters. </span>
+
+          @if (
+            searchTerm ||
+            activeCategory !== "All" ||
+            activeAvailability !== "All"
+          ) {
+            <button
+              type="button"
+              class="reset-btn"
+              (click)="
+                searchTerm = '';
+                activeCategory = 'All';
+                activeAvailability = 'All';
+                currentPage = 1
+              "
+            >
+              Clear filters
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- ==========================================
+         FOOTER / PAGINATION
+    =========================================== -->
+
+    <div class="table-footer">
+      <span class="results-count">
+        @if (filteredItems.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>
+            {{ filteredItems.length }}
+          </strong>
+          items
+        } @else {
+          No menu items found
+        }
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>

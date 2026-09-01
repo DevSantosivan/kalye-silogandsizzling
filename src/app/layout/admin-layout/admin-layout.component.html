@@ -1,0 +1,231 @@
+<div class="admin-shell">
+  <!-- MOBILE OVERLAY -->
+  @if (sidebarOpen()) {
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    <!-- BRAND -->
+    <div class="sidebar-brand">
+      <div class="brand-mark">KS</div>
+
+      <div class="brand-text">
+        <strong>KALYE</strong>
+        <span>SILOG</span>
+      </div>
+
+      <button
+        class="mobile-close"
+        type="button"
+        aria-label="Close navigation"
+        (click)="closeSidebar()"
+      >
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="sidebar-nav">
+      <!-- MAIN -->
+      <div class="nav-section">
+        <span class="nav-label"> MAIN </span>
+
+        <!-- DASHBOARD -->
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-grid-alt"></i>
+          </span>
+
+          <span class="nav-text"> Dashboard </span>
+        </a>
+
+        <!-- ORDERS -->
+        <a
+          routerLink="/admin/orders"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-receipt"></i>
+          </span>
+
+          <span class="nav-text"> Orders </span>
+
+          <span class="nav-badge"> 8 </span>
+        </a>
+
+        <!-- MENU -->
+        <a
+          routerLink="/admin/menu"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-food-menu"></i>
+          </span>
+
+          <span class="nav-text"> Menu </span>
+        </a>
+
+        <!-- CATEGORIES -->
+        <a
+          routerLink="/admin/categories"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-category"></i>
+          </span>
+
+          <span class="nav-text"> Categories </span>
+        </a>
+      </div>
+
+      <!-- PEOPLE -->
+      <div class="nav-section">
+        <span class="nav-label"> PEOPLE </span>
+
+        <!-- STAFF -->
+        <a
+          routerLink="/admin/staff"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-group"></i>
+          </span>
+
+          <span class="nav-text"> Staff </span>
+        </a>
+
+        <!-- CUSTOMERS -->
+        <a
+          routerLink="/admin/customers"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-user"></i>
+          </span>
+
+          <span class="nav-text"> Customers </span>
+        </a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="nav-section">
+        <span class="nav-label"> BUSINESS </span>
+
+        <!-- SALES -->
+        <a
+          routerLink="/admin/sales"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-money"></i>
+          </span>
+
+          <span class="nav-text"> Sales </span>
+        </a>
+
+        <!-- REPORTS -->
+        <a
+          routerLink="/admin/reports"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon">
+            <i class="bx bx-bar-chart-alt-2"></i>
+          </span>
+
+          <span class="nav-text"> Reports </span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- SIDEBAR FOOTER -->
+    <div class="sidebar-footer">
+      <!-- SETTINGS -->
+      <a
+        routerLink="/admin/settings"
+        routerLinkActive="active"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-cog"></i>
+        </span>
+
+        <span class="nav-text"> Settings </span>
+      </a>
+
+      <!-- LOGOUT -->
+      <button class="logout-button" type="button">
+        <span class="nav-icon">
+          <i class="bx bx-log-out"></i>
+        </span>
+
+        <span class="nav-text"> Logout </span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <!-- HEADER -->
+    <header class="admin-header">
+      <!-- MOBILE MENU -->
+      <button
+        class="menu-button"
+        type="button"
+        aria-label="Open navigation"
+        (click)="toggleSidebar()"
+      >
+        <i class="bx bx-menu"></i>
+      </button>
+
+      <!-- SPACER -->
+      <div class="header-spacer"></div>
+
+      <!-- NOTIFICATION -->
+      <button
+        class="notification-button"
+        type="button"
+        aria-label="Notifications"
+      >
+        <i class="bx bx-bell"></i>
+
+        <span class="notification-dot"></span>
+      </button>
+
+      <!-- PROFILE -->
+      <div class="admin-profile">
+        <div class="profile-avatar">O</div>
+
+        <div class="profile-info">
+          <strong>Owner</strong>
+          <span>Administrator</span>
+        </div>
+
+        <button
+          class="profile-arrow"
+          type="button"
+          aria-label="Open profile menu"
+        >
+          <i class="bx bx-chevron-down"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

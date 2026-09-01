@@ -1,0 +1,486 @@
+<section class="page">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"> FINANCIAL OVERVIEW </span>
+
+      <h1>Sales</h1>
+
+      <p>Track your restaurant revenue and sales performance.</p>
+    </div>
+
+    <button type="button" class="export-btn" (click)="exportReport()">
+      <i class="bx bx-export"></i>
+      <span>Export report</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       SALES SUMMARY
+  ====================================================== -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+
+        <span class="summary-label"> TODAY </span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.today) }}
+      </div>
+
+      <div class="summary-meta positive">
+        <i class="bx bx-trending-up"></i>
+        <span>12.5% from yesterday</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon week-icon">
+          <i class="bx bx-calendar-week"></i>
+        </div>
+
+        <span class="summary-label"> THIS WEEK </span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.week) }}
+      </div>
+
+      <div class="summary-meta positive">
+        <i class="bx bx-trending-up"></i>
+        <span>8.2% from last week</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon month-icon">
+          <i class="bx bx-calendar"></i>
+        </div>
+
+        <span class="summary-label"> THIS MONTH </span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.month) }}
+      </div>
+
+      <div class="summary-meta positive">
+        <i class="bx bx-trending-up"></i>
+        <span>14.8% from last month</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon year-icon">
+          <i class="bx bx-bar-chart-alt-2"></i>
+        </div>
+
+        <span class="summary-label"> THIS YEAR </span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.year) }}
+      </div>
+
+      <div class="summary-meta positive">
+        <i class="bx bx-trending-up"></i>
+        <span>18.4% from last year</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CHART + ORDER TYPE
+  ====================================================== -->
+
+  <div class="main-grid">
+    <!-- SALES CHART -->
+
+    <article class="panel chart-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow"> REVENUE </span>
+
+          <h2>Sales performance</h2>
+        </div>
+
+        <select
+          [value]="selectedPeriod"
+          (change)="setPeriod($any($event.target).value)"
+        >
+          @for (period of periods; track period) {
+            <option [value]="period">
+              {{ period }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="chart-summary">
+        <div>
+          <strong>
+            {{ formatCurrency(stats.month) }}
+          </strong>
+
+          <span> Total revenue </span>
+        </div>
+
+        <div class="chart-growth">
+          <i class="bx bx-trending-up"></i>
+          <span>14.8%</span>
+        </div>
+      </div>
+
+      <div class="chart">
+        <div class="chart-grid-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="bars">
+          @for (data of salesData; track data.label) {
+            <div class="bar-group">
+              <div
+                class="bar"
+                [style.height.%]="data.value"
+                [title]="data.label + ': ' + data.value"
+              ></div>
+
+              <span>
+                {{ data.label }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </article>
+
+    <!-- ORDER TYPE -->
+
+    <article class="panel breakdown-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow"> BREAKDOWN </span>
+
+          <h2>Sales by order type</h2>
+        </div>
+      </div>
+
+      <div class="donut-wrapper">
+        <div
+          class="donut"
+          [style.background]="
+            'conic-gradient(#c48616 0% ' +
+            orderTypeData.dineIn +
+            '%, #e5e1da ' +
+            orderTypeData.dineIn +
+            '% 100%)'
+          "
+        >
+          <div class="donut-center">
+            <strong> {{ orderTypeData.dineIn }}% </strong>
+
+            <span> Dine In </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-list">
+        <div class="break-row">
+          <div class="break-label">
+            <span class="legend dine-in"></span>
+
+            <div>
+              <strong>Dine In</strong>
+              <small>Restaurant orders</small>
+            </div>
+          </div>
+
+          <strong> {{ orderTypeData.dineIn }}% </strong>
+        </div>
+
+        <div class="break-row">
+          <div class="break-label">
+            <span class="legend take-out"></span>
+
+            <div>
+              <strong>Take Out</strong>
+              <small>Takeaway orders</small>
+            </div>
+          </div>
+
+          <strong> {{ orderTypeData.takeOut }}% </strong>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- =====================================================
+       SECONDARY GRID
+  ====================================================== -->
+
+  <div class="secondary-grid">
+    <!-- PAYMENT -->
+
+    <article class="panel payment-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow"> PAYMENT </span>
+
+          <h2>Payment methods</h2>
+        </div>
+      </div>
+
+      <div class="payment-list">
+        <div class="payment-row">
+          <div class="payment-name">
+            <span class="payment-icon cash">
+              <i class="bx bx-money"></i>
+            </span>
+
+            <div>
+              <strong>Cash</strong>
+              <small>In-store payment</small>
+            </div>
+          </div>
+
+          <strong>48%</strong>
+        </div>
+
+        <div class="payment-row">
+          <div class="payment-name">
+            <span class="payment-icon gcash">
+              <i class="bx bx-mobile"></i>
+            </span>
+
+            <div>
+              <strong>GCash</strong>
+              <small>Digital payment</small>
+            </div>
+          </div>
+
+          <strong>37%</strong>
+        </div>
+
+        <div class="payment-row">
+          <div class="payment-name">
+            <span class="payment-icon card">
+              <i class="bx bx-credit-card"></i>
+            </span>
+
+            <div>
+              <strong>Card</strong>
+              <small>Debit / credit card</small>
+            </div>
+          </div>
+
+          <strong>15%</strong>
+        </div>
+      </div>
+    </article>
+
+    <!-- TOP ITEMS -->
+
+    <article class="panel top-items-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow"> PERFORMANCE </span>
+
+          <h2>Top selling items</h2>
+        </div>
+      </div>
+
+      <div class="top-items">
+        @for (item of topItems; track item.name; let i = $index) {
+          <div class="top-item">
+            <span class="rank">
+              {{ i + 1 }}
+            </span>
+
+            <div class="item-info">
+              <strong>
+                {{ item.name }}
+              </strong>
+
+              <small>
+                {{ item.category }}
+              </small>
+            </div>
+
+            <div class="item-sales">
+              <strong>
+                {{ item.sold }}
+              </strong>
+
+              <small> sold </small>
+            </div>
+
+            <strong class="item-revenue">
+              {{ formatCurrency(item.revenue) }}
+            </strong>
+          </div>
+        }
+      </div>
+    </article>
+  </div>
+
+  <!-- =====================================================
+       TRANSACTIONS
+  ====================================================== -->
+
+  <section class="transactions-panel">
+    <div class="transactions-header">
+      <div>
+        <span class="panel-eyebrow"> SALES ACTIVITY </span>
+
+        <div class="section-title">
+          <h2>Recent transactions</h2>
+
+          <span>
+            {{ totalTransactions }}
+          </span>
+        </div>
+      </div>
+
+      <div class="transaction-summary">
+        <span>
+          Completed:
+          <strong>
+            {{ completedTransactions }}
+          </strong>
+        </span>
+
+        <span>
+          Value:
+          <strong>
+            {{ formatCurrency(totalTransactionValue) }}
+          </strong>
+        </span>
+      </div>
+    </div>
+
+    <div class="transaction-table-wrapper">
+      <div class="transaction-table">
+        <div class="table-head">
+          <span>TRANSACTION</span>
+          <span>CUSTOMER</span>
+          <span>TYPE</span>
+          <span>PAYMENT</span>
+          <span>AMOUNT</span>
+          <span>STATUS</span>
+        </div>
+
+        @for (transaction of paginatedTransactions; track transaction.id) {
+          <div class="table-row">
+            <div class="transaction-id">
+              <strong>
+                {{ transaction.id }}
+              </strong>
+
+              <small>
+                {{ transaction.time }}
+              </small>
+            </div>
+
+            <div class="customer-cell">
+              <div class="avatar">
+                {{ getTransactionInitials(transaction.customer) }}
+              </div>
+
+              <strong>
+                {{ transaction.customer }}
+              </strong>
+            </div>
+
+            <span class="type-cell">
+              <i
+                class="bx"
+                [class.bx-restaurant]="transaction.type === 'Dine In'"
+                [class.bx-shopping-bag]="transaction.type === 'Take Out'"
+              ></i>
+
+              {{ transaction.type }}
+            </span>
+
+            <span class="payment-cell">
+              <i class="bx" [class]="getPaymentIcon(transaction.payment)"></i>
+
+              {{ transaction.payment }}
+            </span>
+
+            <strong class="amount-cell">
+              {{ formatCurrency(transaction.amount) }}
+            </strong>
+
+            <span
+              class="status"
+              [class.refunded]="transaction.status === 'Refunded'"
+            >
+              <span class="status-dot"></span>
+
+              {{ transaction.status }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="table-footer">
+      <span class="results-count">
+        Showing
+        <strong>{{ startItem }}</strong>
+        -
+        <strong>{{ endItem }}</strong>
+        of
+        <strong>{{ transactions.length }}</strong>
+        transactions
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>

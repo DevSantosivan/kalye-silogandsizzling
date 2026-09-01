@@ -1,0 +1,342 @@
+<section class="page">
+  <!-- ==========================================
+       PAGE HEADER
+  =========================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"> MENU ORGANIZATION </span>
+
+      <h1>Categories</h1>
+
+      <p>Organize your menu items into categories.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="addCategory()">
+      <i class="bx bx-plus"></i>
+      <span>Add category</span>
+    </button>
+  </div>
+
+  <!-- ==========================================
+       SUMMARY
+  =========================================== -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-category"></i>
+        </div>
+
+        <span class="summary-label"> TOTAL CATEGORIES </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalCategories }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-layer"></i>
+        <span>Menu categories</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon active-icon">
+          <i class="bx bx-check-circle"></i>
+        </div>
+
+        <span class="summary-label"> ACTIVE </span>
+      </div>
+
+      <div class="summary-value">
+        {{ activeCategories }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot active"></span>
+        <span>Visible categories</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon inactive-icon">
+          <i class="bx bx-hide"></i>
+        </div>
+
+        <span class="summary-label"> INACTIVE </span>
+      </div>
+
+      <div class="summary-value">
+        {{ inactiveCategories }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot inactive"></span>
+        <span>Hidden categories</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon items-icon">
+          <i class="bx bx-food-menu"></i>
+        </div>
+
+        <span class="summary-label"> MENU ITEMS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalMenuItems }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-restaurant"></i>
+        <span>Across all categories</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       CATEGORY SECTION
+  =========================================== -->
+
+  <section class="category-section">
+    <!-- TOOLBAR -->
+
+    <div class="category-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>All Categories</h2>
+
+          <span>
+            {{ filteredCategories.length }}
+          </span>
+        </div>
+
+        <!-- STATUS FILTER -->
+
+        <div class="filters">
+          @for (filter of statusFilters; track filter) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeStatus === filter"
+              (click)="setStatus(filter)"
+            >
+              {{ filter }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- SEARCH -->
+
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search category"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button
+              type="button"
+              class="clear-search"
+              aria-label="Clear search"
+              (click)="clearSearch()"
+            >
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================
+         CATEGORY GRID
+    ========================================= -->
+
+    <div class="category-grid">
+      @for (category of paginatedCategories; track category.id) {
+        <article class="category-card">
+          <!-- ICON -->
+
+          <div class="category-icon">
+            <i class="bx" [class]="getCategoryIcon(category.name)"></i>
+          </div>
+
+          <!-- STATUS -->
+
+          <span
+            class="status"
+            [class.active]="category.status"
+            [class.inactive]="!category.status"
+          >
+            <span class="status-dot"></span>
+
+            {{ category.status ? "Active" : "Inactive" }}
+          </span>
+
+          <!-- ACTION -->
+
+          <div class="action-wrapper">
+            <button
+              type="button"
+              class="more"
+              aria-label="Category actions"
+              (click)="toggleActionMenu(category.id)"
+            >
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+
+            @if (openMenuId === category.id) {
+              <div class="action-menu">
+                <button type="button" (click)="editCategory(category)">
+                  <i class="bx bx-edit-alt"></i>
+                  <span>Edit</span>
+                </button>
+
+                <button type="button" (click)="toggleStatus(category)">
+                  @if (category.status) {
+                    <i class="bx bx-hide"></i>
+
+                    <span> Set inactive </span>
+                  } @else {
+                    <i class="bx bx-show"></i>
+
+                    <span> Set active </span>
+                  }
+                </button>
+
+                <button
+                  type="button"
+                  class="danger"
+                  (click)="deleteCategory(category)"
+                >
+                  <i class="bx bx-trash"></i>
+                  <span>Delete</span>
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- CONTENT -->
+
+          <div class="category-info">
+            <span class="category-label"> MENU CATEGORY </span>
+
+            <h2>
+              {{ category.name }}
+            </h2>
+
+            <p>
+              {{ category.description }}
+            </p>
+          </div>
+
+          <!-- FOOTER -->
+
+          <div class="category-footer">
+            <div>
+              <strong>
+                {{ category.items }}
+              </strong>
+
+              <span> menu items </span>
+            </div>
+
+            <i class="bx bx-right-arrow-alt"></i>
+          </div>
+        </article>
+      }
+
+      <!-- ========================================
+           EMPTY STATE
+      ========================================= -->
+
+      @if (paginatedCategories.length === 0) {
+        <div class="empty-category">
+          <div class="empty-icon">
+            <i class="bx bx-category"></i>
+          </div>
+
+          <strong> No categories found </strong>
+
+          <span> Try changing your search or filter. </span>
+
+          @if (searchTerm || activeStatus !== "All") {
+            <button
+              type="button"
+              class="reset-btn"
+              (click)="searchTerm = ''; activeStatus = 'All'; currentPage = 1"
+            >
+              Clear filters
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <div class="table-footer">
+      <span class="results-count">
+        @if (filteredCategories.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>
+            {{ filteredCategories.length }}
+          </strong>
+          categories
+        } @else {
+          No categories found
+        }
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>

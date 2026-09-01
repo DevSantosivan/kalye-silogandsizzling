@@ -1,0 +1,374 @@
+<section class="page">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">TEAM MANAGEMENT</span>
+
+      <h1>Staff</h1>
+
+      <p>Manage your Kalye Silog team and access.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="addStaff()">
+      <i class="bx bx-plus"></i>
+      <span>Add staff</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-group"></i>
+        </div>
+
+        <span class="summary-label"> TOTAL STAFF </span>
+      </div>
+
+      <div class="summary-value">
+        {{ totalStaff }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-id-card"></i>
+        <span>Registered team members</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon active-icon">
+          <i class="bx bx-check-circle"></i>
+        </div>
+
+        <span class="summary-label"> ACTIVE </span>
+      </div>
+
+      <div class="summary-value">
+        {{ activeStaff }}
+      </div>
+
+      <div class="summary-meta">
+        <span class="summary-dot active"></span>
+        <span>Currently active</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon kitchen-icon">
+          <i class="bx bx-bowl-hot"></i>
+        </div>
+
+        <span class="summary-label"> KITCHEN </span>
+      </div>
+
+      <div class="summary-value">
+        {{ kitchenStaff }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-restaurant"></i>
+        <span>Kitchen staff members</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon cashier-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+
+        <span class="summary-label"> CASHIERS </span>
+      </div>
+
+      <div class="summary-value">
+        {{ cashiers }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-credit-card"></i>
+        <span>Cashier accounts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       STAFF PANEL
+  ====================================================== -->
+
+  <section class="staff-section">
+    <!-- TOOLBAR -->
+
+    <div class="staff-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>Team Members</h2>
+
+          <span>
+            {{ filteredStaff.length }}
+          </span>
+        </div>
+
+        <!-- ROLE FILTER -->
+
+        <div class="filters">
+          @for (role of roleFilters; track role) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeRole === role"
+              (click)="setRole(role)"
+            >
+              {{ role }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- SEARCH -->
+
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search staff"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button
+              type="button"
+              class="clear-search"
+              aria-label="Clear search"
+              (click)="clearSearch()"
+            >
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+
+        <!-- STATUS -->
+
+        <select
+          class="status-select"
+          [value]="activeStatus"
+          (change)="setStatus($any($event.target).value)"
+        >
+          @for (status of statusFilters; track status) {
+            <option [value]="status">
+              {{ status }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- =================================================
+         TABLE
+    ================================================== -->
+
+    <div class="staff-table-wrapper">
+      <div class="staff-table">
+        <!-- HEADER -->
+
+        <div class="list-head">
+          <span>STAFF</span>
+
+          <span>ROLE</span>
+
+          <span>EMAIL</span>
+
+          <span>JOINED</span>
+
+          <span>STATUS</span>
+
+          <span></span>
+        </div>
+
+        <!-- ROWS -->
+
+        @for (member of paginatedStaff; track member.id) {
+          <div
+            class="staff-row"
+            [class.inactive-row]="member.status === 'Inactive'"
+          >
+            <!-- STAFF -->
+
+            <div class="staff-name">
+              <div class="avatar">
+                {{ getInitials(member.name) }}
+              </div>
+
+              <div class="staff-info">
+                <strong>
+                  {{ member.name }}
+                </strong>
+
+                <small> ID #{{ member.id.toString().padStart(3, "0") }} </small>
+              </div>
+            </div>
+
+            <!-- ROLE -->
+
+            <div class="role-cell">
+              <span class="role-icon">
+                <i class="bx" [class]="getRoleIcon(member.role)"></i>
+              </span>
+
+              <span>
+                {{ member.role }}
+              </span>
+            </div>
+
+            <!-- EMAIL -->
+
+            <span class="email-cell">
+              {{ member.email }}
+            </span>
+
+            <!-- JOINED -->
+
+            <span class="joined-cell">
+              {{ member.joined }}
+            </span>
+
+            <!-- STATUS -->
+
+            <span
+              class="status"
+              [class.inactive]="member.status === 'Inactive'"
+            >
+              <span class="status-dot"></span>
+
+              {{ member.status }}
+            </span>
+
+            <!-- ACTIONS -->
+
+            <div class="action-wrapper">
+              <button
+                type="button"
+                class="more"
+                aria-label="Staff actions"
+                (click)="toggleActionMenu(member.id)"
+              >
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+
+              @if (openMenuId === member.id) {
+                <div class="action-menu">
+                  <button type="button" (click)="editStaff(member)">
+                    <i class="bx bx-edit-alt"></i>
+                    <span>Edit</span>
+                  </button>
+
+                  <button type="button" (click)="toggleStatus(member)">
+                    @if (member.status === "Active") {
+                      <i class="bx bx-user-x"></i>
+                      <span>Set inactive</span>
+                    } @else {
+                      <i class="bx bx-user-check"></i>
+                      <span>Set active</span>
+                    }
+                  </button>
+
+                  <button
+                    type="button"
+                    class="danger"
+                    (click)="deleteStaff(member)"
+                  >
+                    <i class="bx bx-trash"></i>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- EMPTY -->
+
+        @if (paginatedStaff.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-group"></i>
+            </div>
+
+            <strong> No staff found </strong>
+
+            <span> Try changing your search or filters. </span>
+
+            @if (searchTerm || activeRole !== "All" || activeStatus !== "All") {
+              <button type="button" class="reset-btn" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- =================================================
+         FOOTER / PAGINATION
+    ================================================== -->
+
+    <div class="table-footer">
+      <span class="results-count">
+        @if (filteredStaff.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>{{ filteredStaff.length }}</strong>
+          staff members
+        } @else {
+          No staff found
+        }
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>

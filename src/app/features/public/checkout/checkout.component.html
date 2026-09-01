@@ -1,0 +1,278 @@
+<section class="checkout-page">
+  <div class="checkout-container">
+    <!-- HEADER -->
+    <header class="page-heading">
+      <p class="kicker">CHECKOUT</p>
+
+      <h1>
+        Let's get your
+        <span>order ready.</span>
+      </h1>
+
+      <p>Tell us a little about yourself and we'll handle the rest.</p>
+    </header>
+
+    <div class="checkout-layout">
+      <!-- FORM -->
+      <main class="checkout-form">
+        <!-- CUSTOMER DETAILS -->
+        <section class="form-card">
+          <div class="section-number">01</div>
+
+          <div class="section-content">
+            <div class="section-heading">
+              <span class="mini-label">CUSTOMER</span>
+              <h2>Customer details</h2>
+              <p>We need these details for your order.</p>
+            </div>
+
+            <div class="fields">
+              <label>
+                <span>Full name</span>
+
+                <div class="input-wrap">
+                  <i class="bx bx-user"></i>
+
+                  <input type="text" placeholder="Juan Dela Cruz" />
+                </div>
+              </label>
+
+              <label>
+                <span>Mobile number</span>
+
+                <div class="input-wrap">
+                  <i class="bx bx-phone"></i>
+
+                  <input type="tel" placeholder="09XX XXX XXXX" />
+                </div>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ORDER DETAILS -->
+        <section class="form-card">
+          <div class="section-number">02</div>
+
+          <div class="section-content">
+            <div class="section-heading">
+              <span class="mini-label">ORDER</span>
+              <h2>Order details</h2>
+              <p>Where would you like to enjoy your food?</p>
+            </div>
+
+            <!-- ORDER TYPE -->
+            <div class="choice-grid">
+              <button
+                type="button"
+                [class.active]="orderType() === 'dine-in'"
+                (click)="orderType.set('dine-in')"
+              >
+                <span class="choice-icon">
+                  <i class="bx bx-restaurant"></i>
+                </span>
+
+                <div>
+                  <strong>Dine-in</strong>
+                  <small>Enjoy it here</small>
+                </div>
+
+                @if (orderType() === "dine-in") {
+                  <b class="selected">
+                    <i class="bx bx-check"></i>
+                  </b>
+                }
+              </button>
+
+              <button
+                type="button"
+                [class.active]="orderType() === 'takeout'"
+                (click)="orderType.set('takeout')"
+              >
+                <span class="choice-icon">
+                  <i class="bx bx-package"></i>
+                </span>
+
+                <div>
+                  <strong>Takeout</strong>
+                  <small>Take it with you</small>
+                </div>
+
+                @if (orderType() === "takeout") {
+                  <b class="selected">
+                    <i class="bx bx-check"></i>
+                  </b>
+                }
+              </button>
+            </div>
+
+            <!-- TABLE -->
+            @if (orderType() === "dine-in") {
+              <label class="full-field">
+                <span>Table number</span>
+
+                <div class="input-wrap select-wrap">
+                  <i class="bx bx-chair"></i>
+
+                  <select>
+                    <option>Select your table</option>
+                    <option>Table 01</option>
+                    <option>Table 02</option>
+                    <option>Table 03</option>
+                    <option>Table 04</option>
+                    <option>Table 05</option>
+                    <option>Table 06</option>
+                  </select>
+
+                  <i class="bx bx-chevron-down select-arrow"></i>
+                </div>
+              </label>
+            }
+
+            <!-- SPECIAL INSTRUCTIONS -->
+            <label class="full-field">
+              <span>Special instructions</span>
+
+              <div class="textarea-wrap">
+                <i class="bx bx-note"></i>
+
+                <textarea
+                  rows="3"
+                  placeholder="Less rice, extra sauce, no onions..."
+                ></textarea>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <!-- PAYMENT -->
+        <section class="form-card">
+          <div class="section-number">03</div>
+
+          <div class="section-content">
+            <div class="section-heading">
+              <span class="mini-label">PAYMENT</span>
+              <h2>Payment method</h2>
+              <p>Choose how you'd like to pay.</p>
+            </div>
+
+            <div class="payment-grid">
+              <!-- GCASH -->
+              <button
+                type="button"
+                [class.active]="paymentMethod() === 'gcash'"
+                (click)="paymentMethod.set('gcash')"
+              >
+                <span class="payment-icon gcash"> G </span>
+
+                <div>
+                  <strong>GCash</strong>
+                  <small>Pay online</small>
+                </div>
+
+                @if (paymentMethod() === "gcash") {
+                  <b class="selected">
+                    <i class="bx bx-check"></i>
+                  </b>
+                }
+              </button>
+
+              <!-- CASH -->
+              <button
+                type="button"
+                [class.active]="paymentMethod() === 'cash'"
+                (click)="paymentMethod.set('cash')"
+              >
+                <span class="payment-icon cash">
+                  <i class="bx bx-money"></i>
+                </span>
+
+                <div>
+                  <strong>Cash</strong>
+                  <small>Pay at counter</small>
+                </div>
+
+                @if (paymentMethod() === "cash") {
+                  <b class="selected">
+                    <i class="bx bx-check"></i>
+                  </b>
+                }
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ORDER SUMMARY -->
+      <aside class="summary">
+        <div class="summary-top">
+          <div class="summary-label">
+            <span>ORDER SUMMARY</span>
+
+            <i class="bx bx-receipt"></i>
+          </div>
+
+          <h2>Your order</h2>
+        </div>
+
+        <div class="summary-items">
+          <div class="summary-item">
+            <div class="item-left">
+              <span class="item-quantity">01</span>
+
+              <div>
+                <strong>Tapsilog</strong>
+                <span>1 × ₱99</span>
+              </div>
+            </div>
+
+            <b>₱99</b>
+          </div>
+
+          <div class="summary-item">
+            <div class="item-left">
+              <span class="item-quantity">02</span>
+
+              <div>
+                <strong>Tocilog</strong>
+                <span>1 × ₱89</span>
+              </div>
+            </div>
+
+            <b>₱89</b>
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong>₱188</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Service fee</span>
+          <strong>₱0</strong>
+        </div>
+
+        <div class="total">
+          <span>Total</span>
+
+          <strong>₱188</strong>
+        </div>
+
+        <a routerLink="/payment" class="continue-button">
+          <span>Continue to payment</span>
+
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
+
+        <div class="secure">
+          <i class="bx bx-lock-alt"></i>
+
+          <span>Secure & protected checkout</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

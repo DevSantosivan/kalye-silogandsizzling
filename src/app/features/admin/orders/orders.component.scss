@@ -1,0 +1,1076 @@
+/* =========================================================
+   ORDERS PAGE
+========================================================= */
+
+.orders-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 28px 30px 35px;
+  background: #f6f5f2;
+  color: #292725;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #a19b93;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #211f1d;
+  font-size: 26px;
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+  color: #8c867e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.export-btn,
+.new-order-btn {
+  height: 38px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.export-btn {
+  border: 1px solid #dedad3;
+  background: #ffffff;
+  color: #5e5953;
+}
+
+.export-btn:hover {
+  background: #faf9f7;
+  border-color: #cbc6bd;
+  color: #292725;
+}
+
+.new-order-btn {
+  border: 1px solid #171716;
+  background: #171716;
+  color: #ffffff;
+}
+
+.new-order-btn:hover {
+  background: #2b2a28;
+  border-color: #2b2a28;
+  transform: translateY(-1px);
+}
+
+.export-btn i,
+.new-order-btn i {
+  font-size: 15px;
+}
+
+/* =========================================================
+   SUMMARY GRID
+========================================================= */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.summary-card {
+  min-height: 136px;
+  padding: 17px 18px;
+  border: 1px solid #e8e4de;
+  border-radius: 11px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.summary-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #fff4df;
+  color: #e29a14;
+}
+
+.summary-icon i {
+  font-size: 17px;
+}
+
+.summary-label {
+  color: #a09a92;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.75px;
+}
+
+.summary-value {
+  margin-top: 13px;
+  color: #242220;
+  font-size: 23px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.4px;
+}
+
+.summary-meta {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9b958d;
+  font-size: 8px;
+}
+
+.summary-meta i {
+  color: #4f9660;
+  font-size: 13px;
+}
+
+/* =========================================================
+   SUMMARY ICON VARIANTS
+========================================================= */
+
+.pending-icon {
+  background: #fff8e7;
+  color: #c69222;
+}
+
+.preparing-icon {
+  background: #fff2e3;
+  color: #e08320;
+}
+
+.completed-icon {
+  background: #eef8f0;
+  color: #4d9760;
+}
+
+/* =========================================================
+   SUMMARY DOTS
+========================================================= */
+
+.summary-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: #bbb5ad;
+}
+
+.summary-dot.pending {
+  background: #e1a322;
+}
+
+.summary-dot.preparing {
+  background: #e58a27;
+}
+
+.summary-dot.completed {
+  background: #55a066;
+}
+
+/* =========================================================
+   ORDERS CARD
+========================================================= */
+
+.orders-card {
+  overflow: hidden;
+  border: 1px solid #e7e3dc;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* =========================================================
+   ORDERS TOOLBAR
+========================================================= */
+
+.orders-toolbar {
+  min-height: 76px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #eeeae4;
+  box-sizing: border-box;
+}
+
+.toolbar-left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.section-title h2 {
+  margin: 0;
+  color: #292725;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.section-title > span {
+  min-width: 21px;
+  height: 19px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: #f4f2ee;
+  color: #858078;
+  font-size: 8px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.filter-btn {
+  height: 29px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #928c84;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.filter-btn:hover {
+  background: #f7f5f1;
+  color: #4d4944;
+}
+
+.filter-btn.active {
+  background: #171716;
+  color: #ffffff;
+}
+
+/* =========================================================
+   TOOLBAR RIGHT
+========================================================= */
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search {
+  width: 205px;
+  height: 34px;
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #e2ded7;
+  border-radius: 7px;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.search:focus-within {
+  border-color: #cfc9c0;
+  background: #fffefa;
+}
+
+.search > i {
+  flex: 0 0 auto;
+  color: #aaa49c;
+  font-size: 14px;
+}
+
+.search input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #3d3935;
+  font-family: inherit;
+  font-size: 9px;
+}
+
+.search input::placeholder {
+  color: #b2aca4;
+}
+
+/* =========================================================
+   CLEAR SEARCH
+========================================================= */
+
+.clear-search {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #99938b;
+  cursor: pointer;
+}
+
+.clear-search:hover {
+  background: #f5f2ed;
+  color: #292725;
+}
+
+.clear-search i {
+  font-size: 15px;
+}
+
+/* =========================================================
+   FILTER ICON
+========================================================= */
+
+.filter-icon-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e2ded7;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #77716a;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.filter-icon-btn:hover {
+  background: #faf9f7;
+  border-color: #d3cec6;
+  color: #292725;
+}
+
+.filter-icon-btn i {
+  font-size: 15px;
+}
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+.orders-table {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d4cc transparent;
+}
+
+.orders-table::-webkit-scrollbar {
+  height: 6px;
+}
+
+.orders-table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.orders-table::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #d9d4cc;
+}
+
+/* =========================================================
+   TABLE GRID
+========================================================= */
+
+.table-head,
+.table-row {
+  min-width: 950px;
+
+  display: grid;
+
+  grid-template-columns:
+    1.05fr
+    1.65fr
+    1.15fr
+    0.8fr
+    0.9fr
+    0.95fr
+    1.05fr
+    36px;
+
+  align-items: center;
+}
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.table-head {
+  min-height: 39px;
+  padding: 0 18px;
+  border-bottom: 1px solid #eeeae4;
+  background: #fcfbf9;
+  color: #aaa49c;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: 0.75px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   TABLE ROW
+========================================================= */
+
+.table-row {
+  min-height: 70px;
+  padding: 0 18px;
+  border-bottom: 1px solid #f0ede8;
+  color: #514c46;
+  font-size: 9px;
+  box-sizing: border-box;
+  transition: background 0.15s ease;
+}
+
+.table-row:last-child {
+  border-bottom: 0;
+}
+
+.table-row:hover {
+  background: #fdfcf9;
+}
+
+/* =========================================================
+   ORDER CELL
+========================================================= */
+
+.order-cell {
+  min-width: 0;
+}
+
+.order-cell strong {
+  color: #3b3733;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   CUSTOMER
+========================================================= */
+
+.customer {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.avatar {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f2eee7;
+  color: #756e65;
+  font-size: 9px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.customer-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.customer-info strong {
+  overflow: hidden;
+  color: #403c37;
+  font-size: 9px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customer-info small {
+  color: #aaa49d;
+  font-size: 7px;
+}
+
+/* =========================================================
+   ORDER TYPE
+========================================================= */
+
+.type-cell {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #77716a;
+}
+
+.type-cell i {
+  color: #aaa49d;
+  font-size: 14px;
+}
+
+.type-cell span {
+  overflow: hidden;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ITEMS
+========================================================= */
+
+.items-count {
+  color: #858078;
+  font-size: 8px;
+}
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.order-total {
+  color: #35312d;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  color: #4d9760;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.payment.pending {
+  color: #c18b22;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+  width: fit-content;
+  padding: 5px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 5px;
+  background: #f3f3f1;
+  color: #77716a;
+  font-size: 8px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.status.new {
+  background: #fff4df;
+  color: #c48616;
+}
+
+.status.preparing {
+  background: #fff0e3;
+  color: #d8781b;
+}
+
+.status.ready {
+  background: #edf5ff;
+  color: #4d80b3;
+}
+
+.status.completed {
+  background: #edf7ef;
+  color: #4e9560;
+}
+
+.status.cancelled {
+  background: #fff0ef;
+  color: #c7645b;
+}
+
+/* =========================================================
+   BADGE DOT
+========================================================= */
+
+.badge-dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* =========================================================
+   MORE ACTION BUTTON
+========================================================= */
+
+.more {
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #aaa49d;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.more:hover {
+  background: #f5f2ed;
+  color: #403c37;
+}
+
+.more i {
+  font-size: 16px;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+  min-height: 230px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #99938b;
+  box-sizing: border-box;
+}
+
+.empty-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #f7f4ef;
+  color: #aaa49b;
+}
+
+.empty-icon i {
+  font-size: 20px;
+}
+
+.empty-state strong {
+  color: #4a4640;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.empty-state > span {
+  font-size: 9px;
+}
+
+.reset-search {
+  height: 30px;
+  margin-top: 8px;
+  padding: 0 11px;
+  border: 1px solid #ddd8d0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #625c55;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.reset-search:hover {
+  background: #f8f6f2;
+  border-color: #cbc6bd;
+}
+
+/* =========================================================
+   TABLE FOOTER
+========================================================= */
+
+.table-footer {
+  min-height: 58px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-top: 1px solid #eeeae4;
+  color: #99938b;
+  font-size: 9px;
+  box-sizing: border-box;
+}
+
+.results-count {
+  white-space: nowrap;
+}
+
+.results-count strong {
+  color: #5d5852;
+  font-weight: 700;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination button {
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #77716a;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f7f4ef;
+  color: #403c37;
+}
+
+.pagination button.current {
+  border-color: #171716;
+  background: #171716;
+  color: #ffffff;
+}
+
+.pagination button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pagination button i {
+  font-size: 15px;
+}
+
+/* =========================================================
+   FOCUS STATES
+========================================================= */
+
+.export-btn:focus-visible,
+.new-order-btn:focus-visible,
+.filter-btn:focus-visible,
+.filter-icon-btn:focus-visible,
+.more:focus-visible,
+.pagination button:focus-visible,
+.clear-search:focus-visible,
+.reset-search:focus-visible {
+  outline: 2px solid #e4a21a;
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   RESPONSIVE — 1200px
+========================================================= */
+
+@media (max-width: 1200px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .orders-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .toolbar-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar-right {
+    width: 100%;
+  }
+
+  .search {
+    flex: 1;
+    width: auto;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 900px
+========================================================= */
+
+@media (max-width: 900px) {
+  .orders-page {
+    padding: 24px 20px 30px;
+  }
+
+  .header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .export-btn,
+  .new-order-btn {
+    flex: 1;
+  }
+
+  .toolbar-left {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filters {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 3px;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex-shrink: 0;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 650px
+========================================================= */
+
+@media (max-width: 650px) {
+  .orders-page {
+    padding: 20px 14px 25px;
+  }
+
+  .page-header {
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+  .page-header p {
+    font-size: 10px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .summary-card {
+    min-height: 118px;
+  }
+
+  .orders-toolbar {
+    padding: 14px;
+  }
+
+  .toolbar-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search {
+    width: 100%;
+    flex: none;
+  }
+
+  .filter-icon-btn {
+    display: none;
+  }
+
+  .table-head,
+  .table-row {
+    min-width: 950px;
+  }
+
+  .table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .pagination {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 430px
+========================================================= */
+
+@media (max-width: 430px) {
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .export-btn,
+  .new-order-btn {
+    width: 100%;
+    flex: none;
+  }
+
+  .summary-card {
+    padding: 15px;
+  }
+
+  .table-footer {
+    gap: 12px;
+  }
+
+  .pagination {
+    justify-content: flex-start;
+  }
+
+  .pagination button {
+    width: 27px;
+    height: 27px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .export-btn,
+  .new-order-btn,
+  .filter-btn,
+  .search,
+  .filter-icon-btn,
+  .table-row,
+  .more,
+  .pagination button {
+    transition: none;
+  }
+}

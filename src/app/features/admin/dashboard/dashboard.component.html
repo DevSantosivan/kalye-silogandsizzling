@@ -1,0 +1,469 @@
+<section class="dashboard">
+  <!-- PAGE HEADER -->
+  <div class="page-heading">
+    <div class="heading-copy">
+      <span class="eyebrow">OVERVIEW</span>
+
+      <h1>
+        Good morning, Owner
+        <span class="heading-wave">👋</span>
+      </h1>
+
+      <p>Here's what's happening with Kalye Silog today.</p>
+    </div>
+
+    <button class="date-button" type="button">
+      <i class="bx bx-calendar"></i>
+
+      <span>Today</span>
+
+      <i class="bx bx-chevron-down"></i>
+    </button>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-title">
+          <span>Today's Sales</span>
+          <small>Revenue</small>
+        </div>
+
+        <div class="stat-icon sales">
+          <i class="bx bx-money"></i>
+        </div>
+      </div>
+
+      <div class="stat-value">
+        {{ formatCurrency(stats.todaySales) }}
+      </div>
+
+      <div class="stat-footer">
+        <span class="trend positive">
+          <i class="bx bx-up-arrow-alt"></i>
+          12.5%
+        </span>
+
+        <span>vs yesterday</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-title">
+          <span>Total Orders</span>
+          <small>Orders today</small>
+        </div>
+
+        <div class="stat-icon orders">
+          <i class="bx bx-receipt"></i>
+        </div>
+      </div>
+
+      <div class="stat-value">
+        {{ stats.totalOrders }}
+      </div>
+
+      <div class="stat-footer">
+        <span class="trend positive">
+          <i class="bx bx-up-arrow-alt"></i>
+          8
+        </span>
+
+        <span>more than yesterday</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-title">
+          <span>Average Order</span>
+          <small>Per transaction</small>
+        </div>
+
+        <div class="stat-icon average">
+          <i class="bx bx-bar-chart-alt-2"></i>
+        </div>
+      </div>
+
+      <div class="stat-value">
+        {{ formatCurrency(stats.averageOrder) }}
+      </div>
+
+      <div class="stat-footer">
+        <span class="trend positive">
+          <i class="bx bx-up-arrow-alt"></i>
+          5.2%
+        </span>
+
+        <span>vs last week</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-title">
+          <span>Customers</span>
+          <small>Served today</small>
+        </div>
+
+        <div class="stat-icon customers">
+          <i class="bx bx-group"></i>
+        </div>
+      </div>
+
+      <div class="stat-value">
+        {{ stats.customers }}
+      </div>
+
+      <div class="stat-footer">
+        <span class="trend positive">
+          <i class="bx bx-up-arrow-alt"></i>
+          6
+        </span>
+
+        <span>today</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="analytics-grid">
+    <!-- SALES -->
+    <article class="panel sales-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-label">REVENUE</span>
+          <h2>Sales overview</h2>
+        </div>
+
+        <select>
+          <option>This week</option>
+          <option>This month</option>
+          <option>This year</option>
+        </select>
+      </div>
+
+      <div class="sales-summary">
+        <strong>{{ formatCurrency(stats.todaySales) }}</strong>
+
+        <span class="summary-positive">
+          <i class="bx bx-trending-up"></i>
+          12.5%
+        </span>
+      </div>
+
+      <div class="chart">
+        <div class="chart-y">
+          <span>₱15k</span>
+          <span>₱10k</span>
+          <span>₱5k</span>
+          <span>₱0</span>
+        </div>
+
+        <div class="chart-area">
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+
+          <svg
+            viewBox="0 0 700 240"
+            preserveAspectRatio="none"
+            class="sales-line"
+          >
+            <defs>
+              <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f3a51c" stop-opacity=".20" />
+
+                <stop offset="100%" stop-color="#f3a51c" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+
+            <polygon
+              points="
+                0,185
+                100,150
+                200,165
+                300,100
+                400,125
+                500,65
+                600,90
+                700,40
+                700,240
+                0,240
+              "
+              fill="url(#salesGradient)"
+            />
+
+            <polyline
+              points="
+                0,185
+                100,150
+                200,165
+                300,100
+                400,125
+                500,65
+                600,90
+                700,40
+              "
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <circle cx="500" cy="65" r="5"></circle>
+            <circle cx="600" cy="90" r="5"></circle>
+            <circle cx="700" cy="40" r="6"></circle>
+          </svg>
+
+          <div class="chart-days">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ORDER STATUS -->
+    <article class="panel status-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-label">ORDERS</span>
+          <h2>Order status</h2>
+        </div>
+
+        <a routerLink="/admin/orders" class="panel-action">
+          View all
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
+      </div>
+
+      <div class="status-list">
+        <div class="status-row">
+          <div class="status-left">
+            <span class="status-icon new">
+              <i class="bx bx-bell"></i>
+            </span>
+
+            <div>
+              <strong>New</strong>
+              <span>Waiting for action</span>
+            </div>
+          </div>
+
+          <strong class="status-count">8</strong>
+        </div>
+
+        <div class="status-row">
+          <div class="status-left">
+            <span class="status-icon preparing">
+              <i class="bx bx-loader-circle"></i>
+            </span>
+
+            <div>
+              <strong>Preparing</strong>
+              <span>Currently in kitchen</span>
+            </div>
+          </div>
+
+          <strong class="status-count">12</strong>
+        </div>
+
+        <div class="status-row">
+          <div class="status-left">
+            <span class="status-icon ready">
+              <i class="bx bx-check"></i>
+            </span>
+
+            <div>
+              <strong>Ready</strong>
+              <span>Waiting for customer</span>
+            </div>
+          </div>
+
+          <strong class="status-count">6</strong>
+        </div>
+
+        <div class="status-row">
+          <div class="status-left">
+            <span class="status-icon completed">
+              <i class="bx bx-check-double"></i>
+            </span>
+
+            <div>
+              <strong>Completed</strong>
+              <span>Successfully served</span>
+            </div>
+          </div>
+
+          <strong class="status-count">22</strong>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- BEST SELLERS + ORDER TYPE -->
+  <div class="lower-grid">
+    <!-- BEST SELLERS -->
+    <article class="panel best-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-label">POPULAR</span>
+          <h2>Best sellers</h2>
+        </div>
+
+        <select>
+          <option>This week</option>
+          <option>This month</option>
+          <option>This year</option>
+        </select>
+      </div>
+
+      <div class="seller-list">
+        @for (item of bestSellers; track item.rank) {
+          <div class="seller-item">
+            <div class="seller-rank">#{{ item.rank }}</div>
+
+            <div class="food-image">
+              <img [src]="item.image" [alt]="item.name" />
+            </div>
+
+            <div class="seller-info">
+              <strong>
+                {{ item.name }}
+              </strong>
+
+              <span> {{ item.orders }} orders </span>
+            </div>
+
+            <div class="seller-sales">
+              <strong>
+                {{ formatCurrency(item.price) }}
+              </strong>
+
+              <span>sales</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <a routerLink="/admin/menu" class="view-link">
+        View menu analytics
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </article>
+
+    <!-- ORDER TYPE -->
+    <article class="panel order-type-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-label">ORDERS</span>
+          <h2>Order type</h2>
+        </div>
+      </div>
+
+      <div class="donut-wrapper">
+        <div class="donut">
+          <div class="donut-center">
+            <strong>48</strong>
+            <span>Orders</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-type-legend">
+        <div>
+          <span class="legend-dot dine"></span>
+
+          <div>
+            <strong>Dine In</strong>
+            <span>30 orders</span>
+          </div>
+
+          <strong class="legend-percent"> 62% </strong>
+        </div>
+
+        <div>
+          <span class="legend-dot takeout"></span>
+
+          <div>
+            <strong>Take Out</strong>
+            <span>18 orders</span>
+          </div>
+
+          <strong class="legend-percent"> 38% </strong>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- RECENT ORDERS -->
+  <article class="panel recent-panel">
+    <div class="panel-heading">
+      <div>
+        <span class="panel-label">ACTIVITY</span>
+        <h2>Recent orders</h2>
+      </div>
+
+      <a routerLink="/admin/orders" class="view-link">
+        View all
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </div>
+
+    <div class="orders-table">
+      <div class="table-head">
+        <span>ORDER</span>
+        <span>CUSTOMER</span>
+        <span>TYPE</span>
+        <span>TOTAL</span>
+        <span>STATUS</span>
+      </div>
+
+      @for (order of recentOrders; track order.orderNumber) {
+        <div class="table-row">
+          <strong class="order-number">
+            {{ order.orderNumber }}
+          </strong>
+
+          <div class="customer-cell">
+            <span class="customer-avatar">
+              {{ order.customer.charAt(0) }}
+            </span>
+
+            <span>
+              {{ order.customer }}
+            </span>
+          </div>
+
+          <span class="order-type">
+            {{ order.type }}
+          </span>
+
+          <strong>
+            {{ formatCurrency(order.total) }}
+          </strong>
+
+          <span
+            class="status-pill"
+            [class.preparing]="order.status === 'Preparing'"
+            [class.ready]="order.status === 'Ready'"
+            [class.completed]="order.status === 'Completed'"
+          >
+            <span></span>
+            {{ order.status }}
+          </span>
+        </div>
+      }
+    </div>
+  </article>
+</section>
