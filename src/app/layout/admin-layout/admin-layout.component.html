@@ -1,186 +1,283 @@
 <div class="admin-shell">
-  <!-- MOBILE OVERLAY -->
-  @if (sidebarOpen()) {
-    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
-  }
+  <!-- =====================================================
+       PRIMARY SIDEBAR
+  ====================================================== -->
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" [class.open]="sidebarOpen()">
     <!-- BRAND -->
     <div class="sidebar-brand">
-      <div class="brand-mark">KS</div>
+      <div class="brand-logo">KS</div>
 
-      <div class="brand-text">
-        <strong>KALYE</strong>
-        <span>SILOG</span>
+      <div class="brand-copy">
+        <strong>Kalye Silog</strong>
+        <span>Admin Panel</span>
       </div>
-
-      <button
-        class="mobile-close"
-        type="button"
-        aria-label="Close navigation"
-        (click)="closeSidebar()"
-      >
-        <i class="bx bx-x"></i>
-      </button>
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- PRIMARY NAVIGATION -->
     <nav class="sidebar-nav">
-      <!-- MAIN -->
-      <div class="nav-section">
-        <span class="nav-label"> MAIN </span>
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-grid-alt"></i>
+        </span>
 
-        <!-- DASHBOARD -->
-        <a
-          routerLink="/admin/dashboard"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-grid-alt"></i>
-          </span>
+        <span class="nav-label"> Dashboard </span>
+      </a>
 
-          <span class="nav-text"> Dashboard </span>
-        </a>
+      <a
+        routerLink="/admin/orders"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-receipt"></i>
+        </span>
 
-        <!-- ORDERS -->
-        <a
-          routerLink="/admin/orders"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-receipt"></i>
-          </span>
+        <span class="nav-label"> Orders </span>
+      </a>
 
-          <span class="nav-text"> Orders </span>
+      <a
+        routerLink="/admin/menu"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-food-menu"></i>
+        </span>
 
-          <span class="nav-badge"> 8 </span>
-        </a>
+        <span class="nav-label"> Menu </span>
+      </a>
 
-        <!-- MENU -->
-        <a
-          routerLink="/admin/menu"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-food-menu"></i>
-          </span>
+      <a
+        routerLink="/admin/categories"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-category"></i>
+        </span>
 
-          <span class="nav-text"> Menu </span>
-        </a>
+        <span class="nav-label"> Categories </span>
+      </a>
 
-        <!-- CATEGORIES -->
-        <a
-          routerLink="/admin/categories"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-category"></i>
-          </span>
+      <a
+        routerLink="/admin/inventory"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-package"></i>
+        </span>
 
-          <span class="nav-text"> Categories </span>
-        </a>
+        <span class="nav-label"> Inventory </span>
+      </a>
+
+      <!-- SECTION -->
+      <div class="nav-section-title">
+        <span>PEOPLE</span>
       </div>
 
-      <!-- PEOPLE -->
-      <div class="nav-section">
-        <span class="nav-label"> PEOPLE </span>
+      <a
+        routerLink="/admin/staff"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-group"></i>
+        </span>
 
-        <!-- STAFF -->
-        <a
-          routerLink="/admin/staff"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-group"></i>
-          </span>
+        <span class="nav-label"> Staff </span>
+      </a>
 
-          <span class="nav-text"> Staff </span>
-        </a>
+      <a
+        routerLink="/admin/customers"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-user"></i>
+        </span>
 
-        <!-- CUSTOMERS -->
-        <a
-          routerLink="/admin/customers"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-user"></i>
-          </span>
+        <span class="nav-label"> Customers </span>
+      </a>
 
-          <span class="nav-text"> Customers </span>
-        </a>
+      <!-- SECTION -->
+      <div class="nav-section-title">
+        <span>BUSINESS</span>
       </div>
 
-      <!-- BUSINESS -->
-      <div class="nav-section">
-        <span class="nav-label"> BUSINESS </span>
+      <a
+        routerLink="/admin/sales"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-bar-chart-alt-2"></i>
+        </span>
 
-        <!-- SALES -->
-        <a
-          routerLink="/admin/sales"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-money"></i>
-          </span>
+        <span class="nav-label"> Sales </span>
+      </a>
 
-          <span class="nav-text"> Sales </span>
-        </a>
+      <a
+        routerLink="/admin/reports"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-line-chart"></i>
+        </span>
 
-        <!-- REPORTS -->
-        <a
-          routerLink="/admin/reports"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          <span class="nav-icon">
-            <i class="bx bx-bar-chart-alt-2"></i>
-          </span>
+        <span class="nav-label"> Reports </span>
+      </a>
 
-          <span class="nav-text"> Reports </span>
-        </a>
-      </div>
-    </nav>
-
-    <!-- SIDEBAR FOOTER -->
-    <div class="sidebar-footer">
-      <!-- SETTINGS -->
       <a
         routerLink="/admin/settings"
         routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
         (click)="closeSidebar()"
       >
         <span class="nav-icon">
           <i class="bx bx-cog"></i>
         </span>
 
-        <span class="nav-text"> Settings </span>
+        <span class="nav-label"> Settings </span>
       </a>
+    </nav>
 
-      <!-- LOGOUT -->
-      <button class="logout-button" type="button">
+    <!-- SIDEBAR FOOTER -->
+    <div class="sidebar-footer">
+      <button type="button" class="logout-button">
         <span class="nav-icon">
           <i class="bx bx-log-out"></i>
         </span>
 
-        <span class="nav-text"> Logout </span>
+        <span class="nav-label"> Logout </span>
       </button>
     </div>
   </aside>
 
-  <!-- MAIN -->
-  <div class="admin-main">
+  <!-- =====================================================
+       MOBILE OVERLAY
+  ====================================================== -->
+
+  @if (sidebarOpen()) {
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
+  <!-- =====================================================
+       SECONDARY SIDEBAR
+  ====================================================== -->
+
+  @if (activeModule() === "inventory") {
+    <aside class="secondary-sidebar">
+      <div class="secondary-header">
+        <span class="secondary-eyebrow"> MODULE </span>
+
+        <strong> Inventory </strong>
+
+        <span class="secondary-description">
+          Manage ingredients and stock
+        </span>
+      </div>
+
+      <nav class="secondary-nav">
+        <a
+          routerLink="/admin/inventory"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="secondary-icon">
+            <i class="bx bx-grid-alt"></i>
+          </span>
+
+          <span> Overview </span>
+        </a>
+
+        <a
+          routerLink="/admin/inventory/ingredients"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+        >
+          <span class="secondary-icon">
+            <i class="bx bx-package"></i>
+          </span>
+
+          <span> Ingredients </span>
+        </a>
+
+        <a
+          routerLink="/admin/inventory/stock-in"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="secondary-icon">
+            <i class="bx bx-down-arrow-circle"></i>
+          </span>
+
+          <span> Stock In </span>
+        </a>
+
+        <a
+          routerLink="/admin/inventory/stock-out"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="secondary-icon">
+            <i class="bx bx-up-arrow-circle"></i>
+          </span>
+
+          <span> Stock Out </span>
+        </a>
+
+        <a
+          routerLink="/admin/inventory/history"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="secondary-icon">
+            <i class="bx bx-history"></i>
+          </span>
+
+          <span> History </span>
+        </a>
+      </nav>
+
+      <div class="secondary-footer">
+        <div class="module-tip">
+          <i class="bx bx-info-circle"></i>
+
+          <div>
+            <strong> Inventory tip </strong>
+
+            <span>
+              Stock is automatically deducted when orders are processed.
+            </span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  }
+
+  <!-- =====================================================
+       MAIN CONTENT
+  ====================================================== -->
+
+  <div class="admin-main" [class.has-secondary]="activeModule() !== ''">
     <!-- HEADER -->
     <header class="admin-header">
-      <!-- MOBILE MENU -->
       <button
         class="menu-button"
         type="button"
@@ -190,7 +287,6 @@
         <i class="bx bx-menu"></i>
       </button>
 
-      <!-- SPACER -->
       <div class="header-spacer"></div>
 
       <!-- NOTIFICATION -->
@@ -209,8 +305,9 @@
         <div class="profile-avatar">O</div>
 
         <div class="profile-info">
-          <strong>Owner</strong>
-          <span>Administrator</span>
+          <strong> Owner </strong>
+
+          <span> Administrator </span>
         </div>
 
         <button
@@ -223,7 +320,7 @@
       </div>
     </header>
 
-    <!-- CONTENT -->
+    <!-- ROUTER CONTENT -->
     <main class="admin-content">
       <router-outlet />
     </main>

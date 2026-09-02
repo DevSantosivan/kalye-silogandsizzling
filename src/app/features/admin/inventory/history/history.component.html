@@ -1,0 +1,132 @@
+<section class="history-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">INVENTORY</span>
+
+      <h1>Stock History</h1>
+
+      <p>Review every stock movement recorded in the inventory.</p>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+
+  <section class="toolbar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Search ingredient or reason..."
+      />
+    </div>
+
+    <div class="filter-box">
+      <i class="bx bx-filter-alt"></i>
+
+      <select [(ngModel)]="typeFilter">
+        <option value="All">All movements</option>
+
+        <option value="Stock In">Stock In</option>
+
+        <option value="Stock Out">Stock Out</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+
+  <section class="table-panel">
+    <div class="table-top">
+      <div>
+        <strong>Movement History</strong>
+
+        <span> {{ filteredMovements().length }} records </span>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Ingredient</th>
+            <th>Movement</th>
+            <th>Quantity</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (movement of filteredMovements(); track movement.id) {
+            <tr>
+              <td>
+                <span class="date">
+                  {{ movement.date }}
+                </span>
+              </td>
+
+              <td>
+                <div class="ingredient-cell">
+                  <div class="ingredient-icon">
+                    <i class="bx bx-package"></i>
+                  </div>
+
+                  <strong>
+                    {{ movement.ingredient }}
+                  </strong>
+                </div>
+              </td>
+
+              <td>
+                <span
+                  class="movement-badge"
+                  [class.in]="movement.type === 'Stock In'"
+                  [class.out]="movement.type === 'Stock Out'"
+                >
+                  <i
+                    class="bx"
+                    [class.bx-down-arrow]="movement.type === 'Stock In'"
+                    [class.bx-up-arrow]="movement.type === 'Stock Out'"
+                  ></i>
+
+                  {{ movement.type }}
+                </span>
+              </td>
+
+              <td>
+                <strong
+                  [class.quantity-in]="movement.type === 'Stock In'"
+                  [class.quantity-out]="movement.type === 'Stock Out'"
+                >
+                  {{ movement.type === "Stock In" ? "+" : "-" }}
+                  {{ movement.quantity }}
+                  {{ movement.unit }}
+                </strong>
+              </td>
+
+              <td>
+                {{ movement.reason }}
+              </td>
+            </tr>
+          }
+
+          @if (filteredMovements().length === 0) {
+            <tr>
+              <td colspan="5" class="empty-row">
+                <i class="bx bx-history"></i>
+
+                <strong> No movement history found </strong>
+
+                <span> Try another search or filter. </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

@@ -1,0 +1,263 @@
+<section class="add-ingredient-page">
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="header-left">
+      <a
+        routerLink="/admin/inventory/ingredients"
+        class="back-button"
+        aria-label="Back to ingredients"
+      >
+        <i class="bx bx-arrow-back"></i>
+      </a>
+
+      <div>
+        <span class="eyebrow">INVENTORY</span>
+
+        <h1>Add Ingredient</h1>
+
+        <p>Add a new ingredient to your inventory.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM LAYOUT -->
+  <div class="form-layout">
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <div class="card-header">
+        <div class="header-icon">
+          <i class="bx bx-package"></i>
+        </div>
+
+        <div>
+          <h2>Ingredient Information</h2>
+
+          <p>Enter the basic information of the ingredient.</p>
+        </div>
+      </div>
+
+      <form class="ingredient-form" (ngSubmit)="saveIngredient()">
+        <!-- NAME -->
+        <div class="form-group full-width">
+          <label for="ingredientName">
+            Ingredient Name
+            <span>*</span>
+          </label>
+
+          <input
+            id="ingredientName"
+            type="text"
+            name="ingredientName"
+            [(ngModel)]="ingredientName"
+            placeholder="e.g. Chicken Breast"
+            autocomplete="off"
+          />
+
+          <small> Use a clear name that staff can easily identify. </small>
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="form-group">
+          <label for="category">
+            Category
+            <span>*</span>
+          </label>
+
+          <div class="select-wrapper">
+            <select id="category" name="category" [(ngModel)]="category">
+              <option value="" disabled>Select category</option>
+
+              @for (item of categories; track item) {
+                <option [value]="item">
+                  {{ item }}
+                </option>
+              }
+            </select>
+
+            <i class="bx bx-chevron-down"></i>
+          </div>
+        </div>
+
+        <!-- UNIT -->
+        <div class="form-group">
+          <label for="unit">
+            Stock Unit
+            <span>*</span>
+          </label>
+
+          <div class="select-wrapper">
+            <select id="unit" name="unit" [(ngModel)]="unit">
+              <option value="" disabled>Select unit</option>
+
+              @for (item of units; track item) {
+                <option [value]="item">
+                  {{ item }}
+                </option>
+              }
+            </select>
+
+            <i class="bx bx-chevron-down"></i>
+          </div>
+
+          <small> This will be the base unit used for inventory. </small>
+        </div>
+
+        <!-- STOCK -->
+        <div class="form-group">
+          <label for="stock">
+            Stock
+            <span>*</span>
+          </label>
+
+          <div class="input-with-unit">
+            <input
+              id="stock"
+              type="number"
+              name="stock"
+              [(ngModel)]="stock"
+              min="0"
+              step="0.01"
+              placeholder="0"
+            />
+
+            @if (unit) {
+              <span>{{ unit }}</span>
+            }
+          </div>
+
+          <small> Enter the current quantity available in inventory. </small>
+        </div>
+
+        <!-- REORDER LEVEL -->
+        <div class="form-group">
+          <label for="reorderLevel">
+            Reorder Level
+            <span>*</span>
+          </label>
+
+          <div class="input-with-unit">
+            <input
+              id="reorderLevel"
+              type="number"
+              name="reorderLevel"
+              [(ngModel)]="reorderLevel"
+              min="0"
+              step="0.01"
+              placeholder="0"
+            />
+
+            @if (unit) {
+              <span>{{ unit }}</span>
+            }
+          </div>
+
+          <small> You'll be alerted when stock reaches this level. </small>
+        </div>
+
+        <!-- COST -->
+        <div class="form-group">
+          <label for="costPerUnit">
+            Cost per Unit
+            <span>*</span>
+          </label>
+
+          <div class="currency-input">
+            <span>₱</span>
+
+            <input
+              id="costPerUnit"
+              type="number"
+              name="costPerUnit"
+              [(ngModel)]="costPerUnit"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+
+          <small> Estimated purchase cost for one stock unit. </small>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="cancel-button" (click)="cancel()">
+            Cancel
+          </button>
+
+          <button type="submit" class="save-button" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <i class="bx bx-loader-alt bx-spin"></i>
+              Saving...
+            } @else {
+              <i class="bx bx-check"></i>
+              Save Ingredient
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PREVIEW -->
+    <aside class="preview-card">
+      <div class="preview-header">
+        <span class="preview-label"> PREVIEW </span>
+
+        <div class="preview-icon">
+          <i class="bx bx-package"></i>
+        </div>
+      </div>
+
+      <div class="preview-content">
+        <span class="preview-category">
+          {{ category || "CATEGORY" }}
+        </span>
+
+        <h3>
+          {{ ingredientName || "Ingredient Name" }}
+        </h3>
+
+        <div class="preview-stock">
+          <!-- STOCK -->
+          <div>
+            <span>Stock</span>
+
+            <strong>
+              {{ stock ?? 0 }}
+              {{ unit }}
+            </strong>
+          </div>
+
+          <!-- REORDER -->
+          <div>
+            <span>Reorder At</span>
+
+            <strong>
+              {{ reorderLevel ?? 0 }}
+              {{ unit }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="preview-divider"></div>
+
+        <!-- COST -->
+        <div class="preview-cost">
+          <span> Cost per {{ unit || "unit" }} </span>
+
+          <strong> ₱{{ costPerUnit ?? 0 }} </strong>
+        </div>
+
+        <!-- INFORMATION -->
+        <div class="preview-note">
+          <i class="bx bx-info-circle"></i>
+
+          <p>
+            Stock represents the current quantity available. Future stock
+            changes will be recorded through Stock In, Stock Out, and actual
+            orders.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

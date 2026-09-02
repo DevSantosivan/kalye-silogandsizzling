@@ -1,0 +1,207 @@
+<section class="stock-out-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">INVENTORY</span>
+
+      <h1>Stock Out</h1>
+
+      <p>
+        Record inventory deductions caused by spoilage, damage, expiry, or
+        adjustments.
+      </p>
+    </div>
+
+    <a routerLink="/admin/inventory/history" class="history-link">
+      <i class="bx bx-history"></i>
+      View History
+    </a>
+  </div>
+
+  <div class="content-grid">
+    <!-- FORM -->
+
+    <section class="form-panel">
+      <div class="panel-header">
+        <span class="panel-eyebrow"> MANUAL DEDUCTION </span>
+
+        <h2>Remove Stock</h2>
+      </div>
+
+      <form class="stock-form" (ngSubmit)="stockOut()">
+        <!-- INGREDIENT -->
+
+        <div class="form-group">
+          <label for="ingredient"> Ingredient </label>
+
+          <select
+            id="ingredient"
+            name="ingredient"
+            [(ngModel)]="selectedIngredientId"
+          >
+            <option [ngValue]="null">Select ingredient</option>
+
+            @for (ingredient of ingredients(); track ingredient.id) {
+              <option [ngValue]="ingredient.id">
+                {{ ingredient.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- CURRENT -->
+
+        @if (selectedIngredient(); as ingredient) {
+          <div class="current-stock">
+            <div>
+              <span>Available Stock</span>
+
+              <strong>
+                {{ ingredient.stock }}
+                {{ ingredient.unit }}
+              </strong>
+            </div>
+
+            <i class="bx bx-package"></i>
+          </div>
+        }
+
+        <!-- QUANTITY -->
+
+        <div class="form-group">
+          <label for="quantity"> Quantity to Remove </label>
+
+          <div class="input-with-unit">
+            <input
+              id="quantity"
+              name="quantity"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="quantity"
+              placeholder="0"
+            />
+
+            @if (selectedIngredient(); as ingredient) {
+              <span>{{ ingredient.unit }}</span>
+            } @else {
+              <span>unit</span>
+            }
+          </div>
+        </div>
+
+        <!-- REASON -->
+
+        <div class="form-group">
+          <label for="reason"> Reason </label>
+
+          <select id="reason" name="reason" [(ngModel)]="reason">
+            <option value="">Select reason</option>
+
+            @for (item of reasons; track item) {
+              <option [value]="item">
+                {{ item }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- NOTES -->
+
+        <div class="form-group">
+          <label for="notes">
+            Notes
+            <small>Optional</small>
+          </label>
+
+          <textarea
+            id="notes"
+            name="notes"
+            [(ngModel)]="notes"
+            rows="4"
+            placeholder="Explain why this stock is being removed..."
+          ></textarea>
+        </div>
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+          <a routerLink="/admin/inventory" class="btn btn-secondary">
+            Cancel
+          </a>
+
+          <button type="submit" class="btn btn-danger">
+            <i class="bx bx-minus"></i>
+            Remove Stock
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- PREVIEW -->
+
+    <aside class="summary-panel">
+      <div class="summary-header">
+        <span class="panel-eyebrow"> PREVIEW </span>
+
+        <h2>Stock Update</h2>
+      </div>
+
+      @if (selectedIngredient(); as ingredient) {
+        <div class="preview-item">
+          <span>Ingredient</span>
+
+          <strong>
+            {{ ingredient.name }}
+          </strong>
+        </div>
+
+        <div class="preview-item">
+          <span>Current Stock</span>
+
+          <strong>
+            {{ ingredient.stock }}
+            {{ ingredient.unit }}
+          </strong>
+        </div>
+
+        <div class="preview-item">
+          <span>Removing</span>
+
+          <strong class="negative">
+            -{{ quantity || 0 }}
+            {{ ingredient.unit }}
+          </strong>
+        </div>
+
+        <div class="preview-divider"></div>
+
+        <div class="preview-total">
+          <span>Remaining Stock</span>
+
+          <strong>
+            {{ remainingStock }}
+            {{ ingredient.unit }}
+          </strong>
+        </div>
+
+        @if (remainingStock <= 0) {
+          <div class="warning-message">
+            <i class="bx bx-error"></i>
+
+            <span> This will leave the ingredient out of stock. </span>
+          </div>
+        }
+      } @else {
+        <div class="preview-empty">
+          <i class="bx bx-package"></i>
+
+          <strong> Select an ingredient </strong>
+
+          <span> Stock information will appear here. </span>
+        </div>
+      }
+    </aside>
+  </div>
+</section>

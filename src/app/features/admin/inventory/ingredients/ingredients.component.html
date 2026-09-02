@@ -1,0 +1,163 @@
+<section class="ingredients-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div class="page-heading">
+      <span class="eyebrow">INVENTORY</span>
+
+      <h1>Ingredients</h1>
+
+      <p>Manage your restaurant's ingredients and stock levels.</p>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="goToAddIngredient()">
+      <i class="bx bx-plus"></i>
+      Add Ingredient
+    </button>
+  </div>
+
+  <!-- TOOLBAR -->
+
+  <section class="toolbar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Search ingredients..."
+      />
+    </div>
+
+    <div class="filter-box">
+      <i class="bx bx-filter-alt"></i>
+
+      <select [(ngModel)]="categoryFilter">
+        @for (category of categories(); track category) {
+          <option [value]="category">
+            {{ category }}
+          </option>
+        }
+      </select>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+
+  <section class="table-panel">
+    <div class="table-top">
+      <div>
+        <strong>Ingredient List</strong>
+
+        <span> {{ filteredIngredients().length }} ingredients </span>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Unit</th>
+            <th>Cost / Unit</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of filteredIngredients(); track item.id) {
+            <tr>
+              <!-- INGREDIENT -->
+              <td>
+                <div class="ingredient-cell">
+                  <div class="ingredient-icon">
+                    <i class="bx bx-package"></i>
+                  </div>
+
+                  <div>
+                    <strong>{{ item.name }}</strong>
+                    <span>ID #{{ item.id }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- CATEGORY -->
+              <td>
+                <span class="category">
+                  {{ item.category }}
+                </span>
+              </td>
+
+              <!-- STOCK -->
+              <td>
+                <strong class="stock-number">
+                  {{ item.stock }}
+                </strong>
+
+                <span class="reorder"> Reorder: {{ item.reorderLevel }} </span>
+              </td>
+
+              <!-- UNIT -->
+              <td>
+                {{ item.unit }}
+              </td>
+
+              <!-- COST PER UNIT -->
+              <td>
+                <strong class="cost-number"> ₱{{ item.costPerUnit }} </strong>
+              </td>
+
+              <!-- STATUS -->
+              <td>
+                <span
+                  class="status"
+                  [class.low]="getStatus(item) === 'Low'"
+                  [class.out]="getStatus(item) === 'Out of Stock'"
+                >
+                  {{ getStatus(item) }}
+                </span>
+              </td>
+
+              <!-- ACTIONS -->
+              <td>
+                <div class="row-actions">
+                  <button
+                    type="button"
+                    title="Edit"
+                    (click)="editIngredient(item)"
+                  >
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    title="Delete"
+                    class="delete"
+                    (click)="deleteIngredient(item)"
+                  >
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+
+          @if (filteredIngredients().length === 0) {
+            <tr>
+              <td colspan="7" class="empty-row">
+                <i class="bx bx-search-alt"></i>
+
+                <strong>No ingredients found</strong>
+
+                <span> Try another search or category. </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

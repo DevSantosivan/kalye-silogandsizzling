@@ -7,6 +7,7 @@ export const routes: Routes = [
 
   {
     path: '',
+
     loadComponent: () =>
       import('./layout/public-layout/public-layout.component').then(
         (m) => m.PublicLayoutComponent,
@@ -84,11 +85,21 @@ export const routes: Routes = [
       ),
 
     children: [
+      // ========================================
+      // ADMIN DEFAULT
+      // /admin → /admin/dashboard
+      // ========================================
+
       {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',
       },
+
+      // ========================================
+      // DASHBOARD
+      // /admin/dashboard
+      // ========================================
 
       {
         path: 'dashboard',
@@ -98,6 +109,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // ORDERS
+      // /admin/orders
+      // ========================================
+
       {
         path: 'orders',
         loadComponent: () =>
@@ -105,6 +121,11 @@ export const routes: Routes = [
             (m) => m.OrdersComponent,
           ),
       },
+
+      // ========================================
+      // MENU
+      // /admin/menu
+      // ========================================
 
       {
         path: 'menu',
@@ -114,6 +135,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // CATEGORIES
+      // /admin/categories
+      // ========================================
+
       {
         path: 'categories',
         loadComponent: () =>
@@ -121,6 +147,80 @@ export const routes: Routes = [
             (m) => m.CategoriesComponent,
           ),
       },
+
+      // ========================================
+      // INVENTORY
+      // ========================================
+
+      {
+        path: 'inventory',
+
+        children: [
+          // /admin/inventory
+          // Inventory Overview
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/admin/inventory/inventory.component').then(
+                (m) => m.InventoryComponent,
+              ),
+          },
+
+          // /admin/inventory/ingredients
+          {
+            path: 'ingredients',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/admin/inventory/ingredients/ingredients.component').then(
+                    (m) => m.IngredientsComponent,
+                  ),
+              },
+
+              {
+                path: 'add',
+                loadComponent: () =>
+                  import('./features/admin/inventory/ingredients/add-ingredient/add-ingredient.component').then(
+                    (m) => m.AddIngredientComponent,
+                  ),
+              },
+            ],
+          },
+
+          // /admin/inventory/stock-in
+          {
+            path: 'stock-in',
+            loadComponent: () =>
+              import('./features/admin/inventory/stock-in/stock-in.component').then(
+                (m) => m.StockInComponent,
+              ),
+          },
+
+          // /admin/inventory/stock-out
+          {
+            path: 'stock-out',
+            loadComponent: () =>
+              import('./features/admin/inventory/stock-out/stock-out.component').then(
+                (m) => m.StockOutComponent,
+              ),
+          },
+
+          // /admin/inventory/history
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('./features/admin/inventory/history/history.component').then(
+                (m) => m.HistoryComponent,
+              ),
+          },
+        ],
+      },
+
+      // ========================================
+      // STAFF
+      // /admin/staff
+      // ========================================
 
       {
         path: 'staff',
@@ -130,6 +230,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // CUSTOMERS
+      // /admin/customers
+      // ========================================
+
       {
         path: 'customers',
         loadComponent: () =>
@@ -137,6 +242,11 @@ export const routes: Routes = [
             (m) => m.CustomersComponent,
           ),
       },
+
+      // ========================================
+      // SALES
+      // /admin/sales
+      // ========================================
 
       {
         path: 'sales',
@@ -146,6 +256,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // REPORTS
+      // /admin/reports
+      // ========================================
+
       {
         path: 'reports',
         loadComponent: () =>
@@ -153,6 +268,11 @@ export const routes: Routes = [
             (m) => m.ReportsComponent,
           ),
       },
+
+      // ========================================
+      // SETTINGS
+      // /admin/settings
+      // ========================================
 
       {
         path: 'settings',
@@ -163,6 +283,10 @@ export const routes: Routes = [
       },
     ],
   },
+
+  // ==========================================
+  // FALLBACK
+  // ==========================================
 
   {
     path: '**',

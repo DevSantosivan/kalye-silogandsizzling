@@ -1,0 +1,232 @@
+<section class="inventory-page">
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-heading">
+      <span class="eyebrow">INVENTORY</span>
+
+      <h1>Inventory Overview</h1>
+
+      <p>Monitor ingredients, stock levels, and recent inventory movements.</p>
+    </div>
+
+    <div class="page-actions">
+      <a routerLink="/admin/inventory/stock-in" class="btn btn-primary">
+        <i class="bx bx-plus"></i>
+        <span>Receive Stock</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-icon">
+        <i class="bx bx-package"></i>
+      </div>
+
+      <div class="summary-content">
+        <span>Total Ingredients</span>
+        <strong>{{ totalIngredients }}</strong>
+        <small>Active inventory items</small>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon success">
+        <i class="bx bx-check-circle"></i>
+      </div>
+
+      <div class="summary-content">
+        <span>Good Stock</span>
+        <strong>{{ goodStock }}</strong>
+        <small>Above reorder level</small>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon warning">
+        <i class="bx bx-error"></i>
+      </div>
+
+      <div class="summary-content">
+        <span>Low Stock</span>
+        <strong>{{ lowStock }}</strong>
+        <small>Needs attention</small>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon danger">
+        <i class="bx bx-x-circle"></i>
+      </div>
+
+      <div class="summary-content">
+        <span>Out of Stock</span>
+        <strong>{{ outOfStock }}</strong>
+        <small>Currently unavailable</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+    <!-- STOCK ALERTS -->
+    <section class="panel alerts-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">ATTENTION</span>
+          <h2>Stock Alerts</h2>
+        </div>
+
+        <a routerLink="/admin/inventory/ingredients" class="view-link">
+          View all
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
+      </div>
+
+      @if (alerts.length > 0) {
+        <div class="alert-list">
+          @for (item of alerts; track item.id) {
+            <div class="alert-item">
+              <div class="ingredient-icon">
+                <i class="bx bx-package"></i>
+              </div>
+
+              <div class="alert-info">
+                <strong>{{ item.name }}</strong>
+
+                <span> {{ item.stock }} {{ item.unit }} remaining </span>
+              </div>
+
+              <span
+                class="status"
+                [class.low]="getStatus(item) === 'Low'"
+                [class.out]="getStatus(item) === 'Out of Stock'"
+              >
+                {{ getStatus(item) }}
+              </span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <i class="bx bx-check-circle"></i>
+
+          <strong>Everything looks good</strong>
+
+          <span> No ingredients need attention right now. </span>
+        </div>
+      }
+    </section>
+
+    <!-- STOCK VALUE -->
+    <section class="panel stock-value-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">CURRENT VALUE</span>
+          <h2>Inventory Value</h2>
+        </div>
+
+        <div class="value-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+      </div>
+
+      <div class="stock-value">
+        <span>Estimated Stock Value</span>
+
+        <strong>
+          ₱{{
+            stockValue.toLocaleString("en-PH", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          }}
+        </strong>
+
+        <small> Based on current quantity × cost per unit </small>
+      </div>
+
+      <div class="value-footer">
+        <a routerLink="/admin/inventory/ingredients">
+          Manage ingredients
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- RECENT MOVEMENTS -->
+  <section class="panel movements-panel">
+    <div class="panel-header">
+      <div>
+        <span class="panel-eyebrow">ACTIVITY</span>
+        <h2>Recent Movements</h2>
+      </div>
+
+      <a routerLink="/admin/inventory/history" class="view-link">
+        View history
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Ingredient</th>
+            <th>Movement</th>
+            <th>Quantity</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (movement of movements(); track movement.id) {
+            <tr>
+              <td>
+                <span class="date">
+                  {{ movement.date }}
+                </span>
+              </td>
+
+              <td>
+                <strong class="ingredient-name">
+                  {{ movement.ingredient }}
+                </strong>
+              </td>
+
+              <td>
+                <span
+                  class="movement-badge"
+                  [class.in]="movement.type === 'Stock In'"
+                  [class.out]="movement.type === 'Stock Out'"
+                >
+                  <i
+                    class="bx"
+                    [class.bx-down-arrow]="movement.type === 'Stock In'"
+                    [class.bx-up-arrow]="movement.type === 'Stock Out'"
+                  ></i>
+
+                  {{ movement.type }}
+                </span>
+              </td>
+
+              <td>
+                <strong>
+                  {{ movement.quantity }}
+                  {{ movement.unit }}
+                </strong>
+              </td>
+
+              <td>
+                {{ movement.reason }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
