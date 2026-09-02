@@ -1,0 +1,72 @@
+<div class="kitchen-shell">
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
+  <aside class="kitchen-sidebar">
+    <!-- BRAND -->
+    <div class="brand">
+      <div class="brand-mark">KS</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="kitchen-nav">
+      <!-- ORDERS -->
+      <a
+        routerLink="/kitchen/orders"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+        title="Orders"
+        aria-label="Orders"
+      >
+        <i class="bx bx-food-menu"></i>
+      </a>
+
+      <!-- COMPLETED -->
+      <a
+        routerLink="/kitchen/completed"
+        routerLinkActive="active"
+        class="nav-item"
+        title="Completed"
+        aria-label="Completed"
+      >
+        <i class="bx bx-check-circle"></i>
+      </a>
+
+      <!-- FULLSCREEN -->
+      <button
+        type="button"
+        class="nav-item fullscreen-button"
+        (click)="toggleFullscreen()"
+        [title]="isFullscreen ? 'Exit Full Screen' : 'Full Screen'"
+        [attr.aria-label]="isFullscreen ? 'Exit Full Screen' : 'Full Screen'"
+      >
+        <i
+          class="bx"
+          [class.bx-fullscreen]="!isFullscreen"
+          [class.bx-exit-fullscreen]="isFullscreen"
+        ></i>
+      </button>
+    </nav>
+
+    <!-- SIDEBAR BOTTOM -->
+    <div class="sidebar-bottom">
+      <div
+        class="kitchen-status"
+        title="Kitchen Online"
+        aria-label="Kitchen Online"
+      >
+        <span class="status-dot"></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="kitchen-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

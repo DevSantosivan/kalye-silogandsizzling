@@ -1,0 +1,393 @@
+<section class="kitchen-page">
+  <!-- ==========================================
+       HEADER
+  =========================================== -->
+
+  <header class="kitchen-header">
+    <div class="header-copy">
+      <span class="eyebrow"> KITCHEN DISPLAY SYSTEM </span>
+
+      <h1>Kitchen Orders</h1>
+
+      <p>Prepare orders in the order they were received.</p>
+    </div>
+
+    <div class="header-actions">
+      <div class="live-status">
+        <span class="live-dot"></span>
+
+        <div>
+          <strong>LIVE</strong>
+
+          <span>
+            {{
+              refreshing() ? "Refreshing..." : "Orders updating automatically"
+            }}
+          </span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="refreshOrders()"
+        [disabled]="refreshing()"
+      >
+        <i class="bx bx-refresh"></i>
+
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       SUMMARY
+  =========================================== -->
+
+  <section class="kitchen-summary">
+    <div class="summary-card">
+      <div class="summary-icon pending">
+        <i class="bx bx-time-five"></i>
+      </div>
+
+      <div>
+        <span>New Orders</span>
+        <strong>{{ pendingCount() }}</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon preparing">
+        <i class="bx bx-loader-circle"></i>
+      </div>
+
+      <div>
+        <span>Preparing</span>
+        <strong>{{ preparingCount() }}</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon ready">
+        <i class="bx bx-check"></i>
+      </div>
+
+      <div>
+        <span>Ready</span>
+        <strong>{{ readyCount() }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       ERROR
+  =========================================== -->
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      <i class="bx bx-error-circle"></i>
+
+      <div>
+        <strong>Unable to load orders</strong>
+        <span>{{ errorMessage() }}</span>
+      </div>
+
+      <button type="button" (click)="loadOrders()">Try again</button>
+    </div>
+  }
+
+  <!-- ==========================================
+       LOADING
+  =========================================== -->
+
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="bx bx-loader-alt bx-spin"></i>
+
+      <span> Loading kitchen orders... </span>
+    </div>
+  }
+
+  @if (!loading()) {
+    <div class="kitchen-board">
+      <!-- ========================================
+           NEW
+      ========================================= -->
+
+      <section class="order-column">
+        <div class="column-header">
+          <div>
+            <span class="column-kicker"> QUEUE </span>
+
+            <h2>New Orders</h2>
+          </div>
+
+          <span class="column-count">
+            {{ pendingCount() }}
+          </span>
+        </div>
+
+        <div class="orders-list">
+          @if (pendingOrders().length === 0) {
+            <div class="empty-column">
+              <i class="bx bx-check-circle"></i>
+
+              <strong> No new orders </strong>
+
+              <span> Waiting for incoming orders. </span>
+            </div>
+          }
+
+          @for (order of pendingOrders(); track order.id; let first = $first) {
+            <article class="order-card" [class.first-order]="first">
+              @if (first) {
+                <div class="queue-badge">NEXT ORDER</div>
+              }
+
+              <div class="order-card-header">
+                <div>
+                  <span class="order-number"> #{{ order.id }} </span>
+
+                  <span class="order-time">
+                    {{ formatTime(order.createdAt) }}
+                  </span>
+                </div>
+
+                <span class="order-type">
+                  {{ order.orderType }}
+                </span>
+              </div>
+
+              <div class="order-info">
+                @if (order.customerName) {
+                  <strong>
+                    {{ order.customerName }}
+                  </strong>
+                }
+
+                @if (order.tableNumber) {
+                  <span> Table {{ order.tableNumber }} </span>
+                }
+              </div>
+
+              <div class="items">
+                @for (item of order.items; track item.id) {
+                  <div class="item-row">
+                    <span class="quantity"> {{ item.quantity }}× </span>
+
+                    <span class="item-name">
+                      {{ item.menu_name }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="card-footer">
+                <span>
+                  {{ getOrderAge(order.createdAt) }}
+                </span>
+
+                <button
+                  type="button"
+                  class="start-button"
+                  [disabled]="!first || order.updating"
+                  (click)="startPreparing(order)"
+                >
+                  @if (order.updating) {
+                    <i class="bx bx-loader-alt bx-spin"></i>
+                  } @else {
+                    <i class="bx bx-play"></i>
+                  }
+
+                  Start Preparing
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+
+      <!-- ========================================
+           PREPARING
+      ========================================= -->
+
+      <section class="order-column">
+        <div class="column-header">
+          <div>
+            <span class="column-kicker"> KITCHEN </span>
+
+            <h2>Preparing</h2>
+          </div>
+
+          <span class="column-count">
+            {{ preparingCount() }}
+          </span>
+        </div>
+
+        <div class="orders-list">
+          @if (preparingOrders().length === 0) {
+            <div class="empty-column">
+              <i class="bx bx-bowl-hot"></i>
+
+              <strong> Nothing cooking </strong>
+
+              <span> No active preparation. </span>
+            </div>
+          }
+
+          @for (order of preparingOrders(); track order.id) {
+            <article class="order-card preparing-card">
+              <div class="order-card-header">
+                <div>
+                  <span class="order-number"> #{{ order.id }} </span>
+
+                  <span class="order-time">
+                    {{ formatTime(order.createdAt) }}
+                  </span>
+                </div>
+
+                <span class="status-label preparing-label"> PREPARING </span>
+              </div>
+
+              <div class="order-info">
+                @if (order.customerName) {
+                  <strong>
+                    {{ order.customerName }}
+                  </strong>
+                }
+
+                @if (order.tableNumber) {
+                  <span> Table {{ order.tableNumber }} </span>
+                }
+              </div>
+
+              <div class="items">
+                @for (item of order.items; track item.id) {
+                  <div class="item-row">
+                    <span class="quantity"> {{ item.quantity }}× </span>
+
+                    <span class="item-name">
+                      {{ item.menu_name }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="card-footer">
+                <span>
+                  {{ getOrderAge(order.createdAt) }}
+                </span>
+
+                <button
+                  type="button"
+                  class="ready-button"
+                  [disabled]="order.updating"
+                  (click)="markReady(order)"
+                >
+                  @if (order.updating) {
+                    <i class="bx bx-loader-alt bx-spin"></i>
+                  } @else {
+                    <i class="bx bx-check"></i>
+                  }
+
+                  Mark Ready
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+
+      <!-- ========================================
+           READY
+      ========================================= -->
+
+      <section class="order-column">
+        <div class="column-header">
+          <div>
+            <span class="column-kicker"> PICKUP </span>
+
+            <h2>Ready</h2>
+          </div>
+
+          <span class="column-count">
+            {{ readyCount() }}
+          </span>
+        </div>
+
+        <div class="orders-list">
+          @if (readyOrders().length === 0) {
+            <div class="empty-column">
+              <i class="bx bx-package"></i>
+
+              <strong> No ready orders </strong>
+
+              <span> Completed dishes will appear here. </span>
+            </div>
+          }
+
+          @for (order of readyOrders(); track order.id) {
+            <article class="order-card ready-card">
+              <div class="order-card-header">
+                <div>
+                  <span class="order-number"> #{{ order.id }} </span>
+
+                  <span class="order-time">
+                    {{ formatTime(order.createdAt) }}
+                  </span>
+                </div>
+
+                <span class="status-label ready-label"> READY </span>
+              </div>
+
+              <div class="order-info">
+                @if (order.customerName) {
+                  <strong>
+                    {{ order.customerName }}
+                  </strong>
+                }
+
+                @if (order.tableNumber) {
+                  <span> Table {{ order.tableNumber }} </span>
+                }
+              </div>
+
+              <div class="items">
+                @for (item of order.items; track item.id) {
+                  <div class="item-row">
+                    <span class="quantity"> {{ item.quantity }}× </span>
+
+                    <span class="item-name">
+                      {{ item.menu_name }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="card-footer">
+                <span>
+                  {{ getOrderAge(order.createdAt) }}
+                </span>
+
+                <button
+                  type="button"
+                  class="complete-button"
+                  [disabled]="order.updating"
+                  (click)="completeOrder(order)"
+                >
+                  @if (order.updating) {
+                    <i class="bx bx-loader-alt bx-spin"></i>
+                  } @else {
+                    <i class="bx bx-check-double"></i>
+                  }
+
+                  Complete
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    </div>
+  }
+</section>

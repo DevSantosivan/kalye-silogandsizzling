@@ -1,0 +1,160 @@
+<div class="cashier-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
+  <aside class="sidebar">
+    <!-- BRAND -->
+
+    <div class="brand">
+      <div class="brand-mark">KS</div>
+
+      <div class="brand-copy">
+        <strong>KALYE SILOG</strong>
+        <span>Cashier POS</span>
+      </div>
+    </div>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navigation">
+      <div class="nav-label">POINT OF SALE</div>
+
+      <!-- POS -->
+
+      <a
+        routerLink="/cashier/pos"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+        title="POS"
+      >
+        <i class="bx bx-grid-alt"></i>
+
+        <span>POS</span>
+      </a>
+
+      <!-- ACTIVE ORDERS -->
+
+      <a
+        routerLink="/cashier/active-orders"
+        routerLinkActive="active"
+        class="nav-item"
+        title="Active Orders"
+      >
+        <i class="bx bx-receipt"></i>
+
+        <span>Active Orders</span>
+
+        <span class="nav-count"> 4 </span>
+      </a>
+
+      <!-- SHIFT -->
+
+      <a
+        routerLink="/cashier/shift"
+        routerLinkActive="active"
+        class="nav-item"
+        title="My Shift"
+      >
+        <i class="bx bx-wallet"></i>
+
+        <span>My Shift</span>
+      </a>
+    </nav>
+
+    <!-- =================================================
+         SIDEBAR BOTTOM
+    ================================================== -->
+
+    <div class="sidebar-bottom">
+      <!-- SHIFT STATUS -->
+
+      <div class="cashier-status">
+        <span class="status-dot"></span>
+
+        <div class="status-copy">
+          <strong>Shift Active</strong>
+          <small>Started 6:02 AM</small>
+        </div>
+      </div>
+
+      <!-- LOGOUT -->
+
+      <a routerLink="/" class="logout" title="Logout">
+        <i class="bx bx-log-out"></i>
+
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="main">
+    <!-- =================================================
+         TOPBAR
+    ================================================== -->
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <!-- SIDEBAR TOGGLE -->
+
+        <button
+          type="button"
+          class="sidebar-toggle"
+          (click)="toggleSidebar()"
+          [attr.aria-label]="
+            sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'
+          "
+        >
+          <i
+            class="bx"
+            [class.bx-menu]="sidebarCollapsed()"
+            [class.bx-menu-alt-left]="!sidebarCollapsed()"
+          ></i>
+        </button>
+
+        <span class="page-label"> CASHIER TERMINAL </span>
+      </div>
+
+      <!-- TOPBAR RIGHT -->
+
+      <div class="topbar-right">
+        <!-- STORE STATUS -->
+
+        <div class="store-status">
+          <span class="status-dot"></span>
+
+          <span> Store Open </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- PROFILE -->
+
+        <div class="cashier-profile">
+          <div class="avatar">IS</div>
+
+          <div class="profile-copy">
+            <strong> Ivan Santos </strong>
+
+            <span> Cashier </span>
+          </div>
+
+          <i class="bx bx-chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- =================================================
+         CONTENT
+    ================================================== -->
+
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

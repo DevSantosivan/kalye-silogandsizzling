@@ -1,0 +1,200 @@
+<section class="completed-page">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="page-header">
+    <div class="header-copy">
+      <span class="eyebrow">KITCHEN</span>
+
+      <h1>Completed Orders</h1>
+
+      <p>Orders that have already been prepared and completed.</p>
+    </div>
+
+    <div class="header-meta">
+      <div class="completed-total">
+        <span>Total Completed</span>
+        <strong>{{ completedCount() }}</strong>
+      </div>
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="loadOrders()"
+        [disabled]="loading()"
+      >
+        <i
+          class="bx"
+          [class.bx-refresh]="!loading()"
+          [class.bx-loader-alt]="loading()"
+        ></i>
+
+        <span>Refresh</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       SEARCH
+  ====================================================== -->
+
+  <section class="toolbar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+
+      <input
+        type="text"
+        placeholder="Search order, customer, table..."
+        [value]="searchTerm()"
+        (input)="onSearch($event)"
+      />
+
+      @if (searchTerm()) {
+        <button
+          type="button"
+          class="clear-search"
+          (click)="searchTerm.set('')"
+          aria-label="Clear search"
+        >
+          <i class="bx bx-x"></i>
+        </button>
+      }
+    </div>
+
+    <div class="result-count">
+      {{ completedOrders().length }} result{{
+        completedOrders().length === 1 ? "" : "s"
+      }}
+    </div>
+  </section>
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (error()) {
+    <div class="error-message">
+      <i class="bx bx-error-circle"></i>
+
+      <div>
+        <strong>Unable to load orders</strong>
+        <span>{{ error() }}</span>
+      </div>
+
+      <button type="button" (click)="loadOrders()">Retry</button>
+    </div>
+  }
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="bx bx-loader-alt bx-spin"></i>
+
+      <span>Loading completed orders...</span>
+    </div>
+  }
+
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
+
+  @if (!loading() && !error()) {
+    @if (completedOrders().length > 0) {
+      <section class="orders-table">
+        <!-- TABLE HEADER -->
+
+        <div class="table-header">
+          <span>ORDER</span>
+          <span>CUSTOMER</span>
+          <span>TYPE</span>
+          <span>COMPLETED</span>
+          <span>TOTAL</span>
+          <span></span>
+        </div>
+
+        <!-- ORDERS -->
+
+        @for (order of completedOrders(); track trackByOrderId($index, order)) {
+          <article class="order-row">
+            <!-- ORDER -->
+
+            <div class="order-cell order-id">
+              <strong> #{{ order.id }} </strong>
+
+              <span> Placed {{ formatTime(order.createdAt) }} </span>
+            </div>
+
+            <!-- CUSTOMER -->
+
+            <div class="order-cell customer-cell">
+              <strong>
+                {{ order.customerName || "Walk-in Customer" }}
+              </strong>
+
+              @if (order.tableNumber) {
+                <span> Table {{ order.tableNumber }} </span>
+              } @else {
+                <span> No table </span>
+              }
+            </div>
+
+            <!-- TYPE -->
+
+            <div class="order-cell">
+              <span class="type-badge">
+                {{ getOrderTypeLabel(order) }}
+              </span>
+            </div>
+
+            <!-- COMPLETED -->
+
+            <div class="order-cell completed-cell">
+              <strong>
+                {{ formatTime(order.updatedAt) }}
+              </strong>
+
+              <span>
+                {{ formatDate(order.updatedAt) }}
+              </span>
+            </div>
+
+            <!-- TOTAL -->
+
+            <div class="order-cell total-cell">
+              <strong> ₱{{ order.total | number: "1.2-2" }} </strong>
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="order-cell status-cell">
+              <span class="completed-badge">
+                <i class="bx bx-check"></i>
+                Completed
+              </span>
+            </div>
+          </article>
+        }
+      </section>
+    } @else {
+      <!-- EMPTY -->
+
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="bx bx-check-circle"></i>
+        </div>
+
+        <strong>No completed orders</strong>
+
+        @if (searchTerm()) {
+          <span> No completed order matches "{{ searchTerm() }}". </span>
+        } @else {
+          <span> Completed kitchen orders will appear here. </span>
+        }
+      </div>
+    }
+  }
+</section>

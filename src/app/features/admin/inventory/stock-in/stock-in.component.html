@@ -37,7 +37,8 @@
           <select
             id="ingredient"
             name="ingredient"
-            [(ngModel)]="selectedIngredientId"
+            [ngModel]="selectedIngredientId()"
+            (ngModelChange)="selectedIngredientId.set($event)"
           >
             <option [ngValue]="null">Select ingredient</option>
 

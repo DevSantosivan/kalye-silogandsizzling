@@ -1,0 +1,511 @@
+<section class="create-menu-page">
+  <!-- ==========================================
+       HEADER
+  =========================================== -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"> PRODUCT MANAGEMENT </span>
+
+      <h1>Create Menu Item</h1>
+
+      <p>
+        Create a new menu item and define the ingredients required per serving.
+      </p>
+    </div>
+
+    <a routerLink="/admin/menu" class="back-link">
+      <i class="bx bx-arrow-back"></i>
+
+      Back to Menu
+    </a>
+  </div>
+
+  <!-- ==========================================
+       CONTENT
+  =========================================== -->
+
+  <div class="content-grid">
+    <!-- ========================================
+         LEFT — MENU FORM
+    ========================================= -->
+
+    <section class="form-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow"> MENU INFORMATION </span>
+
+          <h2>Menu Details</h2>
+
+          <p>Enter the basic information for this menu item.</p>
+        </div>
+      </div>
+
+      <!-- ======================================
+           FORM
+      ======================================= -->
+
+      <form class="menu-form" (ngSubmit)="createMenu()">
+        <!-- NAME -->
+
+        <div class="form-group">
+          <label for="name">
+            Menu Name
+            <span>*</span>
+          </label>
+
+          <input
+            id="name"
+            name="name"
+            type="text"
+            [(ngModel)]="name"
+            placeholder="e.g. Chicken Silog"
+            required
+          />
+        </div>
+
+        <!-- CATEGORY -->
+
+        <div class="form-group">
+          <label for="category">
+            Category
+            <span>*</span>
+          </label>
+
+          <select id="category" name="category" [(ngModel)]="category" required>
+            <option value="">Select category</option>
+
+            @for (item of categories; track item) {
+              <option [value]="item">
+                {{ item }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- PRICE -->
+
+        <div class="form-group">
+          <label for="price">
+            Selling Price
+            <span>*</span>
+          </label>
+
+          <div class="input-prefix">
+            <span>₱</span>
+
+            <input
+              id="price"
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="price"
+              placeholder="0.00"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- IMAGE -->
+
+        <div class="form-group">
+          <label for="image">
+            Image URL
+
+            <small> Optional </small>
+          </label>
+
+          <input
+            id="image"
+            name="image"
+            type="url"
+            [(ngModel)]="image"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>
+            Description
+            <small>Optional</small>
+          </label>
+
+          <app-rich-text-editor
+            [(value)]="description"
+            placeholder="Describe this menu item..."
+          ></app-rich-text-editor>
+        </div>
+        <!-- AVAILABILITY -->
+
+        <div class="availability-row">
+          <div>
+            <strong> Available for Sale </strong>
+
+            <span> Customers can order this item. </span>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" name="available" [(ngModel)]="available" />
+
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- ======================================
+             RECIPE
+        ======================================= -->
+
+        <div class="recipe-section">
+          <!-- RECIPE HEADER -->
+
+          <div class="recipe-header">
+            <div>
+              <span class="panel-eyebrow"> RECIPE </span>
+
+              <h2>Ingredients Per Serving</h2>
+
+              <p>Define how much inventory is consumed for one serving.</p>
+            </div>
+
+            <button
+              type="button"
+              class="add-ingredient-btn"
+              (click)="addIngredient()"
+            >
+              <i class="bx bx-plus"></i>
+
+              Add Ingredient
+            </button>
+          </div>
+
+          <!-- ====================================
+               LOADING
+          ===================================== -->
+
+          @if (isLoadingIngredients()) {
+            <div class="loading-ingredients">
+              <i class="bx bx-loader-alt bx-spin"></i>
+
+              <span> Loading ingredients... </span>
+            </div>
+          }
+
+          <!-- ====================================
+               INGREDIENT LIST
+          ===================================== -->
+
+          <div class="ingredient-list">
+            @for (item of menuIngredients; track $index; let i = $index) {
+              <div class="ingredient-row">
+                <!-- NUMBER -->
+
+                <div class="ingredient-number">
+                  {{ i + 1 }}
+                </div>
+
+                <!-- INGREDIENT -->
+
+                <div class="ingredient-field">
+                  <label> Ingredient </label>
+
+                  <select
+                    [name]="'ingredient-' + i"
+                    [(ngModel)]="item.ingredientId"
+                  >
+                    <option [ngValue]="null">Select ingredient</option>
+
+                    @for (ingredient of ingredients(); track ingredient.id) {
+                      <option
+                        [ngValue]="ingredient.id"
+                        [disabled]="isIngredientSelected(ingredient.id, i)"
+                      >
+                        {{ ingredient.name }}
+
+                        ({{ ingredient.stock }} {{ ingredient.unit }})
+                      </option>
+                    }
+                  </select>
+                </div>
+
+                <!-- QUANTITY -->
+
+                <!-- QUANTITY -->
+
+                <div class="quantity-field">
+                  <label> Quantity </label>
+
+                  <div class="quantity-input">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      [name]="'quantity-' + i"
+                      [(ngModel)]="item.quantity"
+                      placeholder="0"
+                    />
+
+                    <span>
+                      {{ getDisplayUnit(item.ingredientId) }}
+                    </span>
+                  </div>
+
+                  @if (getIngredient(item.ingredientId); as ingredient) {
+                    <small class="quantity-hint">
+                      Inventory:
+                      {{ ingredient.stock }}
+                      {{ ingredient.unit }}
+                    </small>
+                  }
+                </div>
+
+                <div class="ingredient-cost">
+                  <label>Cost</label>
+
+                  <strong>
+                    @if (getIngredient(item.ingredientId); as ingredient) {
+                      ₱{{
+                        (
+                          getConvertedQuantity(item) *
+                          (ingredient.costPerUnit || 0)
+                        ).toFixed(2)
+                      }}
+                    } @else {
+                      ₱0.00
+                    }
+                  </strong>
+                </div>
+
+                <!-- REMOVE -->
+
+                <button
+                  type="button"
+                  class="remove-ingredient"
+                  [disabled]="menuIngredients.length === 1"
+                  (click)="removeIngredient(i)"
+                  aria-label="Remove ingredient"
+                >
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- ====================================
+               EMPTY
+          ===================================== -->
+
+          @if (!isLoadingIngredients() && ingredients().length === 0) {
+            <div class="recipe-empty">
+              <i class="bx bx-package"></i>
+
+              <strong> No ingredients available </strong>
+
+              <span>
+                Add ingredients to your inventory first before creating a menu
+                item.
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- ======================================
+             ACTIONS
+        ======================================= -->
+
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" (click)="cancel()">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-btn" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <i class="bx bx-loader-alt bx-spin"></i>
+
+              Creating...
+            } @else {
+              <i class="bx bx-check"></i>
+
+              Create Menu Item
+            }
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ========================================
+         RIGHT — PREVIEW
+    ========================================= -->
+
+    <aside class="preview-column">
+      <!-- ======================================
+           FOOD PREVIEW
+      ======================================= -->
+
+      <section class="preview-card">
+        <!-- IMAGE -->
+
+        <div class="preview-image">
+          @if (image.trim()) {
+            <img [src]="image" [alt]="name || 'Menu preview'" />
+          } @else {
+            <div class="image-placeholder">
+              <i class="bx bx-food-menu"></i>
+
+              <span> Menu Image </span>
+            </div>
+          }
+
+          <!-- AVAILABILITY -->
+
+          @if (available) {
+            <span class="available-badge">
+              <i class="bx bx-check"></i>
+
+              Available
+            </span>
+          } @else {
+            <span class="unavailable-badge">
+              <i class="bx bx-x"></i>
+
+              Unavailable
+            </span>
+          }
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="preview-content">
+          <span class="preview-category">
+            {{ category || "Category" }}
+          </span>
+
+          <h2>
+            {{ name || "Menu Item Name" }}
+          </h2>
+
+          @if (description) {
+            <div
+              class="menu-description-preview"
+              [innerHTML]="description"
+            ></div>
+          } @else {
+            <p class="menu-description-placeholder">
+              Your menu description will appear here.
+            </p>
+          }
+
+          <div class="preview-price">₱{{ (price || 0).toFixed(2) }}</div>
+        </div>
+      </section>
+
+      <!-- ======================================
+           RECIPE SUMMARY
+      ======================================= -->
+
+      <section class="summary-card">
+        <!-- HEADER -->
+
+        <div class="summary-header">
+          <div>
+            <span class="panel-eyebrow"> RECIPE PREVIEW </span>
+
+            <h2>Per Serving</h2>
+          </div>
+
+          <div class="recipe-icon">
+            <i class="bx bx-bowl-hot"></i>
+          </div>
+        </div>
+
+        <!-- ====================================
+             INGREDIENT SUMMARY
+        ===================================== -->
+
+        <div class="recipe-summary-list">
+          @for (item of menuIngredients; track $index) {
+            @if (getIngredient(item.ingredientId); as ingredient) {
+              <div class="recipe-summary-item">
+                <div class="recipe-summary-name">
+                  <div class="mini-icon">
+                    <i class="bx bx-package"></i>
+                  </div>
+
+                  <div>
+                    <strong>
+                      {{ ingredient.name }}
+                    </strong>
+
+                    <span>
+                      ₱{{ ingredient.costPerUnit.toFixed(2) }}
+                      /
+                      {{ ingredient.unit }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="recipe-quantity">
+                  <strong>
+                    {{ item.quantity || 0 }}
+                    {{ getDisplayUnit(item.ingredientId) }}
+                  </strong>
+
+                  <small>
+                    = {{ getConvertedQuantity(item) }}
+                    {{ ingredient.unit }}
+                  </small>
+                </div>
+              </div>
+            }
+          }
+
+          <!-- EMPTY RECIPE -->
+
+          @if (hasNoIngredients()) {
+            <div class="recipe-empty">
+              <i class="bx bx-list-plus"></i>
+
+              <strong> No ingredients added </strong>
+
+              <span> Add ingredients to build your recipe. </span>
+            </div>
+          }
+        </div>
+
+        <!-- ====================================
+             COST BREAKDOWN
+        ===================================== -->
+
+        <div class="cost-breakdown">
+          <div>
+            <span> Ingredient Cost </span>
+
+            <strong> ₱{{ getRecipeCost().toFixed(2) }} </strong>
+          </div>
+
+          <div>
+            <span> Selling Price </span>
+
+            <strong> ₱{{ (price || 0).toFixed(2) }} </strong>
+          </div>
+        </div>
+
+        <!-- ====================================
+             PROFIT
+        ===================================== -->
+
+        <div class="profit-box">
+          <div>
+            <span> Estimated Profit </span>
+
+            <small> {{ getProfitMargin().toFixed(1) }}% margin </small>
+          </div>
+
+          <strong [class.negative]="getEstimatedProfit() < 0">
+            ₱{{ getEstimatedProfit().toFixed(2) }}
+          </strong>
+        </div>
+      </section>
+    </aside>
+  </div>
+</section>

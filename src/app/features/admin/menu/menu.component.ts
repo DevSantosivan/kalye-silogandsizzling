@@ -1,16 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
-interface MenuItem {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  price: number;
-  sold: number;
-  available: boolean;
-  image: string;
-}
+import { MenuService } from '../../../core/services/admin/menu.service';
+import { MenuItem } from '../../../core/models/menu.model';
 
 @Component({
   selector: 'app-menu',
@@ -19,12 +13,39 @@ interface MenuItem {
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
 })
-export class MenuComponent {
-  // ==========================================
-  // FILTERS
-  // ==========================================
+export class MenuComponent implements OnInit {
+  // ========================================================
+  // SERVICES
+  // ========================================================
 
-  categories = ['All', 'Silog Meals', 'Breakfast', 'Drinks', 'Add-ons'];
+  private router = inject(Router);
+  private menuService = inject(MenuService);
+
+  // ========================================================
+  // STATE
+  // ========================================================
+
+  items: MenuItem[] = [];
+
+  isLoading = false;
+
+  // ========================================================
+  // FILTERS
+  // ========================================================
+
+  categories = [
+    'All',
+    'Silog',
+    'Sizzling',
+    'Rice Meals',
+    'Chicken',
+    'Pork',
+    'Beef',
+    'Seafood',
+    'Drinks',
+    'Sides',
+    'Others',
+  ];
 
   availabilityFilters = ['All', 'Available', 'Unavailable'];
 
@@ -33,148 +54,66 @@ export class MenuComponent {
 
   searchTerm = '';
 
-  // ==========================================
+  // ========================================================
   // PAGINATION
-  // ==========================================
+  // ========================================================
 
   currentPage = 1;
   pageSize = 8;
 
-  // ==========================================
+  // ========================================================
   // ACTION MENU
-  // ==========================================
+  // ========================================================
 
   openMenuId: number | null = null;
 
-  // ==========================================
-  // MENU ITEMS
-  // ==========================================
+  // ========================================================
+  // INIT
+  // ========================================================
 
-  items: MenuItem[] = [
-    {
-      id: 1,
-      name: 'Tapsilog',
-      category: 'Silog Meals',
-      description: 'Beef tapa, garlic rice and egg.',
-      price: 160,
-      sold: 128,
-      available: true,
-      image:
-        'https://tse1.mm.bing.net/th/id/OIP.7IfH8UH_TFwaNeKJ_mDDgwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
-    },
+  async ngOnInit(): Promise<void> {
+    await this.loadMenus();
+  }
 
-    {
-      id: 2,
-      name: 'Longsilog',
-      category: 'Silog Meals',
-      description: 'Sweet pork longganisa with rice and egg.',
-      price: 150,
-      sold: 96,
-      available: true,
-      image:
-        'https://131500952.cdn6.editmysite.com/uploads/1/3/1/5/131500952/HP4PV6WHBSCOXPSFIIFA7TDZ.jpeg',
-    },
+  // ========================================================
+  // LOAD MENUS
+  // ========================================================
 
-    {
-      id: 3,
-      name: 'Bangsilog',
-      category: 'Silog Meals',
-      description: 'Bangus, garlic rice and egg.',
-      price: 170,
-      sold: 82,
-      available: true,
-      image:
-        'https://tse4.mm.bing.net/th/id/OIP.iROipFlj6rR5QAPfD0hTEgHaHX?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
-    },
+  async loadMenus(): Promise<void> {
+    this.isLoading = true;
 
-    {
-      id: 4,
-      name: 'Tocilog',
-      category: 'Silog Meals',
-      description: 'Sweet pork tocino with rice and egg.',
-      price: 150,
-      sold: 71,
-      available: false,
-      image:
-        'https://wfg32p.s3.amazonaws.com/media/dishes/tocilog_9142-med.png',
-    },
+    try {
+      const data = await this.menuService.getMenus();
 
-    {
-      id: 5,
-      name: 'Pancakes',
-      category: 'Breakfast',
-      description: 'Fluffy pancakes served with syrup.',
-      price: 120,
-      sold: 64,
-      available: true,
-      image:
-        'https://framerusercontent.com/images/yhJhJPkumvAzK7JUURDujhs5hus.jpg?height=6932&width=4621',
-    },
+      this.items = data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        description: item.description ?? '',
+        price: Number(item.price) || 0,
+        sold: Number(item.sold) || 0,
+        available: Boolean(item.available),
+        image: item.image ?? null,
+      }));
 
-    {
-      id: 6,
-      name: 'Garlic Longganisa',
-      category: 'Breakfast',
-      description: 'Savory garlic longganisa with egg.',
-      price: 145,
-      sold: 58,
-      available: true,
-      image:
-        'https://filipinochow.com/wp-content/uploads/2020/05/Longsilog-Sausage-with-Garlic-Rice-and-Fried-Egg.jpg',
-    },
+      console.log('MENU ITEMS:', this.items);
+    } catch (error) {
+      console.error('Failed to load menus:', error);
 
-    {
-      id: 7,
-      name: 'Iced Coffee',
-      category: 'Drinks',
-      description: 'Cold brewed coffee with creamy milk.',
-      price: 85,
-      sold: 143,
-      available: true,
-      image:
-        'https://snapcalorie-webflow-website.s3.us-east-2.amazonaws.com/media/food_pics_v2/medium/jollibee_iced_coffee.jpg',
-    },
+      await Swal.fire({
+        icon: 'error',
+        title: 'Unable to Load Menu',
+        text: 'Something went wrong while loading the menu items.',
+        confirmButtonColor: '#191919',
+      });
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
-    {
-      id: 8,
-      name: 'Calamansi Juice',
-      category: 'Drinks',
-      description: 'Freshly squeezed calamansi juice.',
-      price: 65,
-      sold: 87,
-      available: true,
-      image:
-        'https://i.pinimg.com/originals/72/3b/9f/723b9f33c6bc7c68ee7a99ab084e97a2.jpg',
-    },
-
-    {
-      id: 9,
-      name: 'Extra Egg',
-      category: 'Add-ons',
-      description: 'Sunny-side-up egg.',
-      price: 25,
-      sold: 112,
-      available: true,
-      image:
-        'https://d1w7312wesee68.cloudfront.net/kHoRA1fgTL6E9-LZolFwwsn5pWl9wrWnDcKJZ8JKmes/resize%3Afit%3A720%3A720/plain/s3%3A/toasttab/restaurants/restaurant-4240000000000000/menu/items/3/item-300000010740496413_1775537119.png',
-    },
-
-    {
-      id: 10,
-      name: 'Extra Garlic Rice',
-      category: 'Add-ons',
-      description: 'Additional serving of garlic rice.',
-      price: 35,
-      sold: 104,
-      available: true,
-      image:
-        'https://cdn.apartmenttherapy.info/image/upload/v1621515584/k/Photo/Recipes/05-2021_Garlic_fried_rice_Silog_sinangag/k-photo-2021-05-garlic-fried-rice-01.jpg',
-    },
-  ];
-
-  // ==========================================
+  // ========================================================
   // FILTERED ITEMS
-  // ==========================================
+  // ========================================================
 
   get filteredItems(): MenuItem[] {
     const search = this.searchTerm.trim().toLowerCase();
@@ -192,27 +131,22 @@ export class MenuComponent {
         !search ||
         item.name.toLowerCase().includes(search) ||
         item.category.toLowerCase().includes(search) ||
-        item.description.toLowerCase().includes(search);
+        (item.description ?? '').toLowerCase().includes(search);
 
       return matchesCategory && matchesAvailability && matchesSearch;
     });
   }
 
-  // ==========================================
-  // PAGINATED ITEMS
-  // ==========================================
+  // ========================================================
+  // PAGINATION
+  // ========================================================
 
   get paginatedItems(): MenuItem[] {
     const start = (this.currentPage - 1) * this.pageSize;
-
     const end = start + this.pageSize;
 
     return this.filteredItems.slice(start, end);
   }
-
-  // ==========================================
-  // PAGINATION
-  // ==========================================
 
   get totalPages(): number {
     return Math.ceil(this.filteredItems.length / this.pageSize);
@@ -237,9 +171,9 @@ export class MenuComponent {
     );
   }
 
-  // ==========================================
+  // ========================================================
   // CATEGORY
-  // ==========================================
+  // ========================================================
 
   setCategory(category: string): void {
     this.activeCategory = category;
@@ -247,9 +181,9 @@ export class MenuComponent {
     this.closeActionMenu();
   }
 
-  // ==========================================
+  // ========================================================
   // AVAILABILITY
-  // ==========================================
+  // ========================================================
 
   setAvailability(filter: string): void {
     this.activeAvailability = filter;
@@ -257,9 +191,9 @@ export class MenuComponent {
     this.closeActionMenu();
   }
 
-  // ==========================================
+  // ========================================================
   // SEARCH
-  // ==========================================
+  // ========================================================
 
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -273,9 +207,9 @@ export class MenuComponent {
     this.currentPage = 1;
   }
 
-  // ==========================================
+  // ========================================================
   // PAGINATION ACTIONS
-  // ==========================================
+  // ========================================================
 
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) {
@@ -297,9 +231,9 @@ export class MenuComponent {
     }
   }
 
-  // ==========================================
+  // ========================================================
   // ACTION MENU
-  // ==========================================
+  // ========================================================
 
   toggleActionMenu(id: number): void {
     this.openMenuId = this.openMenuId === id ? null : id;
@@ -309,55 +243,134 @@ export class MenuComponent {
     this.openMenuId = null;
   }
 
-  // ==========================================
-  // MENU ACTIONS
-  // ==========================================
+  // ========================================================
+  // EDIT
+  // ========================================================
 
   editItem(item: MenuItem): void {
     this.closeActionMenu();
 
-    console.log('Edit item:', item);
+    console.log('Edit menu:', item);
 
-    // Later:
-    // open edit modal
+    // later:
+    // this.router.navigate(['/admin/menu/edit', item.id]);
   }
 
-  toggleAvailability(item: MenuItem): void {
-    item.available = !item.available;
+  // ========================================================
+  // TOGGLE AVAILABILITY
+  // ========================================================
 
-    this.closeActionMenu();
+  async toggleAvailability(item: MenuItem): Promise<void> {
+    const newAvailability = !item.available;
+
+    try {
+      // Kapag may update method na ang MenuService:
+      //
+      // await this.menuService.updateAvailability(
+      //   item.id,
+      //   newAvailability
+      // );
+
+      item.available = newAvailability;
+
+      this.closeActionMenu();
+    } catch (error) {
+      console.error('Failed to update availability:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'Unable to update menu availability.',
+        confirmButtonColor: '#191919',
+      });
+    }
   }
 
-  deleteItem(item: MenuItem): void {
-    const confirmed = window.confirm(`Delete "${item.name}" from the menu?`);
+  // ========================================================
+  // DELETE
+  // ========================================================
 
-    if (!confirmed) {
+  async deleteItem(item: MenuItem): Promise<void> {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: 'Delete menu item?',
+      text: `"${item.name}" will be permanently removed from your menu.`,
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      confirmButtonColor: '#191919',
+      cancelButtonColor: '#6b7280',
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 
-    this.items = this.items.filter((menuItem) => menuItem.id !== item.id);
+    try {
+      this.isLoading = true;
 
-    if (this.currentPage > this.totalPages && this.totalPages > 0) {
-      this.currentPage = this.totalPages;
+      // ==========================================
+      // DELETE FROM SUPABASE
+      // ==========================================
+
+      await this.menuService.deleteMenu(item.id);
+
+      // ==========================================
+      // REMOVE FROM LOCAL LIST
+      // ==========================================
+
+      this.items = this.items.filter((menuItem) => menuItem.id !== item.id);
+
+      // ==========================================
+      // FIX PAGINATION
+      // ==========================================
+
+      if (this.currentPage > this.totalPages && this.totalPages > 0) {
+        this.currentPage = this.totalPages;
+      }
+
+      this.closeActionMenu();
+
+      // ==========================================
+      // SUCCESS
+      // ==========================================
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Menu Deleted',
+        text: `${item.name} has been removed successfully.`,
+        confirmButtonColor: '#191919',
+      });
+    } catch (error: any) {
+      console.error('Failed to delete menu:', error);
+
+      // ==========================================
+      // ERROR
+      // ==========================================
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Delete Failed',
+        text: error?.message || 'Unable to delete menu item. Please try again.',
+        confirmButtonColor: '#191919',
+      });
+    } finally {
+      this.isLoading = false;
     }
-
-    this.closeActionMenu();
   }
 
-  // ==========================================
+  // ========================================================
   // ADD ITEM
-  // ==========================================
+  // ========================================================
 
   addMenuItem(): void {
-    console.log('Open add menu item modal');
-
-    // Later:
-    // open modal
+    this.router.navigate(['/admin/menu/create']);
   }
 
-  // ==========================================
+  // ========================================================
   // CURRENCY
-  // ==========================================
+  // ========================================================
 
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-PH', {
@@ -367,9 +380,9 @@ export class MenuComponent {
     }).format(value);
   }
 
-  // ==========================================
+  // ========================================================
   // SUMMARY
-  // ==========================================
+  // ========================================================
 
   get totalItems(): number {
     return this.items.length;

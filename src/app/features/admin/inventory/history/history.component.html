@@ -19,7 +19,8 @@
 
       <input
         type="text"
-        [(ngModel)]="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
         placeholder="Search ingredient or reason..."
       />
     </div>
@@ -27,7 +28,7 @@
     <div class="filter-box">
       <i class="bx bx-filter-alt"></i>
 
-      <select [(ngModel)]="typeFilter">
+      <select [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
         <option value="All">All movements</option>
 
         <option value="Stock In">Stock In</option>
@@ -65,7 +66,7 @@
             <tr>
               <td>
                 <span class="date">
-                  {{ movement.date }}
+                  {{ movement.date | dateTime }}
                 </span>
               </td>
 

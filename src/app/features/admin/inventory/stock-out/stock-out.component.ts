@@ -1,13 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-interface IngredientOption {
-  id: number;
-  name: string;
-  stock: number;
-  unit: string;
-}
+import { Ingredient } from '../../../../core/models/ingredient.model';
+import { IngredientService } from '../../../../core/services/admin/inventory/ingredient.service';
+import { StockOutService } from '../../../../core/services/admin/inventory/stock-out.service';
 
 @Component({
   selector: 'app-stock-out',
@@ -16,37 +13,22 @@ interface IngredientOption {
   templateUrl: './stock-out.component.html',
   styleUrl: './stock-out.component.scss',
 })
-export class StockOutComponent {
-  ingredients = signal<IngredientOption[]>([
-    {
-      id: 1,
-      name: 'Chicken',
-      stock: 10.5,
-      unit: 'kg',
-    },
-    {
-      id: 2,
-      name: 'Rice',
-      stock: 25,
-      unit: 'kg',
-    },
-    {
-      id: 3,
-      name: 'Egg',
-      stock: 100,
-      unit: 'pcs',
-    },
-    {
-      id: 4,
-      name: 'Cooking Oil',
-      stock: 2,
-      unit: 'L',
-    },
-  ]);
+export class StockOutComponent implements OnInit {
+  private ingredientService = inject(IngredientService);
+  private stockOutService = inject(StockOutService);
+
+  // ==========================================
+  // INGREDIENTS
+  // ==========================================
+
+  ingredients = signal<Ingredient[]>([]);
+
+  isLoading = signal(false);
+  isSaving = signal(false);
 
   reasons = ['Spoilage', 'Damaged', 'Expired', 'Inventory Adjustment', 'Other'];
 
-  selectedIngredientId: number | null = null;
+  selectedIngredientId = signal<number | null>(null);
 
   quantity: number | null = null;
 
@@ -54,15 +36,13 @@ export class StockOutComponent {
   notes = '';
 
   selectedIngredient = computed(() => {
-    if (this.selectedIngredientId === null) {
+    const id = this.selectedIngredientId();
+
+    if (id === null) {
       return null;
     }
 
-    return (
-      this.ingredients().find(
-        (item) => item.id === Number(this.selectedIngredientId),
-      ) ?? null
-    );
+    return this.ingredients().find((item) => item.id === Number(id)) ?? null;
   });
 
   get remainingStock(): number {
@@ -72,10 +52,30 @@ export class StockOutComponent {
       return 0;
     }
 
-    return Math.max(0, ingredient.stock - (this.quantity || 0));
+    return Math.max(0, Number(ingredient.stock) - (this.quantity ?? 0));
   }
 
-  stockOut(): void {
+  async ngOnInit(): Promise<void> {
+    await this.loadIngredients();
+  }
+
+  async loadIngredients(): Promise<void> {
+    this.isLoading.set(true);
+
+    try {
+      const data = await this.ingredientService.getIngredients();
+
+      this.ingredients.set(data);
+    } catch (error) {
+      console.error('Failed to load ingredients:', error);
+
+      alert('Unable to load ingredients. Please try again.');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async stockOut(): Promise<void> {
     const ingredient = this.selectedIngredient();
 
     if (!ingredient) {
@@ -83,12 +83,12 @@ export class StockOutComponent {
       return;
     }
 
-    if (!this.quantity || this.quantity <= 0) {
+    if (this.quantity === null || this.quantity <= 0) {
       alert('Please enter a valid quantity.');
       return;
     }
 
-    if (this.quantity > ingredient.stock) {
+    if (this.quantity > Number(ingredient.stock)) {
       alert('Stock out quantity cannot exceed current stock.');
       return;
     }
@@ -97,17 +97,59 @@ export class StockOutComponent {
       alert('Please select a reason.');
       return;
     }
+    this.isSaving.set(true);
 
-    console.log({
-      ingredientId: ingredient.id,
-      quantity: this.quantity,
-      unit: ingredient.unit,
-      reason: this.reason,
-      notes: this.notes,
-    });
+    try {
+      const result = await this.stockOutService.stockOut({
+        ingredientId: ingredient.id,
+        quantity: this.quantity,
+        unit: ingredient.unit,
+        reason: this.reason,
+        notes: this.notes.trim() || null,
+      });
 
-    alert(
-      `${this.quantity} ${ingredient.unit} of ${ingredient.name} has been removed.`,
-    );
+      // ----------------------------------------
+      // UPDATE LOCAL INGREDIENT
+      // ----------------------------------------
+
+      this.ingredients.update((items) =>
+        items.map((item) =>
+          item.id === result.ingredient.id ? result.ingredient : item,
+        ),
+      );
+
+      // ----------------------------------------
+      // SUCCESS
+      // ----------------------------------------
+
+      alert(
+        `${this.quantity} ${ingredient.unit} of ${ingredient.name} has been removed successfully.`,
+      );
+
+      // ----------------------------------------
+      // RESET FORM
+      // ----------------------------------------
+
+      this.resetForm();
+    } catch (error) {
+      console.error('Failed to stock out:', error);
+
+      alert('Unable to process stock out. Please try again.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  // ==========================================
+  // RESET FORM
+  // ==========================================
+
+  resetForm(): void {
+    this.selectedIngredientId.set(null);
+
+    this.quantity = null;
+
+    this.reason = '';
+    this.notes = '';
   }
 }

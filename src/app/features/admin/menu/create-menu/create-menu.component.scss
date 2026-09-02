@@ -1,0 +1,843 @@
+:host {
+  display: block;
+}
+
+.create-menu-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f6f5f2;
+  color: #191919;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.eyebrow,
+.panel-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #777;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.page-header p {
+  margin: 9px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  color: #292929;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  background: #f9f9f9;
+}
+
+/* ==========================================
+   CONTENT GRID
+========================================== */
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 370px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ==========================================
+   FORM PANEL
+========================================== */
+
+.form-panel,
+.preview-card,
+.summary-card {
+  border: 1px solid #e5e3df;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.form-panel {
+  padding: 28px;
+}
+
+.panel-header {
+  padding-bottom: 22px;
+  border-bottom: 1px solid #eee;
+}
+
+.panel-header h2,
+.recipe-header h2,
+.summary-header h2 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.025em;
+}
+
+.panel-header p,
+.recipe-header p {
+  margin: 7px 0 0;
+  color: #858585;
+  font-size: 13px;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.menu-form {
+  padding-top: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label,
+.ingredient-field label,
+.quantity-field label,
+.ingredient-cost label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.form-group label span {
+  color: #d73535;
+}
+
+.form-group label small {
+  margin-left: auto;
+  color: #999;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.ingredient-field select,
+.quantity-field input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #222;
+  font: inherit;
+  font-size: 13px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.form-group input,
+.form-group select,
+.ingredient-field select,
+.quantity-field input {
+  height: 44px;
+  padding: 0 13px;
+}
+
+.form-group textarea {
+  min-height: 105px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.ingredient-field select:focus,
+.quantity-field input:focus {
+  border-color: #191919;
+  box-shadow: 0 0 0 3px rgba(25, 25, 25, 0.06);
+}
+
+/* ==========================================
+   PRICE
+========================================== */
+
+.input-prefix {
+  position: relative;
+}
+
+.input-prefix > span {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  z-index: 1;
+  color: #555;
+  font-size: 13px;
+  font-weight: 700;
+  transform: translateY(-50%);
+}
+
+.input-prefix input {
+  padding-left: 30px;
+}
+
+/* ==========================================
+   AVAILABILITY
+========================================== */
+
+.availability-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 24px 0;
+  padding: 17px;
+  border: 1px solid #e8e6e2;
+  border-radius: 12px;
+  background: #faf9f7;
+}
+
+.availability-row strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.availability-row span {
+  color: #888;
+  font-size: 12px;
+}
+
+/* SWITCH */
+
+.switch {
+  position: relative;
+  display: block;
+  width: 45px;
+  height: 25px;
+  flex: 0 0 auto;
+}
+
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  border-radius: 50px;
+  background: #d5d5d5;
+  transition: 0.2s ease;
+}
+
+.slider::before {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+  transition: 0.2s ease;
+}
+
+.switch input:checked + .slider {
+  background: #191919;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* ==========================================
+   RECIPE
+========================================== */
+
+.recipe-section {
+  margin-top: 30px;
+  padding-top: 28px;
+  border-top: 1px solid #eee;
+}
+
+.recipe-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.add-ingredient-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 13px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.add-ingredient-btn:hover {
+  background: #f7f7f7;
+}
+
+/* ==========================================
+   INGREDIENT ROW
+========================================== */
+
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 32px minmax(180px, 1fr) 150px 80px 38px;
+  align-items: end;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid #e7e5e1;
+  border-radius: 12px;
+  background: #fcfbf9;
+}
+
+.ingredient-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 7px;
+  border-radius: 8px;
+  background: #efede9;
+  color: #555;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ingredient-field label,
+.quantity-field label,
+.ingredient-cost label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quantity-input {
+  position: relative;
+}
+
+.quantity-input input {
+  padding-right: 48px;
+}
+
+.quantity-input span {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  color: #888;
+  font-size: 11px;
+  font-weight: 700;
+  transform: translateY(-50%);
+}
+
+.ingredient-cost {
+  min-width: 0;
+  margin-bottom: 8px;
+}
+
+.ingredient-cost strong {
+  display: block;
+  overflow: hidden;
+  color: #222;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-ingredient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.remove-ingredient:hover:not(:disabled) {
+  background: #f8eeee;
+  color: #c73535;
+}
+
+.remove-ingredient:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.loading-ingredients {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 25px;
+  color: #888;
+  font-size: 12px;
+}
+
+/* ==========================================
+   ACTIONS
+========================================== */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid #eee;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 17px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.primary-btn {
+  border: 1px solid #191919;
+  background: #191919;
+  color: #fff;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #333;
+}
+
+.primary-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.secondary-btn {
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+}
+
+.secondary-btn:hover {
+  background: #f8f8f8;
+}
+
+/* ==========================================
+   PREVIEW COLUMN
+========================================== */
+
+.preview-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky;
+  top: 24px;
+}
+
+/* ==========================================
+   FOOD PREVIEW
+========================================== */
+
+.preview-card {
+  overflow: hidden;
+}
+
+.preview-image {
+  position: relative;
+  height: 205px;
+  background: #eee;
+}
+
+.preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  color: #999;
+}
+
+.image-placeholder i {
+  font-size: 42px;
+}
+
+.image-placeholder span {
+  font-size: 12px;
+}
+
+.available-badge,
+.unavailable-badge {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.available-badge {
+  color: #277446;
+}
+
+.unavailable-badge {
+  color: #a43b3b;
+}
+
+.preview-content {
+  padding: 20px;
+}
+
+.preview-category {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #888;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.preview-content h2 {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: -0.035em;
+}
+
+.preview-content p {
+  min-height: 38px;
+  margin: 8px 0 14px;
+  color: #858585;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.preview-price {
+  font-size: 21px;
+  font-weight: 850;
+}
+
+/* ==========================================
+   SUMMARY
+========================================== */
+
+.summary-card {
+  padding: 20px;
+}
+
+.summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.recipe-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: #f0efec;
+  color: #444;
+  font-size: 19px;
+}
+
+/* ==========================================
+   RECIPE SUMMARY LIST
+========================================== */
+
+.recipe-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.recipe-summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0efec;
+}
+
+.recipe-summary-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.mini-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  background: #f4f3f0;
+  color: #777;
+}
+
+.recipe-summary-name strong {
+  display: block;
+  overflow: hidden;
+  max-width: 145px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recipe-summary-name span {
+  display: block;
+  margin-top: 2px;
+  color: #999;
+  font-size: 10px;
+}
+
+.recipe-quantity {
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.recipe-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 25px 10px;
+  text-align: center;
+}
+
+.recipe-empty i {
+  margin-bottom: 4px;
+  color: #aaa;
+  font-size: 27px;
+}
+
+.recipe-empty strong {
+  font-size: 12px;
+}
+
+.recipe-empty span {
+  color: #999;
+  font-size: 10px;
+}
+
+/* ==========================================
+   COST
+========================================== */
+
+.cost-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 17px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.cost-breakdown div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cost-breakdown span {
+  color: #888;
+  font-size: 11px;
+}
+
+.cost-breakdown strong {
+  font-size: 12px;
+}
+
+/* ==========================================
+   PROFIT
+========================================== */
+
+.profit-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 15px;
+  padding: 13px;
+  border-radius: 10px;
+  background: #f5f5f3;
+}
+
+.profit-box span {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.profit-box small {
+  display: block;
+  margin-top: 3px;
+  color: #888;
+  font-size: 10px;
+}
+
+.profit-box > strong {
+  font-size: 16px;
+}
+
+.profit-box > strong.negative {
+  color: #c43838;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1100px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-column {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .create-menu-page {
+    padding: 20px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ingredient-row {
+    grid-template-columns: 32px 1fr 1fr 38px;
+  }
+
+  .ingredient-cost {
+    display: none;
+  }
+
+  .preview-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .form-panel {
+    padding: 18px;
+  }
+
+  .recipe-header {
+    flex-direction: column;
+  }
+
+  .ingredient-row {
+    grid-template-columns: 32px 1fr 38px;
+  }
+
+  .quantity-field {
+    grid-column: 2 / -1;
+  }
+
+  .ingredient-field {
+    grid-column: 2 / -1;
+  }
+
+  .remove-ingredient {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+}

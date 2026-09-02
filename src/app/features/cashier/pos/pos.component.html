@@ -1,0 +1,638 @@
+<section class="pos-page" [class.full-view]="fullView()">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="pos-header">
+    <div class="header-copy">
+      <span class="eyebrow"> POINT OF SALE </span>
+
+      <h1>New Order</h1>
+
+      <p>Select menu items to create a new customer order.</p>
+    </div>
+
+    <div class="header-actions">
+      <div class="terminal-status">
+        <span class="status-dot"></span>
+
+        <div class="status-copy">
+          <strong>Terminal 01</strong>
+
+          <span>Ready for orders</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="view-button"
+        (click)="toggleFullView()"
+        [attr.aria-label]="fullView() ? 'Exit full view' : 'Enter full view'"
+      >
+        <i
+          class="bx"
+          [class.bx-exit-fullscreen]="fullView()"
+          [class.bx-fullscreen]="!fullView()"
+        ></i>
+
+        <span>
+          {{ fullView() ? "Exit View" : "Full View" }}
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       POS
+  ====================================================== -->
+
+  <div class="pos-container">
+    <!-- ===================================================
+         CATEGORY
+    ==================================================== -->
+
+    <aside class="category-panel">
+      <div class="category-title">Categories</div>
+
+      <div class="category-list">
+        <button
+          type="button"
+          class="category-button"
+          *ngFor="let category of categories()"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)"
+        >
+          <i *ngIf="category === 'All'" class="bx bx-grid-alt"></i>
+
+          <i *ngIf="category !== 'All'" class="bx bx-food-menu"></i>
+
+          <span>
+            {{ formatCategory(category) }}
+          </span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===================================================
+         PRODUCTS
+    ==================================================== -->
+
+    <main class="products-area">
+      <div class="products-toolbar">
+        <div class="menu-count">
+          <strong>
+            {{ filteredMenus().length }}
+          </strong>
+
+          <span> available items </span>
+        </div>
+
+        <div class="search-box">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search menu..."
+            #searchInput
+            (input)="search(searchInput.value)"
+          />
+
+          <span class="search-shortcut"> / </span>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+
+      <div class="state-message error" *ngIf="errorMessage()">
+        <i class="bx bx-error-circle"></i>
+
+        <div>
+          <strong> Something went wrong </strong>
+
+          <span>
+            {{ errorMessage() }}
+          </span>
+        </div>
+
+        <button type="button" (click)="loadMenus()">Retry</button>
+      </div>
+
+      <!-- LOADING -->
+
+      <div class="state-message" *ngIf="loading() && !errorMessage()">
+        <i class="bx bx-loader-alt bx-spin"></i>
+
+        <span> Loading menu... </span>
+      </div>
+
+      <!-- PRODUCT GRID -->
+
+      <div class="product-grid" *ngIf="!loading() && !errorMessage()">
+        <button
+          type="button"
+          class="product-card"
+          *ngFor="let menu of filteredMenus(); trackBy: trackByMenuId"
+          (click)="addToCart(menu)"
+        >
+          <div class="product-image">
+            <img
+              *ngIf="menu.image"
+              [src]="menu.image"
+              [alt]="menu.name"
+              loading="lazy"
+            />
+
+            <div class="image-placeholder" *ngIf="!menu.image">
+              <i class="bx bx-bowl-hot"></i>
+            </div>
+          </div>
+
+          <div class="product-content">
+            <span class="product-category">
+              {{ formatCategory(menu.category) }}
+            </span>
+
+            <h3>
+              {{ menu.name }}
+            </h3>
+
+            <div class="product-footer">
+              <strong class="product-price">
+                ₱{{ menu.price | number: "1.2-2" }}
+              </strong>
+
+              <span class="add-button">
+                <i class="bx bx-plus"></i>
+              </span>
+            </div>
+          </div>
+        </button>
+
+        <div class="empty-products" *ngIf="filteredMenus().length === 0">
+          <div class="empty-products-icon">
+            <i class="bx bx-search"></i>
+          </div>
+
+          <strong> No menu items found </strong>
+
+          <span> Try another category or search term. </span>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================
+         ORDER PANEL
+    ==================================================== -->
+
+    <aside class="order-panel">
+      <div class="order-header">
+        <div>
+          <span class="eyebrow"> CURRENT ORDER </span>
+
+          <h2>New Order</h2>
+        </div>
+
+        <button
+          type="button"
+          class="clear-button"
+          [disabled]="cart().length === 0"
+          (click)="clearCart()"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div class="order-content">
+        <!-- EMPTY -->
+
+        <div class="empty-cart" *ngIf="cart().length === 0">
+          <div class="empty-cart-icon">
+            <i class="bx bx-receipt"></i>
+          </div>
+
+          <strong> No items yet </strong>
+
+          <span> Select menu items to start an order. </span>
+        </div>
+
+        <!-- CART -->
+
+        <div class="cart-items" *ngIf="cart().length > 0">
+          <article
+            class="cart-item"
+            *ngFor="let item of cart(); trackBy: trackByCartId"
+          >
+            <div class="cart-item-main">
+              <div class="cart-item-details">
+                <strong>
+                  {{ item.menu.name }}
+                </strong>
+
+                <span>
+                  ₱{{ item.menu.price | number: "1.2-2" }}
+                  each
+                </span>
+              </div>
+
+              <strong class="item-total">
+                ₱{{ item.menu.price * item.quantity | number: "1.2-2" }}
+              </strong>
+            </div>
+
+            <div class="cart-item-controls">
+              <div class="quantity-control">
+                <button type="button" (click)="decrease(item.menu.id)">
+                  <i class="bx bx-minus"></i>
+                </button>
+
+                <span>
+                  {{ item.quantity }}
+                </span>
+
+                <button type="button" (click)="increase(item.menu.id)">
+                  <i class="bx bx-plus"></i>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="remove-button"
+                (click)="removeItem(item.menu.id)"
+              >
+                <i class="bx bx-trash"></i>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+
+      <div class="order-footer">
+        <div class="summary">
+          <div class="summary-row">
+            <span>Items</span>
+
+            <strong>
+              {{ itemCount() }}
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+
+            <strong> ₱{{ subtotal() | number: "1.2-2" }} </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Discount</span>
+
+            <strong> ₱{{ discount() | number: "1.2-2" }} </strong>
+          </div>
+
+          <div class="summary-total">
+            <span>Total</span>
+
+            <strong> ₱{{ total() | number: "1.2-2" }} </strong>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="charge-button"
+          [disabled]="cart().length === 0"
+          (click)="openOrderModal()"
+        >
+          <span> Charge Order </span>
+
+          <strong> ₱{{ total() | number: "1.2-2" }} </strong>
+
+          <i class="bx bx-right-arrow-alt"></i>
+        </button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- =======================================================
+     ORDER MODAL
+======================================================== -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="showOrderModal()"
+  (click)="closeOrderModal()"
+>
+  <section
+    class="order-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="order-modal-title"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- MODAL HEADER -->
+
+    <div class="modal-header">
+      <div>
+        <span class="eyebrow"> CHECKOUT </span>
+
+        <h2 id="order-modal-title">Complete Order</h2>
+
+        <p>Enter order details before charging the customer.</p>
+      </div>
+
+      <button
+        type="button"
+        class="modal-close"
+        [disabled]="processingOrder()"
+        (click)="closeOrderModal()"
+      >
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+
+    <!-- MODAL BODY -->
+
+    <div class="modal-body">
+      <!-- ORDER TYPE -->
+
+      <section class="form-section">
+        <div class="form-section-title">
+          <div>
+            <strong> Order type </strong>
+
+            <span> Choose how the customer will receive the order. </span>
+          </div>
+        </div>
+
+        <div class="order-type-grid">
+          <button
+            type="button"
+            class="order-type-card"
+            [class.active]="orderType() === 'Dine-in'"
+            (click)="setOrderType('Dine-in')"
+          >
+            <span class="order-type-icon">
+              <i class="bx bx-restaurant"></i>
+            </span>
+
+            <span>
+              <strong> Dine-in </strong>
+
+              <small> Customer will eat inside. </small>
+            </span>
+
+            <i
+              class="bx bx-check-circle check"
+              *ngIf="orderType() === 'Dine-in'"
+            ></i>
+          </button>
+
+          <button
+            type="button"
+            class="order-type-card"
+            [class.active]="orderType() === 'Take-out'"
+            (click)="setOrderType('Take-out')"
+          >
+            <span class="order-type-icon">
+              <i class="bx bx-shopping-bag"></i>
+            </span>
+
+            <span>
+              <strong> Take-out </strong>
+
+              <small> Customer will take the order out. </small>
+            </span>
+
+            <i
+              class="bx bx-check-circle check"
+              *ngIf="orderType() === 'Take-out'"
+            ></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- CUSTOMER -->
+
+      <section class="form-section">
+        <div class="form-section-title">
+          <div>
+            <strong> Customer details </strong>
+
+            <span> Optional customer information. </span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field">
+            <span> Customer name </span>
+
+            <input
+              type="text"
+              placeholder="Enter customer name"
+              [value]="customerName()"
+              (input)="setCustomerName($any($event.target).value)"
+            />
+          </label>
+
+          <label class="form-field">
+            <span> Contact number </span>
+
+            <input
+              type="tel"
+              placeholder="09XX XXX XXXX"
+              [value]="customerContact()"
+              (input)="setCustomerContact($any($event.target).value)"
+            />
+          </label>
+
+          <label class="form-field full" *ngIf="orderType() === 'Dine-in'">
+            <span>
+              Table number
+              <b>*</b>
+            </span>
+
+            <input
+              type="text"
+              placeholder="e.g. Table 04"
+              [value]="tableNumber()"
+              (input)="setTableNumber($any($event.target).value)"
+            />
+
+            <small
+              class="field-error"
+              *ngIf="orderType() === 'Dine-in' && !tableNumber().trim()"
+            >
+              Table number is required for dine-in orders.
+            </small>
+          </label>
+        </div>
+      </section>
+
+      <!-- PAYMENT -->
+
+      <section class="form-section">
+        <div class="form-section-title">
+          <div>
+            <strong> Payment </strong>
+
+            <span> Select the customer's payment method. </span>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <button
+            type="button"
+            class="payment-button"
+            [class.active]="paymentMethod() === 'Cash'"
+            (click)="setPaymentMethod('Cash')"
+          >
+            <i class="bx bx-money"></i>
+
+            <span> Cash </span>
+          </button>
+
+          <button
+            type="button"
+            class="payment-button"
+            [class.active]="paymentMethod() === 'GCash'"
+            (click)="setPaymentMethod('GCash')"
+          >
+            <i class="bx bx-mobile"></i>
+
+            <span> GCash </span>
+          </button>
+
+          <button
+            type="button"
+            class="payment-button"
+            [class.active]="paymentMethod() === 'Card'"
+            (click)="setPaymentMethod('Card')"
+          >
+            <i class="bx bx-credit-card"></i>
+
+            <span> Card </span>
+          </button>
+        </div>
+
+        <!-- CASH -->
+
+        <div class="cash-payment" *ngIf="paymentMethod() === 'Cash'">
+          <label class="form-field">
+            <span> Cash received </span>
+
+            <div class="money-input">
+              <span>₱</span>
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                [value]="cashReceived() || ''"
+                (input)="setCashReceived($any($event.target).value)"
+              />
+            </div>
+          </label>
+
+          <div class="change-box" [class.insufficient]="!cashIsEnough()">
+            <span>
+              {{ cashIsEnough() ? "Change" : "Amount due" }}
+            </span>
+
+            <strong>
+              ₱{{
+                cashIsEnough()
+                  ? change()
+                  : (total() - cashReceived() | number: "1.2-2")
+              }}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISCOUNT -->
+
+      <section class="form-section">
+        <div class="form-section-title">
+          <div>
+            <strong> Discount </strong>
+
+            <span> Optional order discount. </span>
+          </div>
+        </div>
+
+        <label class="form-field">
+          <span> Discount amount </span>
+
+          <div class="money-input">
+            <span>₱</span>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              [value]="discount() || ''"
+              (input)="setDiscount($any($event.target).value)"
+            />
+          </div>
+        </label>
+      </section>
+
+      <!-- TOTAL -->
+
+      <section class="checkout-total">
+        <div>
+          <span> Subtotal </span>
+
+          <strong> ₱{{ subtotal() | number: "1.2-2" }} </strong>
+        </div>
+
+        <div>
+          <span> Discount </span>
+
+          <strong> − ₱{{ discount() | number: "1.2-2" }} </strong>
+        </div>
+
+        <div class="grand-total">
+          <span> Total </span>
+
+          <strong> ₱{{ total() | number: "1.2-2" }} </strong>
+        </div>
+      </section>
+    </div>
+
+    <!-- MODAL FOOTER -->
+
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="modal-cancel"
+        [disabled]="processingOrder()"
+        (click)="closeOrderModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="confirm-button"
+        [disabled]="
+          processingOrder() ||
+          !cashIsEnough() ||
+          (orderType() === 'Dine-in' && !tableNumber().trim())
+        "
+        (click)="confirmOrder()"
+      >
+        <i *ngIf="processingOrder()" class="bx bx-loader-alt bx-spin"></i>
+
+        <span>
+          {{ processingOrder() ? "Processing..." : "Confirm & Charge" }}
+        </span>
+
+        <strong> ₱{{ total() | number: "1.2-2" }} </strong>
+      </button>
+    </div>
+  </section>
+</div>

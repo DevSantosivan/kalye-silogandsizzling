@@ -135,6 +135,22 @@ export const routes: Routes = [
           ),
       },
 
+      {
+        path: 'menu/create',
+        loadComponent: () =>
+          import('./features/admin/menu/create-menu/create-menu.component').then(
+            (m) => m.CreateMenuComponent,
+          ),
+      },
+
+      // {
+      //   path: 'menu/:id',
+      //   loadComponent: () =>
+      //     import('./features/admin/menu/view-menu-item/view-menu-item.component').then(
+      //       (m) => m.ViewMenuItemComponent,
+      //     ),
+      // },
+
       // ========================================
       // CATEGORIES
       // /admin/categories
@@ -279,6 +295,75 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/settings/settings.component').then(
             (m) => m.SettingsComponent,
+          ),
+      },
+    ],
+  },
+
+  // ==========================================
+  // CASHIER
+  // ==========================================
+
+  {
+    path: 'cashier',
+
+    loadComponent: () =>
+      import('./layout/cashier-layout/cashier-layout.component').then(
+        (m) => m.CashierLayoutComponent,
+      ),
+
+    children: [
+      // /cashier
+      {
+        path: '',
+        redirectTo: 'pos',
+        pathMatch: 'full',
+      },
+
+      // /cashier/pos
+      {
+        path: 'pos',
+        loadComponent: () =>
+          import('./features/cashier/pos/pos.component').then(
+            (m) => m.PosComponent,
+          ),
+      },
+    ],
+  },
+
+  // ==========================================
+  // KITCHEN
+  // ==========================================
+
+  {
+    path: 'kitchen',
+
+    loadComponent: () =>
+      import('./layout/kitchen-layout/kitchen-layout.component').then(
+        (m) => m.KitchenLayoutComponent,
+      ),
+
+    children: [
+      // /kitchen
+      {
+        path: '',
+        redirectTo: 'orders',
+        pathMatch: 'full',
+      },
+
+      // /kitchen/orders
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/kitchen/kitchen-orders/kitchen-orders.component').then(
+            (m) => m.KitchenOrdersComponent,
+          ),
+      },
+      {
+        path: 'completed',
+        loadComponent: () =>
+          import('./features/kitchen/kitchen-completed/kitchen-completed.component').then(
+            (m) => m.KitchenCompletedComponent,
           ),
       },
     ],

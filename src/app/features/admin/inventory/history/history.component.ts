@@ -1,97 +1,86 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-interface Movement {
-  id: number;
-  date: string;
-  ingredient: string;
-  type: 'Stock In' | 'Stock Out';
-  quantity: number;
-  unit: string;
-  reason: string;
-}
+import { HistoryService } from '../../../../core/services/admin/inventory/history.service';
+import { Movement } from '../../../../core/models/movement.model';
+import { DateTimePipe } from '../../../../shared/components/pipes/date-time.pipe';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, DateTimePipe],
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss',
 })
-export class HistoryComponent {
-  search = '';
-  typeFilter = 'All';
+export class HistoryComponent implements OnInit {
+  private historyService = inject(HistoryService);
 
-  movements = signal<Movement[]>([
-    {
-      id: 1,
-      date: 'Sep 02, 2026 • 10:32 AM',
-      ingredient: 'Chicken',
-      type: 'Stock In',
-      quantity: 10,
-      unit: 'kg',
-      reason: 'Supplier delivery',
-    },
-    {
-      id: 2,
-      date: 'Sep 02, 2026 • 10:15 AM',
-      ingredient: 'Rice',
-      type: 'Stock Out',
-      quantity: 2.4,
-      unit: 'kg',
-      reason: 'Order #1024',
-    },
-    {
-      id: 3,
-      date: 'Sep 02, 2026 • 10:15 AM',
-      ingredient: 'Egg',
-      type: 'Stock Out',
-      quantity: 2,
-      unit: 'pcs',
-      reason: 'Order #1024',
-    },
-    {
-      id: 4,
-      date: 'Sep 01, 2026 • 04:20 PM',
-      ingredient: 'Chicken',
-      type: 'Stock Out',
-      quantity: 1,
-      unit: 'kg',
-      reason: 'Spoilage',
-    },
-    {
-      id: 5,
-      date: 'Sep 01, 2026 • 02:05 PM',
-      ingredient: 'Rice',
-      type: 'Stock In',
-      quantity: 25,
-      unit: 'kg',
-      reason: 'Supplier delivery',
-    },
-    {
-      id: 6,
-      date: 'Aug 31, 2026 • 11:45 AM',
-      ingredient: 'Cooking Oil',
-      type: 'Stock In',
-      quantity: 5,
-      unit: 'L',
-      reason: 'Supplier delivery',
-    },
-  ]);
+  // ==========================================
+  // DATA
+  // ==========================================
+
+  movements = signal<Movement[]>([]);
+
+  isLoading = signal(false);
+
+  // ==========================================
+  // FILTERS
+  // ==========================================
+
+  search = signal('');
+
+  typeFilter = signal('All');
+
+  // ==========================================
+  // FILTERED MOVEMENTS
+  // ==========================================
 
   filteredMovements = computed(() => {
-    const query = this.search.toLowerCase().trim();
+    const query = this.search().toLowerCase().trim();
+
+    const selectedType = this.typeFilter();
 
     return this.movements().filter((item) => {
+      // Search ingredient OR reason
       const matchesSearch =
         !query ||
         item.ingredient.toLowerCase().includes(query) ||
         item.reason.toLowerCase().includes(query);
 
-      const matchesType =
-        this.typeFilter === 'All' || item.type === this.typeFilter;
+      // Movement filter
+      const matchesType = selectedType === 'All' || item.type === selectedType;
 
       return matchesSearch && matchesType;
     });
   });
+
+  // ==========================================
+  // INITIAL LOAD
+  // ==========================================
+
+  async ngOnInit(): Promise<void> {
+    await this.loadHistory();
+  }
+
+  // ==========================================
+  // LOAD HISTORY
+  // ==========================================
+
+  async loadHistory(): Promise<void> {
+    this.isLoading.set(true);
+
+    try {
+      const data = await this.historyService.getMovements();
+
+      this.movements.set(data);
+
+      console.log('Inventory history loaded:', data);
+    } catch (error) {
+      console.error('Failed to load inventory history:', error);
+
+      alert('Unable to load inventory history. Please try again.');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 }

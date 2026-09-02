@@ -1,0 +1,173 @@
+<div class="rich-text-editor" [class.disabled]="disabled">
+  <!-- ==========================================
+       TOOLBAR
+  =========================================== -->
+
+  <div class="editor-toolbar">
+    <!-- BOLD -->
+    <button
+      type="button"
+      title="Bold"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('bold')"
+    >
+      <strong>B</strong>
+    </button>
+
+    <!-- ITALIC -->
+    <button
+      type="button"
+      title="Italic"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('italic')"
+    >
+      <em>I</em>
+    </button>
+
+    <!-- UNDERLINE -->
+    <button
+      type="button"
+      title="Underline"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('underline')"
+    >
+      <u>U</u>
+    </button>
+
+    <!-- STRIKETHROUGH -->
+    <button
+      type="button"
+      title="Strikethrough"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('strikeThrough')"
+    >
+      <s>S</s>
+    </button>
+
+    <span class="toolbar-divider"></span>
+
+    <!-- H2 -->
+    <button
+      type="button"
+      title="Heading"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('formatBlock', 'h2')"
+    >
+      H1
+    </button>
+
+    <!-- H3 -->
+    <button
+      type="button"
+      title="Subheading"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('formatBlock', 'h3')"
+    >
+      H2
+    </button>
+
+    <!-- NORMAL -->
+    <button
+      type="button"
+      title="Normal text"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('formatBlock', 'p')"
+    >
+      T
+    </button>
+
+    <span class="toolbar-divider"></span>
+
+    <!-- BULLET -->
+    <button
+      type="button"
+      title="Bullet list"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('insertUnorderedList')"
+    >
+      •
+    </button>
+
+    <!-- NUMBERED -->
+    <button
+      type="button"
+      title="Numbered list"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('insertOrderedList')"
+    >
+      1.
+    </button>
+
+    <span class="toolbar-divider"></span>
+
+    <!-- ALIGN LEFT -->
+    <button
+      type="button"
+      title="Align left"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('justifyLeft')"
+    >
+      ←
+    </button>
+
+    <!-- CENTER -->
+    <button
+      type="button"
+      title="Align center"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('justifyCenter')"
+    >
+      ↔
+    </button>
+
+    <!-- RIGHT -->
+    <button
+      type="button"
+      title="Align right"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="format('justifyRight')"
+    >
+      →
+    </button>
+
+    <span class="toolbar-divider"></span>
+
+    <!-- CLEAR -->
+    <button
+      type="button"
+      title="Clear formatting"
+      [disabled]="disabled"
+      (mousedown)="$event.preventDefault()"
+      (click)="clearFormatting()"
+    >
+      ×
+    </button>
+  </div>
+
+  <!-- ==========================================
+       EDITOR
+  =========================================== -->
+
+  <div
+    #editor
+    class="editor-content"
+    contenteditable="true"
+    [attr.contenteditable]="disabled ? 'false' : 'true'"
+    [attr.data-placeholder]="placeholder"
+    (input)="updateValue()"
+    (blur)="updateValue()"
+    (paste)="onPaste($event)"
+  ></div>
+</div>
