@@ -1,4 +1,4 @@
-<section class="pos-page" [class.full-view]="fullView()">
+<section class="pos-page">
   <!-- =====================================================
        HEADER
   ====================================================== -->
@@ -26,17 +26,19 @@
       <button
         type="button"
         class="view-button"
-        (click)="toggleFullView()"
-        [attr.aria-label]="fullView() ? 'Exit full view' : 'Enter full view'"
+        (click)="toggleFullscreen()"
+        [attr.aria-label]="
+          isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
+        "
       >
         <i
           class="bx"
-          [class.bx-exit-fullscreen]="fullView()"
-          [class.bx-fullscreen]="!fullView()"
+          [class.bx-exit-fullscreen]="isFullscreen"
+          [class.bx-fullscreen]="!isFullscreen"
         ></i>
 
         <span>
-          {{ fullView() ? "Exit View" : "Full View" }}
+          {{ isFullscreen ? "Exit Fullscreen" : "Fullscreen" }}
         </span>
       </button>
     </div>

@@ -18,12 +18,33 @@
   color: #191919;
 }
 
+/* =========================================================
+   FULL SCREEN POS VIEW
+========================================================= */
+
 .pos-page.full-view {
   position: fixed;
-  inset: 0;
-  z-index: 1000;
-  overflow: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+
+  z-index: 99999;
+
+  margin: 0;
   padding: 22px;
+
+  overflow: auto;
+
+  background: #f6f5f2;
+}
+.pos-page.full-view .pos-container {
+  width: 100%;
+  min-height: calc(100vh - 120px);
 }
 
 /* =========================================================

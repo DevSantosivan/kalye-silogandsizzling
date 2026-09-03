@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kalye Silog&amp;Sizzling</string>
+    <string name="title_activity_main">Kalye Silog&amp;Sizzling</string>
+    <string name="package_name">com.kalyesilog.pos</string>
+    <string name="custom_url_scheme">com.kalyesilog.pos</string>
+</resources>

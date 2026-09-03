@@ -16,6 +16,11 @@ import { OrderType, PaymentMethod } from '../../../core/models/order.model';
 
 import { OrderService } from '../../../core/services/order.service';
 
+import {
+  PrinterService,
+  ReceiptData,
+} from '../../../core/services/printer.service';
+
 import Swal from 'sweetalert2';
 
 interface CartItem {
@@ -35,6 +40,12 @@ export class PosComponent implements OnInit {
   private orderService = inject(OrderService);
 
   // =========================================================
+  // PRINTER
+  // =========================================================
+
+  private printerService = inject(PrinterService);
+
+  // =========================================================
   // STATE
   // =========================================================
 
@@ -47,7 +58,7 @@ export class PosComponent implements OnInit {
   loading = signal<boolean>(true);
   errorMessage = signal<string>('');
 
-  fullView = signal<boolean>(false);
+  isFullscreen = false;
 
   // =========================================================
   // ORDER MODAL
@@ -91,6 +102,7 @@ export class PosComponent implements OnInit {
 
   filteredMenus = computed(() => {
     const category = this.selectedCategory();
+
     const search = this.searchTerm().trim().toLowerCase();
 
     return this.menus().filter((menu) => {
@@ -152,14 +164,26 @@ export class PosComponent implements OnInit {
   // FULL VIEW
   // =========================================================
 
-  toggleFullView(): void {
-    this.fullView.update((value) => !value);
+  // =========================================================
+  // FULLSCREEN
+  // =========================================================
+
+  async toggleFullscreen(): Promise<void> {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        this.isFullscreen = true;
+      } else {
+        await document.exitFullscreen();
+        this.isFullscreen = false;
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+    }
   }
 
-  exitFullView(): void {
-    if (this.fullView()) {
-      this.fullView.set(false);
-    }
+  onFullscreenChange(): void {
+    this.isFullscreen = !!document.fullscreenElement;
   }
 
   // =========================================================
@@ -176,10 +200,7 @@ export class PosComponent implements OnInit {
       this.closeOrderModal();
       return;
     }
-
-    this.exitFullView();
   }
-
   // =========================================================
   // LOAD MENU
   // =========================================================
@@ -483,8 +504,11 @@ export class PosComponent implements OnInit {
 
         customClass: {
           popup: 'pos-swal-popup',
+
           title: 'pos-swal-title',
+
           htmlContainer: 'pos-swal-html',
+
           confirmButton: 'pos-swal-confirm',
         },
 
@@ -493,6 +517,55 @@ export class PosComponent implements OnInit {
 
       return;
     }
+
+    // =======================================================
+    // SNAPSHOT RECEIPT DATA
+    // =======================================================
+    //
+    // IMPORTANT:
+    // We create this BEFORE resetting the POS.
+    //
+    // =======================================================
+
+    const receiptData: ReceiptData = {
+      orderId: 'PENDING',
+
+      orderType: this.orderType(),
+
+      customerName: this.customerName().trim() || null,
+
+      tableNumber:
+        this.orderType() === 'Dine-in' ? this.tableNumber().trim() : null,
+
+      paymentMethod: this.paymentMethod(),
+
+      items: this.cart().map((item) => ({
+        name: item.menu.name,
+
+        quantity: item.quantity,
+
+        price: Number(item.menu.price),
+
+        total: Number(item.menu.price) * item.quantity,
+      })),
+
+      subtotal: this.subtotal(),
+
+      discount: this.discount(),
+
+      total: this.total(),
+
+      cashReceived:
+        this.paymentMethod() === 'Cash' ? this.cashReceived() : this.total(),
+
+      change: this.change(),
+
+      storeName: 'KALYE SILOG & SIZZLING',
+
+      storeAddress: '',
+
+      storeContact: '',
+    };
 
     // =======================================================
     // PREPARE ORDER DATA
@@ -517,9 +590,13 @@ export class PosComponent implements OnInit {
 
       items: this.cart().map((item) => ({
         menuItemId: item.menu.id,
+
         name: item.menu.name,
+
         quantity: item.quantity,
+
         price: Number(item.menu.price),
+
         total: Number(item.menu.price) * item.quantity,
       })),
     };
@@ -533,7 +610,7 @@ export class PosComponent implements OnInit {
     document.body.classList.remove('pos-modal-open');
 
     // =======================================================
-    // WAIT FOR ANGULAR TO REMOVE MODAL
+    // WAIT FOR MODAL TO DISAPPEAR
     // =======================================================
 
     await new Promise<void>((resolve) => {
@@ -562,6 +639,7 @@ export class PosComponent implements OnInit {
 
       customClass: {
         popup: 'pos-swal-popup',
+
         title: 'pos-swal-title',
       },
 
@@ -584,6 +662,50 @@ export class PosComponent implements OnInit {
       Swal.close();
 
       // =====================================================
+      // UPDATE RECEIPT ORDER ID
+      // =====================================================
+
+      receiptData.orderId = order.id;
+
+      // =====================================================
+      // PRINT RECEIPT
+      // =====================================================
+      //
+      // THIS IS THE IMPORTANT PART:
+      //
+      // Order saved successfully
+      //          ↓
+      // Print receipt immediately
+      //
+      // =====================================================
+
+      try {
+        await this.printerService.printReceipt(receiptData);
+      } catch (printError) {
+        console.error('PRINT RECEIPT ERROR:', printError);
+
+        await Swal.fire({
+          icon: 'warning',
+
+          title: 'Order Saved, But Print Failed',
+
+          text: 'The order was saved successfully, but the receipt could not be printed.',
+
+          confirmButtonText: 'Okay',
+
+          customClass: {
+            popup: 'pos-swal-popup',
+
+            title: 'pos-swal-title',
+
+            confirmButton: 'pos-swal-confirm',
+          },
+
+          buttonsStyling: false,
+        });
+      }
+
+      // =====================================================
       // SUCCESS
       // =====================================================
 
@@ -593,60 +715,72 @@ export class PosComponent implements OnInit {
         title: 'Order Created!',
 
         html: `
-    <div class="pos-success-content">
+          <div class="pos-success-content">
 
-      <p class="pos-success-message">
-        Order has been successfully saved.
-      </p>
+            <p class="pos-success-message">
+              Order has been successfully saved.
+            </p>
 
-      <div class="pos-success-total">
+            <div class="pos-success-total">
 
-        <span>
-          Order #${order.id}
-        </span>
+              <span>
+                Order #${order.id}
+              </span>
 
-        <strong>
-          ₱${Number(order.total).toFixed(2)}
-        </strong>
+              <strong>
+                ₱${Number(order.total).toFixed(2)}
+              </strong>
 
-      </div>
+            </div>
 
-      <div class="pos-success-payment">
+            <div class="pos-success-payment">
 
-        <div>
-          <span>Payment</span>
-
-          <strong>
-            ${order.paymentMethod}
-          </strong>
-        </div>
-
-        ${
-          this.paymentMethod() === 'Cash'
-            ? `
               <div>
-                <span>Cash</span>
+
+                <span>
+                  Payment
+                </span>
 
                 <strong>
-                  ₱${this.cashReceived().toFixed(2)}
+                  ${order.paymentMethod}
                 </strong>
+
               </div>
 
-              <div class="change">
-                <span>Change</span>
+              ${
+                this.paymentMethod() === 'Cash'
+                  ? `
+                    <div>
 
-                <strong>
-                  ₱${this.change().toFixed(2)}
-                </strong>
-              </div>
-            `
-            : ''
-        }
+                      <span>
+                        Cash
+                      </span>
 
-      </div>
+                      <strong>
+                        ₱${this.cashReceived().toFixed(2)}
+                      </strong>
 
-    </div>
-  `,
+                    </div>
+
+                    <div class="change">
+
+                      <span>
+                        Change
+                      </span>
+
+                      <strong>
+                        ₱${this.change().toFixed(2)}
+                      </strong>
+
+                    </div>
+                  `
+                  : ''
+              }
+
+            </div>
+
+          </div>
+        `,
 
         showConfirmButton: false,
 
@@ -655,16 +789,20 @@ export class PosComponent implements OnInit {
         timerProgressBar: true,
 
         allowOutsideClick: false,
+
         allowEscapeKey: false,
 
         customClass: {
           popup: 'pos-swal-popup pos-success-popup',
+
           title: 'pos-swal-title',
+
           htmlContainer: 'pos-swal-html',
         },
 
         buttonsStyling: false,
       });
+
       // =====================================================
       // RESET POS
       // =====================================================
@@ -709,7 +847,9 @@ export class PosComponent implements OnInit {
 
         customClass: {
           popup: 'pos-swal-popup',
+
           title: 'pos-swal-title',
+
           confirmButton: 'pos-swal-confirm',
         },
 
@@ -723,6 +863,46 @@ export class PosComponent implements OnInit {
       this.processingOrder.set(false);
 
       document.body.classList.remove('pos-modal-open');
+    }
+  }
+
+  // =========================================================
+  // MANUAL PRINT
+  // =========================================================
+  //
+  // Reusable method if later you want:
+  //
+  // Print Again
+  // Reprint from Orders
+  // Reprint from Sales
+  //
+  // =========================================================
+
+  async printReceipt(receipt: ReceiptData): Promise<void> {
+    try {
+      await this.printerService.printReceipt(receipt);
+    } catch (error) {
+      console.error('MANUAL PRINT ERROR:', error);
+
+      await Swal.fire({
+        icon: 'error',
+
+        title: 'Unable to Print',
+
+        text: 'The receipt could not be printed.',
+
+        confirmButtonText: 'Okay',
+
+        customClass: {
+          popup: 'pos-swal-popup',
+
+          title: 'pos-swal-title',
+
+          confirmButton: 'pos-swal-confirm',
+        },
+
+        buttonsStyling: false,
+      });
     }
   }
 

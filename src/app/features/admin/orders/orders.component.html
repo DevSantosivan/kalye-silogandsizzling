@@ -1,12 +1,15 @@
 <div class="orders-page">
-  <!-- =========================
+  <!-- =====================================================
        PAGE HEADER
-  ========================== -->
+  ====================================================== -->
+
   <div class="page-header">
     <div class="header-content">
-      <div>
+      <div class="header-copy">
         <span class="eyebrow">ORDER MANAGEMENT</span>
+
         <h1>Orders</h1>
+
         <p>Manage and monitor all customer orders.</p>
       </div>
 
@@ -24,9 +27,24 @@
     </div>
   </div>
 
-  <!-- =========================
-       SUMMARY CARDS
-  ========================== -->
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage) {
+    <div class="error-state">
+      <div class="error-icon"><i class="bx bx-error-circle"></i></div>
+
+      <span>{{ errorMessage }}</span>
+
+      <button type="button" (click)="loadOrders()">Retry</button>
+    </div>
+  }
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
   <div class="summary-grid">
     <div class="summary-card">
       <div class="summary-top">
@@ -34,7 +52,7 @@
           <i class="bx bx-receipt"></i>
         </div>
 
-        <span class="summary-label"> TODAY'S ORDERS </span>
+        <span class="summary-label">TODAY'S ORDERS</span>
       </div>
 
       <div class="summary-value">
@@ -53,7 +71,7 @@
           <i class="bx bx-time-five"></i>
         </div>
 
-        <span class="summary-label"> NEW ORDERS </span>
+        <span class="summary-label">PENDING ORDERS</span>
       </div>
 
       <div class="summary-value">
@@ -72,7 +90,7 @@
           <i class="bx bx-loader-circle"></i>
         </div>
 
-        <span class="summary-label"> PREPARING </span>
+        <span class="summary-label">PREPARING</span>
       </div>
 
       <div class="summary-value">
@@ -91,7 +109,7 @@
           <i class="bx bx-check-circle"></i>
         </div>
 
-        <span class="summary-label"> COMPLETED </span>
+        <span class="summary-label">COMPLETED</span>
       </div>
 
       <div class="summary-value">
@@ -105,21 +123,24 @@
     </div>
   </div>
 
-  <!-- =========================
+  <!-- =====================================================
        ORDERS CARD
-  ========================== -->
+  ====================================================== -->
+
   <section class="orders-card">
-    <!-- =========================
-         TOOLBAR
-    ========================== -->
+    <!-- ===================================================
+     TOOLBAR
+==================================================== -->
     <div class="orders-toolbar">
       <div class="toolbar-left">
         <div class="section-title">
           <h2>All Orders</h2>
-          <span>{{ filteredOrders.length }}</span>
+
+          <span>
+            {{ filteredOrders.length }}
+          </span>
         </div>
 
-        <!-- STATUS FILTERS -->
         <div class="filters">
           @for (filter of filters; track filter) {
             <button
@@ -134,7 +155,6 @@
         </div>
       </div>
 
-      <!-- SEARCH + FILTER -->
       <div class="toolbar-right">
         <div class="search">
           <i class="bx bx-search"></i>
@@ -151,7 +171,7 @@
               type="button"
               class="clear-search"
               aria-label="Clear search"
-              (click)="searchTerm = ''; currentPage = 1"
+              (click)="clearSearch()"
             >
               <i class="bx bx-x"></i>
             </button>
@@ -164,129 +184,167 @@
       </div>
     </div>
 
-    <!-- =========================
-         TABLE
-    ========================== -->
-    <div class="orders-table">
-      <!-- TABLE HEADER -->
-      <div class="table-head">
-        <span>ORDER</span>
-        <span>CUSTOMER</span>
-        <span>TYPE</span>
-        <span>ITEMS</span>
-        <span>TOTAL</span>
-        <span>PAYMENT</span>
-        <span>STATUS</span>
-        <span></span>
+    <!-- ===================================================
+     LOADING
+==================================================== -->
+    @if (loading) {
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <span>Loading orders...</span>
       </div>
+    }
 
-      <!-- TABLE ROWS -->
-      @for (order of paginatedOrders; track order.id) {
-        <div class="table-row" [class.order-new]="order.status === 'New'">
-          <!-- ORDER -->
-          <div class="order-cell">
-            <strong>
-              {{ order.id }}
-            </strong>
-          </div>
+    <!-- ===================================================
+     TABLE
+==================================================== -->
+    @if (!loading) {
+      <div class="orders-table">
+        <!-- TABLE HEADER -->
+        <div class="table-head">
+          <span>ORDER</span>
+          <span>CUSTOMER</span>
+          <span>DATE</span>
+          <span>TYPE</span>
+          <span>ITEMS</span>
+          <span>TOTAL</span>
+          <span>RECEIVED</span>
+          <span>PAYMENT</span>
+          <span>STATUS</span>
+          <span>ACTIONS</span>
+        </div>
 
-          <!-- CUSTOMER -->
-          <div class="customer">
-            <div class="avatar">
-              {{ order.customer.charAt(0) }}
+        <!-- TABLE ROWS -->
+        @for (order of paginatedOrders; track order.numericId) {
+          <div class="table-row" [class.order-new]="order.status === 'Pending'">
+            <!-- ORDER -->
+            <div class="order-cell">
+              <strong>{{ order.id }}</strong>
             </div>
 
-            <div class="customer-info">
+            <!-- CUSTOMER -->
+            <div class="customer">
+              <div class="avatar">
+                {{ order.customer.charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="customer-info">
+                <strong>
+                  {{ order.customer }}
+                </strong>
+
+                <small>
+                  {{ order.time }}
+                </small>
+              </div>
+            </div>
+
+            <!-- DATE -->
+            <div class="date-cell">
               <strong>
-                {{ order.customer }}
+                {{ formatDate(order.createdAt) }}
               </strong>
 
               <small>
                 {{ order.time }}
               </small>
             </div>
-          </div>
 
-          <!-- TYPE -->
-          <div class="type-cell">
-            @if (order.type === "Dine In") {
-              <i class="bx bx-restaurant"></i>
-            } @else {
-              <i class="bx bx-shopping-bag"></i>
-            }
+            <!-- TYPE -->
+            <div class="type-cell">
+              @if (order.type === "Dine In") {
+                <i class="bx bx-restaurant"></i>
+              } @else {
+                <i class="bx bx-shopping-bag"></i>
+              }
 
-            <span>
-              {{ order.type }}
+              <span>
+                {{ order.type }}
+              </span>
+            </div>
+
+            <!-- ITEMS -->
+            <span class="items-count">
+              {{ order.items }}
+              {{ order.items === 1 ? "item" : "items" }}
             </span>
-          </div>
 
-          <!-- ITEMS -->
-          <span class="items-count"> {{ order.items }} items </span>
+            <!-- TOTAL -->
+            <strong class="order-total">
+              {{ formatCurrency(order.total) }}
+            </strong>
 
-          <!-- TOTAL -->
-          <strong class="order-total">
-            {{ formatCurrency(order.total) }}
-          </strong>
+            <!-- RECEIVED -->
+            <div class="received-cell">
+              @if (order.paymentMethod === "Cash") {
+                <strong>
+                  {{ formatCurrency(order.cashReceived) }}
+                </strong>
 
-          <!-- PAYMENT -->
-          <span class="payment" [class.pending]="order.payment === 'Pending'">
-            <span class="badge-dot"></span>
+                <small>Received</small>
+              } @else {
+                <strong>—</strong>
 
-            {{ order.payment }}
-          </span>
+                <small>
+                  {{ order.paymentMethod }}
+                </small>
+              }
+            </div>
 
-          <!-- STATUS -->
-          <span
-            class="status"
-            [class.new]="order.status === 'New'"
-            [class.preparing]="order.status === 'Preparing'"
-            [class.ready]="order.status === 'Ready'"
-            [class.completed]="order.status === 'Completed'"
-            [class.cancelled]="order.status === 'Cancelled'"
-          >
-            <span class="badge-dot"></span>
+            <!-- PAYMENT -->
+            <span class="payment" [class.pending]="order.payment === 'Pending'">
+              <span class="badge-dot"></span>
+              {{ order.payment }}
+            </span>
 
-            {{ order.status }}
-          </span>
-
-          <!-- ACTIONS -->
-          <button class="more" type="button" aria-label="Order actions">
-            <i class="bx bx-dots-vertical-rounded"></i>
-          </button>
-        </div>
-      }
-
-      <!-- =========================
-           EMPTY STATE
-      ========================== -->
-      @if (paginatedOrders.length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">
-            <i class="bx bx-search-alt"></i>
-          </div>
-
-          <strong> No orders found </strong>
-
-          <span> Try changing your search or filter. </span>
-
-          @if (searchTerm || activeFilter !== "All") {
-            <button
-              type="button"
-              class="reset-search"
-              (click)="searchTerm = ''; activeFilter = 'All'; currentPage = 1"
+            <!-- STATUS -->
+            <span
+              class="status"
+              [class.new]="order.status === 'Pending'"
+              [class.preparing]="order.status === 'Preparing'"
+              [class.ready]="order.status === 'Ready'"
+              [class.completed]="order.status === 'Completed'"
+              [class.cancelled]="order.status === 'Cancelled'"
             >
-              Clear filters
-            </button>
-          }
-        </div>
-      }
-    </div>
+              <span class="badge-dot"></span>
+              {{ order.status }}
+            </span>
 
-    <!-- =========================
-         TABLE FOOTER / PAGINATION
-    ========================== -->
+            <!-- ACTIONS -->
+            <button class="more" type="button" aria-label="Order actions">
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+          </div>
+        }
+
+        <!-- EMPTY -->
+        @if (paginatedOrders.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-search-alt"></i>
+            </div>
+
+            <strong>No orders found</strong>
+
+            <span> Try changing your search or filter. </span>
+
+            @if (searchTerm || activeFilter !== "All") {
+              <button
+                type="button"
+                class="reset-search"
+                (click)="clearFilters()"
+              >
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ===================================================
+     FOOTER
+==================================================== -->
     <div class="table-footer">
-      <!-- RESULTS COUNT -->
       <span class="results-count">
         @if (filteredOrders.length > 0) {
           Showing
@@ -301,10 +359,8 @@
         }
       </span>
 
-      <!-- PAGINATION -->
       @if (totalPages > 1) {
         <div class="pagination">
-          <!-- PREVIOUS -->
           <button
             type="button"
             [disabled]="currentPage === 1"
@@ -314,7 +370,6 @@
             <i class="bx bx-chevron-left"></i>
           </button>
 
-          <!-- PAGE NUMBERS -->
           @for (page of pageNumbers; track page) {
             <button
               type="button"
@@ -325,7 +380,6 @@
             </button>
           }
 
-          <!-- NEXT -->
           <button
             type="button"
             [disabled]="currentPage === totalPages"

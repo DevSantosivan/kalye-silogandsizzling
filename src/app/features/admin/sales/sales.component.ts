@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
+
+import {
+  Order,
+  OrderType,
+  PaymentMethod,
+} from '../../../core/models/order.model';
+
+import { OrderService } from '../../../core/services/order.service';
 
 interface SaleTransaction {
   id: string;
+  orderId: number;
   customer: string;
   type: 'Dine In' | 'Take Out';
-  payment: 'Cash' | 'GCash' | 'Card';
+  payment: PaymentMethod;
   amount: number;
   time: string;
   status: 'Completed' | 'Refunded';
@@ -18,6 +28,17 @@ interface TopItem {
   revenue: number;
 }
 
+interface OrderItem {
+  id: number;
+  order_id: number;
+  menu_item_id: number;
+  menu_name: string;
+  quantity: number;
+  price: number;
+  total: number;
+  created_at: string;
+}
+
 @Component({
   selector: 'app-sales',
   standalone: true,
@@ -25,154 +46,499 @@ interface TopItem {
   templateUrl: './sales.component.html',
   styleUrl: './sales.component.scss',
 })
-export class SalesComponent {
+export class SalesComponent implements OnInit {
+  private orderService = inject(OrderService);
+
+  // =========================================================
+  // STATE
+  // =========================================================
+
   selectedPeriod = 'Monthly';
 
   periods = ['Daily', 'Weekly', 'Monthly'];
 
+  loading = false;
+  errorMessage = '';
+
+  orders: Order[] = [];
+  orderItems: OrderItem[] = [];
+
+  // =========================================================
+  // STATS
+  // =========================================================
+
   stats = {
-    today: 12450,
-    week: 78200,
-    month: 318500,
-    year: 3842000,
+    today: 0,
+    week: 0,
+    month: 0,
+    year: 0,
   };
 
-  salesData = [
-    { label: 'Jan', value: 62 },
-    { label: 'Feb', value: 71 },
-    { label: 'Mar', value: 65 },
-    { label: 'Apr', value: 78 },
-    { label: 'May', value: 73 },
-    { label: 'Jun', value: 86 },
-    { label: 'Jul', value: 81 },
-    { label: 'Aug', value: 94 },
-    { label: 'Sep', value: 69 },
-    { label: 'Oct', value: 87 },
-    { label: 'Nov', value: 79 },
-    { label: 'Dec', value: 100 },
-  ];
+  // =========================================================
+  // CHART
+  // =========================================================
+
+  salesData: {
+    label: string;
+    value: number;
+  }[] = [];
+
+  // =========================================================
+  // ORDER TYPE
+  // =========================================================
 
   orderTypeData = {
-    dineIn: 62,
-    takeOut: 38,
+    dineIn: 0,
+    takeOut: 0,
   };
+
+  // =========================================================
+  // PAYMENT
+  // =========================================================
 
   paymentData = {
-    cash: 48,
-    gcash: 37,
-    card: 15,
+    cash: 0,
+    gcash: 0,
+    card: 0,
   };
 
-  topItems: TopItem[] = [
-    {
-      name: 'Tapsilog',
-      category: 'Silog Meals',
-      sold: 128,
-      revenue: 20480,
-    },
-    {
-      name: 'Iced Coffee',
-      category: 'Drinks',
-      sold: 143,
-      revenue: 12155,
-    },
-    {
-      name: 'Longsilog',
-      category: 'Silog Meals',
-      sold: 96,
-      revenue: 14400,
-    },
-    {
-      name: 'Extra Egg',
-      category: 'Add-ons',
-      sold: 112,
-      revenue: 2800,
-    },
-    {
-      name: 'Bangsilog',
-      category: 'Silog Meals',
-      sold: 82,
-      revenue: 13940,
-    },
-  ];
+  // =========================================================
+  // TOP ITEMS
+  // =========================================================
 
-  transactions: SaleTransaction[] = [
-    {
-      id: '#KS-00125',
-      customer: 'Juan Santos',
-      type: 'Dine In',
-      payment: 'Cash',
-      amount: 350,
-      time: '10:42 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00124',
-      customer: 'Maria Cruz',
-      type: 'Take Out',
-      payment: 'GCash',
-      amount: 220,
-      time: '10:35 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00123',
-      customer: 'Pedro Reyes',
-      type: 'Dine In',
-      payment: 'Card',
-      amount: 480,
-      time: '10:21 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00122',
-      customer: 'Carlo Reyes',
-      type: 'Take Out',
-      payment: 'Cash',
-      amount: 180,
-      time: '10:15 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00121',
-      customer: 'Sofia Garcia',
-      type: 'Dine In',
-      payment: 'GCash',
-      amount: 520,
-      time: '09:58 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00120',
-      customer: 'Kevin Ramos',
-      type: 'Take Out',
-      payment: 'Cash',
-      amount: 290,
-      time: '09:42 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00119',
-      customer: 'Anna Flores',
-      type: 'Dine In',
-      payment: 'GCash',
-      amount: 410,
-      time: '09:30 AM',
-      status: 'Completed',
-    },
-    {
-      id: '#KS-00118',
-      customer: 'James Aquino',
-      type: 'Take Out',
-      payment: 'Card',
-      amount: 360,
-      time: '09:18 AM',
-      status: 'Refunded',
-    },
-  ];
+  topItems: TopItem[] = [];
+
+  // =========================================================
+  // TRANSACTIONS
+  // =========================================================
+
+  transactions: SaleTransaction[] = [];
 
   currentPage = 1;
   pageSize = 6;
+
+  // =========================================================
+  // INIT
+  // =========================================================
+
+  async ngOnInit(): Promise<void> {
+    await this.loadSales();
+  }
+
+  // =========================================================
+  // LOAD SALES
+  // =========================================================
+
+  async loadSales(): Promise<void> {
+    try {
+      this.loading = true;
+      this.errorMessage = '';
+
+      // Get all orders from Supabase
+      this.orders = await this.orderService.getOrders();
+
+      // Only completed orders are considered sales
+      const completedOrders = this.orders.filter(
+        (order) => order.status === 'Completed',
+      );
+
+      // Build transactions
+      this.transactions = completedOrders.map((order) =>
+        this.mapOrderToTransaction(order),
+      );
+
+      // Load order items for completed orders
+      await this.loadOrderItems(completedOrders);
+
+      // Calculate everything
+      this.calculateStats();
+      this.calculateOrderTypes();
+      this.calculatePayments();
+      this.calculateTopItems();
+      this.calculateChart();
+
+      // Reset pagination
+      this.currentPage = 1;
+    } catch (error: any) {
+      console.error('LOAD SALES ERROR:', error);
+
+      this.errorMessage = error?.message || 'Unable to load sales data.';
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  // =========================================================
+  // LOAD ORDER ITEMS
+  // =========================================================
+
+  private async loadOrderItems(completedOrders: Order[]): Promise<void> {
+    if (!completedOrders.length) {
+      this.orderItems = [];
+      return;
+    }
+
+    try {
+      const results = await Promise.all(
+        completedOrders.map((order) =>
+          this.orderService.getOrderItems(order.id),
+        ),
+      );
+
+      this.orderItems = results.flat() as OrderItem[];
+    } catch (error) {
+      console.error('LOAD ORDER ITEMS ERROR:', error);
+
+      this.orderItems = [];
+    }
+  }
+
+  // =========================================================
+  // MAP ORDER → TRANSACTION
+  // =========================================================
+
+  private mapOrderToTransaction(order: Order): SaleTransaction {
+    return {
+      id: `#KS-${String(order.id).padStart(5, '0')}`,
+
+      orderId: order.id,
+
+      customer: order.customerName?.trim() || 'Walk-in Customer',
+
+      type: order.orderType === 'Dine-in' ? 'Dine In' : 'Take Out',
+
+      payment: order.paymentMethod,
+
+      amount: Number(order.total ?? 0),
+
+      time: this.formatTime(order.createdAt),
+
+      status: 'Completed',
+    };
+  }
+
+  // =========================================================
+  // STATS
+  // =========================================================
+
+  private calculateStats(): void {
+    const completedOrders = this.orders.filter(
+      (order) => order.status === 'Completed',
+    );
+
+    const now = new Date();
+
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getDay();
+
+    const diffToMonday = day === 0 ? 6 : day - 1;
+
+    startOfWeek.setDate(startOfWeek.getDate() - diffToMonday);
+
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    this.stats.today = this.sumOrders(
+      completedOrders.filter(
+        (order) => new Date(order.createdAt) >= startOfToday,
+      ),
+    );
+
+    this.stats.week = this.sumOrders(
+      completedOrders.filter(
+        (order) => new Date(order.createdAt) >= startOfWeek,
+      ),
+    );
+
+    this.stats.month = this.sumOrders(
+      completedOrders.filter(
+        (order) => new Date(order.createdAt) >= startOfMonth,
+      ),
+    );
+
+    this.stats.year = this.sumOrders(
+      completedOrders.filter(
+        (order) => new Date(order.createdAt) >= startOfYear,
+      ),
+    );
+  }
+
+  private sumOrders(orders: Order[]): number {
+    return orders.reduce((total, order) => total + Number(order.total ?? 0), 0);
+  }
+
+  // =========================================================
+  // ORDER TYPE
+  // =========================================================
+
+  private calculateOrderTypes(): void {
+    const completedOrders = this.orders.filter(
+      (order) => order.status === 'Completed',
+    );
+
+    const dineIn = completedOrders.filter(
+      (order) => order.orderType === 'Dine-in',
+    ).length;
+
+    const takeOut = completedOrders.filter(
+      (order) => order.orderType === 'Take-out',
+    ).length;
+
+    const total = dineIn + takeOut;
+
+    if (total === 0) {
+      this.orderTypeData = {
+        dineIn: 0,
+        takeOut: 0,
+      };
+
+      return;
+    }
+
+    this.orderTypeData = {
+      dineIn: Math.round((dineIn / total) * 100),
+      takeOut: Math.round((takeOut / total) * 100),
+    };
+  }
+
+  // =========================================================
+  // PAYMENT
+  // =========================================================
+
+  private calculatePayments(): void {
+    const completedOrders = this.orders.filter(
+      (order) => order.status === 'Completed',
+    );
+
+    const cash = completedOrders.filter(
+      (order) => order.paymentMethod === 'Cash',
+    ).length;
+
+    const gcash = completedOrders.filter(
+      (order) => order.paymentMethod === 'GCash',
+    ).length;
+
+    const card = completedOrders.filter(
+      (order) => order.paymentMethod === 'Card',
+    ).length;
+
+    const total = cash + gcash + card;
+
+    if (total === 0) {
+      this.paymentData = {
+        cash: 0,
+        gcash: 0,
+        card: 0,
+      };
+
+      return;
+    }
+
+    this.paymentData = {
+      cash: Math.round((cash / total) * 100),
+      gcash: Math.round((gcash / total) * 100),
+      card: Math.round((card / total) * 100),
+    };
+  }
+
+  // =========================================================
+  // TOP ITEMS
+  // =========================================================
+
+  private calculateTopItems(): void {
+    const itemMap = new Map<
+      number,
+      {
+        name: string;
+        sold: number;
+        revenue: number;
+      }
+    >();
+
+    for (const item of this.orderItems) {
+      const existing = itemMap.get(item.menu_item_id);
+
+      if (existing) {
+        existing.sold += Number(item.quantity ?? 0);
+        existing.revenue += Number(item.total ?? 0);
+      } else {
+        itemMap.set(item.menu_item_id, {
+          name: item.menu_name,
+          sold: Number(item.quantity ?? 0),
+          revenue: Number(item.total ?? 0),
+        });
+      }
+    }
+
+    this.topItems = Array.from(itemMap.values())
+      .sort((a, b) => b.sold - a.sold)
+      .slice(0, 5)
+      .map((item) => ({
+        name: item.name,
+        category: 'Menu Item',
+        sold: item.sold,
+        revenue: item.revenue,
+      }));
+  }
+
+  // =========================================================
+  // SALES CHART
+  // =========================================================
+
+  private calculateChart(): void {
+    if (this.selectedPeriod === 'Daily') {
+      this.calculateDailyChart();
+      return;
+    }
+
+    if (this.selectedPeriod === 'Weekly') {
+      this.calculateWeeklyChart();
+      return;
+    }
+
+    this.calculateMonthlyChart();
+  }
+
+  // =========================================================
+  // DAILY CHART
+  // =========================================================
+
+  private calculateDailyChart(): void {
+    const now = new Date();
+
+    const labels = [
+      '12 AM',
+      '2 AM',
+      '4 AM',
+      '6 AM',
+      '8 AM',
+      '10 AM',
+      '12 PM',
+      '2 PM',
+      '4 PM',
+      '6 PM',
+      '8 PM',
+      '10 PM',
+    ];
+
+    const values = new Array(12).fill(0);
+
+    const todayOrders = this.orders.filter(
+      (order) =>
+        order.status === 'Completed' &&
+        this.isSameDate(new Date(order.createdAt), now),
+    );
+
+    for (const order of todayOrders) {
+      const date = new Date(order.createdAt);
+      const hour = date.getHours();
+
+      const index = Math.floor(hour / 2);
+
+      if (index >= 0 && index < values.length) {
+        values[index] += Number(order.total ?? 0);
+      }
+    }
+
+    this.salesData = labels.map((label, index) => ({
+      label,
+      value: values[index],
+    }));
+  }
+
+  // =========================================================
+  // WEEKLY CHART
+  // =========================================================
+
+  private calculateWeeklyChart(): void {
+    const now = new Date();
+
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    const values = new Array(7).fill(0);
+
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getDay();
+
+    const diffToMonday = day === 0 ? 6 : day - 1;
+
+    startOfWeek.setDate(startOfWeek.getDate() - diffToMonday);
+
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const weeklyOrders = this.orders.filter(
+      (order) =>
+        order.status === 'Completed' &&
+        new Date(order.createdAt) >= startOfWeek,
+    );
+
+    for (const order of weeklyOrders) {
+      const date = new Date(order.createdAt);
+
+      const dayIndex = date.getDay() === 0 ? 6 : date.getDay() - 1;
+
+      values[dayIndex] += Number(order.total ?? 0);
+    }
+
+    this.salesData = labels.map((label, index) => ({
+      label,
+      value: values[index],
+    }));
+  }
+
+  // =========================================================
+  // MONTHLY CHART
+  // =========================================================
+
+  private calculateMonthlyChart(): void {
+    const year = new Date().getFullYear();
+
+    const labels = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    const values = new Array(12).fill(0);
+
+    const yearlyOrders = this.orders.filter((order) => {
+      if (order.status !== 'Completed') {
+        return false;
+      }
+
+      const date = new Date(order.createdAt);
+
+      return date.getFullYear() === year;
+    });
+
+    for (const order of yearlyOrders) {
+      const date = new Date(order.createdAt);
+
+      const month = date.getMonth();
+
+      values[month] += Number(order.total ?? 0);
+    }
+
+    this.salesData = labels.map((label, index) => ({
+      label,
+      value: values[index],
+    }));
+  }
 
   // =========================================================
   // PERIOD
@@ -181,10 +547,7 @@ export class SalesComponent {
   setPeriod(period: string): void {
     this.selectedPeriod = period;
 
-    console.log('Sales period changed:', period);
-
-    // Later:
-    // Load actual chart data from API
+    this.calculateChart();
   }
 
   // =========================================================
@@ -204,7 +567,12 @@ export class SalesComponent {
   }
 
   get pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+    return Array.from(
+      {
+        length: this.totalPages,
+      },
+      (_, index) => index + 1,
+    );
   }
 
   get startItem(): number {
@@ -248,21 +616,24 @@ export class SalesComponent {
   }
 
   get completedTransactions(): number {
-    return this.transactions.filter(
-      (transaction) => transaction.status === 'Completed',
-    ).length;
+    return this.orders.filter((order) => order.status === 'Completed').length;
   }
 
   get refundedTransactions(): number {
-    return this.transactions.filter(
-      (transaction) => transaction.status === 'Refunded',
-    ).length;
+    // Your current OrderStatus does not have "Refunded".
+    // Cancelled orders are treated separately.
+    return this.orders.filter((order) => order.status === 'Cancelled').length;
+  }
+
+  get cancelledTransactions(): number {
+    return this.orders.filter((order) => order.status === 'Cancelled').length;
   }
 
   get totalTransactionValue(): number {
-    return this.transactions
-      .filter((transaction) => transaction.status === 'Completed')
-      .reduce((total, transaction) => total + transaction.amount, 0);
+    return this.transactions.reduce(
+      (total, transaction) => total + transaction.amount,
+      0,
+    );
   }
 
   // =========================================================
@@ -296,10 +667,47 @@ export class SalesComponent {
       .toUpperCase();
   }
 
-  exportReport(): void {
-    console.log('Export sales report');
+  formatTime(dateString: string): string {
+    return new Intl.DateTimeFormat('en-PH', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(new Date(dateString));
+  }
 
-    // Later:
-    // Generate CSV / Excel / PDF report
+  private isSameDate(first: Date, second: Date): boolean {
+    return (
+      first.getFullYear() === second.getFullYear() &&
+      first.getMonth() === second.getMonth() &&
+      first.getDate() === second.getDate()
+    );
+  }
+
+  // =========================================================
+  // EXPORT
+  // =========================================================
+
+  exportReport(): void {
+    const rows = this.transactions.map((transaction) => ({
+      Order: transaction.id,
+      Customer: transaction.customer,
+      Type: transaction.type,
+      Payment: transaction.payment,
+      Amount: transaction.amount,
+      Time: transaction.time,
+      Status: transaction.status,
+    }));
+
+    console.table(rows);
+
+    // CSV / Excel / PDF can be added later.
+  }
+
+  // =========================================================
+  // REFRESH
+  // =========================================================
+
+  async refresh(): Promise<void> {
+    await this.loadSales();
   }
 }

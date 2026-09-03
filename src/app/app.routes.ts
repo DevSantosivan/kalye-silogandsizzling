@@ -328,6 +328,13 @@ export const routes: Routes = [
             (m) => m.PosComponent,
           ),
       },
+      {
+        path: 'active-orders',
+        loadComponent: () =>
+          import('./features/cashier/active-orders/active-orders.component').then(
+            (m) => m.ActiveOrdersComponent,
+          ),
+      },
     ],
   },
 
