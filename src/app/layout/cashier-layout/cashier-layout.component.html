@@ -1,52 +1,130 @@
-<div class="cashier-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+<div class="cashier-shell" [class.menu-open]="menuOpen()">
   <!-- =====================================================
-       SIDEBAR
+       TOPBAR
   ====================================================== -->
 
-  <aside class="sidebar">
-    <!-- BRAND -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <!-- BURGER MENU -->
+      <button
+        type="button"
+        class="menu-button"
+        (click)="toggleMenu()"
+        [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+      >
+        <i
+          class="bx"
+          [class.bx-menu]="!menuOpen()"
+          [class.bx-x]="menuOpen()"
+        ></i>
+      </button>
 
-    <div class="brand">
-      <div class="brand-mark">KS</div>
+      <div class="topbar-brand">
+        <div class="brand-mark">KS</div>
 
-      <div class="brand-copy">
-        <strong>KALYE SILOG</strong>
-        <span>Cashier POS</span>
+        <div class="brand-copy">
+          <strong>KALYE SILOG</strong>
+          <span>Cashier POS</span>
+        </div>
       </div>
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- TOPBAR RIGHT -->
+
+    <div class="topbar-right">
+      <!-- STORE STATUS -->
+      <div class="store-status">
+        <span class="status-dot"></span>
+        <span>Store Open</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- PROFILE -->
+      <div class="cashier-profile">
+        <div class="avatar">IS</div>
+
+        <div class="profile-copy">
+          <strong>Ivan Santos</strong>
+          <span>Cashier</span>
+        </div>
+
+        <i class="bx bx-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       MENU OVERLAY
+  ====================================================== -->
+
+  <div
+    class="menu-overlay"
+    [class.visible]="menuOpen()"
+    (click)="closeMenu()"
+  ></div>
+
+  <!-- =====================================================
+       SLIDE MENU
+  ====================================================== -->
+
+  <aside class="sidebar" [class.open]="menuOpen()">
+    <!-- MENU HEADER -->
+
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-mark">KS</div>
+
+        <div class="brand-copy">
+          <strong>KALYE SILOG</strong>
+          <span>Cashier POS</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="close-menu"
+        (click)="closeMenu()"
+        aria-label="Close menu"
+      >
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+
+    <!-- =================================================
+         NAVIGATION
+    ================================================== -->
 
     <nav class="navigation">
       <div class="nav-label">POINT OF SALE</div>
 
-      <!-- POS -->
+      <!-- NEW ORDER -->
 
       <a
         routerLink="/cashier/pos"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="nav-item"
-        title="POS"
+        (click)="closeMenu()"
       >
-        <i class="bx bx-grid-alt"></i>
+        <i class="bx bx-cart-alt"></i>
 
-        <span>POS</span>
+        <span>New Order</span>
       </a>
 
-      <!-- ACTIVE ORDERS -->
+      <!-- ORDERS -->
 
       <a
         routerLink="/cashier/active-orders"
         routerLinkActive="active"
         class="nav-item"
-        title="Active Orders"
+        (click)="closeMenu()"
       >
         <i class="bx bx-receipt"></i>
 
-        <span>Active Orders</span>
+        <span>Orders</span>
 
-        <span class="nav-count"> 4 </span>
+        <span class="nav-count">4</span>
       </a>
 
       <!-- SHIFT -->
@@ -55,11 +133,28 @@
         routerLink="/cashier/shift"
         routerLinkActive="active"
         class="nav-item"
-        title="My Shift"
+        (click)="closeMenu()"
       >
         <i class="bx bx-wallet"></i>
 
         <span>My Shift</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <div class="nav-label">SYSTEM</div>
+
+      <!-- PRINTERS -->
+
+      <a
+        routerLink="/cashier/printers"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeMenu()"
+      >
+        <i class="bx bx-printer"></i>
+
+        <span>Printers</span>
       </a>
     </nav>
 
@@ -81,7 +176,7 @@
 
       <!-- LOGOUT -->
 
-      <a routerLink="/" class="logout" title="Logout">
+      <a routerLink="/" class="logout" (click)="closeMenu()">
         <i class="bx bx-log-out"></i>
 
         <span>Logout</span>
@@ -94,65 +189,6 @@
   ====================================================== -->
 
   <main class="main">
-    <!-- =================================================
-         TOPBAR
-    ================================================== -->
-
-    <header class="topbar">
-      <div class="topbar-left">
-        <!-- SIDEBAR TOGGLE -->
-
-        <button
-          type="button"
-          class="sidebar-toggle"
-          (click)="toggleSidebar()"
-          [attr.aria-label]="
-            sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'
-          "
-        >
-          <i
-            class="bx"
-            [class.bx-menu]="sidebarCollapsed()"
-            [class.bx-menu-alt-left]="!sidebarCollapsed()"
-          ></i>
-        </button>
-
-        <span class="page-label"> CASHIER TERMINAL </span>
-      </div>
-
-      <!-- TOPBAR RIGHT -->
-
-      <div class="topbar-right">
-        <!-- STORE STATUS -->
-
-        <div class="store-status">
-          <span class="status-dot"></span>
-
-          <span> Store Open </span>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- PROFILE -->
-
-        <div class="cashier-profile">
-          <div class="avatar">IS</div>
-
-          <div class="profile-copy">
-            <strong> Ivan Santos </strong>
-
-            <span> Cashier </span>
-          </div>
-
-          <i class="bx bx-chevron-down"></i>
-        </div>
-      </div>
-    </header>
-
-    <!-- =================================================
-         CONTENT
-    ================================================== -->
-
     <section class="content">
       <router-outlet></router-outlet>
     </section>

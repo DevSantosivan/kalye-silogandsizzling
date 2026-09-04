@@ -1,56 +1,11 @@
 <section class="pos-page">
   <!-- =====================================================
-       HEADER
-  ====================================================== -->
-
-  <header class="pos-header">
-    <div class="header-copy">
-      <span class="eyebrow"> POINT OF SALE </span>
-
-      <h1>New Order</h1>
-
-      <p>Select menu items to create a new customer order.</p>
-    </div>
-
-    <div class="header-actions">
-      <div class="terminal-status">
-        <span class="status-dot"></span>
-
-        <div class="status-copy">
-          <strong>Terminal 01</strong>
-
-          <span>Ready for orders</span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="view-button"
-        (click)="toggleFullscreen()"
-        [attr.aria-label]="
-          isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
-        "
-      >
-        <i
-          class="bx"
-          [class.bx-exit-fullscreen]="isFullscreen"
-          [class.bx-fullscreen]="!isFullscreen"
-        ></i>
-
-        <span>
-          {{ isFullscreen ? "Exit Fullscreen" : "Fullscreen" }}
-        </span>
-      </button>
-    </div>
-  </header>
-
-  <!-- =====================================================
-       POS
+       POS CONTAINER
   ====================================================== -->
 
   <div class="pos-container">
     <!-- ===================================================
-         CATEGORY
+         CATEGORY BAR
     ==================================================== -->
 
     <aside class="category-panel">
@@ -64,12 +19,18 @@
           [class.active]="selectedCategory() === category"
           (click)="selectCategory(category)"
         >
-          <i *ngIf="category === 'All'" class="bx bx-grid-alt"></i>
+          <span class="category-icon">
+            <i *ngIf="category === 'All'" class="bx bx-grid-alt"></i>
 
-          <i *ngIf="category !== 'All'" class="bx bx-food-menu"></i>
+            <i *ngIf="category !== 'All'" class="bx bx-food-menu"></i>
+          </span>
 
-          <span>
+          <span class="category-name">
             {{ formatCategory(category) }}
+          </span>
+
+          <span class="category-count" *ngIf="category === 'All'">
+            {{ filteredMenus().length }}
           </span>
         </button>
       </div>
@@ -80,6 +41,8 @@
     ==================================================== -->
 
     <main class="products-area">
+      <!-- PRODUCTS TOOLBAR -->
+
       <div class="products-toolbar">
         <div class="menu-count">
           <strong>
@@ -103,7 +66,9 @@
         </div>
       </div>
 
-      <!-- ERROR -->
+      <!-- =================================================
+           ERROR
+      ================================================== -->
 
       <div class="state-message error" *ngIf="errorMessage()">
         <i class="bx bx-error-circle"></i>
@@ -119,7 +84,9 @@
         <button type="button" (click)="loadMenus()">Retry</button>
       </div>
 
-      <!-- LOADING -->
+      <!-- =================================================
+           LOADING
+      ================================================== -->
 
       <div class="state-message" *ngIf="loading() && !errorMessage()">
         <i class="bx bx-loader-alt bx-spin"></i>
@@ -127,16 +94,28 @@
         <span> Loading menu... </span>
       </div>
 
-      <!-- PRODUCT GRID -->
+      <!-- =================================================
+           PRODUCT GRID
+      ================================================== -->
 
       <div class="product-grid" *ngIf="!loading() && !errorMessage()">
+        <!-- PRODUCT CARD -->
         <button
           type="button"
           class="product-card"
           *ngFor="let menu of filteredMenus(); trackBy: trackByMenuId"
           (click)="addToCart(menu)"
+          [class.best-seller-card]="isBestSeller(menu)"
         >
+          <!-- IMAGE -->
+
           <div class="product-image">
+            <!-- BEST SELLER CAPTION -->
+
+            <span class="best-seller-badge" *ngIf="isBestSeller(menu)">
+              <i class="bx bxs-star"></i>
+              Best Seller
+            </span>
             <img
               *ngIf="menu.image"
               [src]="menu.image"
@@ -148,6 +127,8 @@
               <i class="bx bx-bowl-hot"></i>
             </div>
           </div>
+
+          <!-- CONTENT -->
 
           <div class="product-content">
             <span class="product-category">
@@ -169,6 +150,7 @@
             </div>
           </div>
         </button>
+        <!-- EMPTY -->
 
         <div class="empty-products" *ngIf="filteredMenus().length === 0">
           <div class="empty-products-icon">
@@ -187,11 +169,11 @@
     ==================================================== -->
 
     <aside class="order-panel">
+      <!-- ORDER HEADER -->
+
       <div class="order-header">
         <div>
           <span class="eyebrow"> CURRENT ORDER </span>
-
-          <h2>New Order</h2>
         </div>
 
         <button
@@ -204,8 +186,10 @@
         </button>
       </div>
 
+      <!-- ORDER CONTENT -->
+
       <div class="order-content">
-        <!-- EMPTY -->
+        <!-- EMPTY CART -->
 
         <div class="empty-cart" *ngIf="cart().length === 0">
           <div class="empty-cart-icon">
@@ -224,56 +208,73 @@
             class="cart-item"
             *ngFor="let item of cart(); trackBy: trackByCartId"
           >
-            <div class="cart-item-main">
-              <div class="cart-item-details">
-                <strong>
-                  {{ item.menu.name }}
-                </strong>
+            <!-- ITEM IMAGE -->
+            <div class="cart-item-image">
+              <img
+                *ngIf="item.menu.image"
+                [src]="item.menu.image"
+                [alt]="item.menu.name"
+                loading="lazy"
+              />
 
-                <span>
-                  ₱{{ item.menu.price | number: "1.2-2" }}
-                  each
-                </span>
+              <div class="cart-item-image-placeholder" *ngIf="!item.menu.image">
+                <i class="bx bx-bowl-hot"></i>
               </div>
-
-              <strong class="item-total">
-                ₱{{ item.menu.price * item.quantity | number: "1.2-2" }}
-              </strong>
             </div>
 
-            <div class="cart-item-controls">
-              <div class="quantity-control">
-                <button type="button" (click)="decrease(item.menu.id)">
-                  <i class="bx bx-minus"></i>
-                </button>
+            <!-- ITEM INFO -->
+            <div class="cart-item-info">
+              <div class="cart-item-main">
+                <div class="cart-item-details">
+                  <strong>
+                    {{ item.menu.name }}
+                  </strong>
 
-                <span>
-                  {{ item.quantity }}
-                </span>
+                  <span> ₱{{ item.menu.price | number: "1.2-2" }} each </span>
+                </div>
 
-                <button type="button" (click)="increase(item.menu.id)">
-                  <i class="bx bx-plus"></i>
-                </button>
+                <strong class="item-total">
+                  ₱{{ item.menu.price * item.quantity | number: "1.2-2" }}
+                </strong>
               </div>
 
-              <button
-                type="button"
-                class="remove-button"
-                (click)="removeItem(item.menu.id)"
-              >
-                <i class="bx bx-trash"></i>
-              </button>
+              <!-- QUANTITY -->
+              <div class="cart-item-controls">
+                <div class="quantity-control">
+                  <button type="button" (click)="decrease(item.menu.id)">
+                    <i class="bx bx-minus"></i>
+                  </button>
+
+                  <span>
+                    {{ item.quantity }}
+                  </span>
+
+                  <button type="button" (click)="increase(item.menu.id)">
+                    <i class="bx bx-plus"></i>
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeItem(item.menu.id)"
+                >
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
             </div>
           </article>
         </div>
       </div>
 
-      <!-- FOOTER -->
+      <!-- =================================================
+           ORDER FOOTER
+      ================================================== -->
 
       <div class="order-footer">
         <div class="summary">
           <div class="summary-row">
-            <span>Items</span>
+            <span> Items </span>
 
             <strong>
               {{ itemCount() }}
@@ -281,23 +282,25 @@
           </div>
 
           <div class="summary-row">
-            <span>Subtotal</span>
+            <span> Subtotal </span>
 
             <strong> ₱{{ subtotal() | number: "1.2-2" }} </strong>
           </div>
 
           <div class="summary-row">
-            <span>Discount</span>
+            <span> Discount </span>
 
             <strong> ₱{{ discount() | number: "1.2-2" }} </strong>
           </div>
 
           <div class="summary-total">
-            <span>Total</span>
+            <span> Total </span>
 
             <strong> ₱{{ total() | number: "1.2-2" }} </strong>
           </div>
         </div>
+
+        <!-- CHARGE -->
 
         <button
           type="button"
@@ -332,7 +335,9 @@
     aria-labelledby="order-modal-title"
     (click)="$event.stopPropagation()"
   >
-    <!-- MODAL HEADER -->
+    <!-- =================================================
+         MODAL HEADER
+    ================================================== -->
 
     <div class="modal-header">
       <div>
@@ -353,10 +358,14 @@
       </button>
     </div>
 
-    <!-- MODAL BODY -->
+    <!-- =================================================
+         MODAL BODY
+    ================================================== -->
 
     <div class="modal-body">
-      <!-- ORDER TYPE -->
+      <!-- =================================================
+           ORDER TYPE
+      ================================================== -->
 
       <section class="form-section">
         <div class="form-section-title">
@@ -368,6 +377,8 @@
         </div>
 
         <div class="order-type-grid">
+          <!-- DINE IN -->
+
           <button
             type="button"
             class="order-type-card"
@@ -389,6 +400,8 @@
               *ngIf="orderType() === 'Dine-in'"
             ></i>
           </button>
+
+          <!-- TAKE OUT -->
 
           <button
             type="button"
@@ -414,7 +427,9 @@
         </div>
       </section>
 
-      <!-- CUSTOMER -->
+      <!-- =================================================
+           CUSTOMER
+      ================================================== -->
 
       <section class="form-section">
         <div class="form-section-title">
@@ -426,6 +441,8 @@
         </div>
 
         <div class="form-grid">
+          <!-- NAME -->
+
           <label class="form-field">
             <span> Customer name </span>
 
@@ -436,6 +453,8 @@
               (input)="setCustomerName($any($event.target).value)"
             />
           </label>
+
+          <!-- CONTACT -->
 
           <label class="form-field">
             <span> Contact number </span>
@@ -448,10 +467,13 @@
             />
           </label>
 
+          <!-- TABLE -->
+
           <label class="form-field full" *ngIf="orderType() === 'Dine-in'">
             <span>
               Table number
-              <b>*</b>
+
+              <b> * </b>
             </span>
 
             <input
@@ -471,7 +493,9 @@
         </div>
       </section>
 
-      <!-- PAYMENT -->
+      <!-- =================================================
+           PAYMENT
+      ================================================== -->
 
       <section class="form-section">
         <div class="form-section-title">
@@ -483,6 +507,8 @@
         </div>
 
         <div class="payment-methods">
+          <!-- CASH -->
+
           <button
             type="button"
             class="payment-button"
@@ -494,6 +520,8 @@
             <span> Cash </span>
           </button>
 
+          <!-- GCASH -->
+
           <button
             type="button"
             class="payment-button"
@@ -504,6 +532,8 @@
 
             <span> GCash </span>
           </button>
+
+          <!-- CARD -->
 
           <button
             type="button"
@@ -524,7 +554,7 @@
             <span> Cash received </span>
 
             <div class="money-input">
-              <span>₱</span>
+              <span> ₱ </span>
 
               <input
                 type="number"
@@ -553,7 +583,9 @@
         </div>
       </section>
 
-      <!-- DISCOUNT -->
+      <!-- =================================================
+           DISCOUNT
+      ================================================== -->
 
       <section class="form-section">
         <div class="form-section-title">
@@ -568,7 +600,7 @@
           <span> Discount amount </span>
 
           <div class="money-input">
-            <span>₱</span>
+            <span> ₱ </span>
 
             <input
               type="number"
@@ -582,7 +614,9 @@
         </label>
       </section>
 
-      <!-- TOTAL -->
+      <!-- =================================================
+           TOTAL
+      ================================================== -->
 
       <section class="checkout-total">
         <div>
@@ -605,7 +639,9 @@
       </section>
     </div>
 
-    <!-- MODAL FOOTER -->
+    <!-- =================================================
+         MODAL FOOTER
+    ================================================== -->
 
     <div class="modal-footer">
       <button

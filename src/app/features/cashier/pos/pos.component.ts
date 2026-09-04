@@ -59,6 +59,7 @@ export class PosComponent implements OnInit {
   errorMessage = signal<string>('');
 
   isFullscreen = false;
+  bestSellerIds = signal<Set<number>>(new Set());
 
   // =========================================================
   // ORDER MODAL
@@ -84,6 +85,10 @@ export class PosComponent implements OnInit {
 
   discount = signal<number>(0);
 
+  isBestSeller(menu: MenuItem): boolean {
+    return this.bestSellerIds().has(menu.id);
+  }
+
   // =========================================================
   // CATEGORIES
   // =========================================================
@@ -96,27 +101,43 @@ export class PosComponent implements OnInit {
     return ['All', ...new Set(categories)];
   });
 
-  // =========================================================
-  // FILTERED MENU
-  // =========================================================
-
   filteredMenus = computed(() => {
     const category = this.selectedCategory();
-
     const search = this.searchTerm().trim().toLowerCase();
+    const bestSellerIds = this.bestSellerIds();
 
-    return this.menus().filter((menu) => {
-      const categoryMatch = category === 'All' || menu.category === category;
+    return this.menus()
+      .filter((menu) => {
+        const categoryMatch = category === 'All' || menu.category === category;
 
-      const searchMatch =
-        !search ||
-        menu.name.toLowerCase().includes(search) ||
-        menu.category?.toLowerCase().includes(search);
+        const searchMatch =
+          !search ||
+          menu.name.toLowerCase().includes(search) ||
+          menu.category?.toLowerCase().includes(search);
 
-      return categoryMatch && searchMatch && menu.available;
-    });
+        return categoryMatch && searchMatch && menu.available;
+      })
+      .sort((a, b) => {
+        const aBestSeller = bestSellerIds.has(a.id);
+        const bBestSeller = bestSellerIds.has(b.id);
+
+        // Best sellers first
+        if (aBestSeller && !bBestSeller) {
+          return -1;
+        }
+
+        if (!aBestSeller && bBestSeller) {
+          return 1;
+        }
+
+        // Within best sellers, highest sold first
+        if (aBestSeller && bBestSeller) {
+          return Number(b.sold) - Number(a.sold);
+        }
+
+        return 0;
+      });
   });
-
   // =========================================================
   // CART TOTALS
   // =========================================================
@@ -212,11 +233,35 @@ export class PosComponent implements OnInit {
 
       const menus = await this.menuService.getMenus();
 
+      // =====================================================
+      // SAVE MENUS
+      // =====================================================
+
       this.menus.set(menus);
+
+      // =====================================================
+      // BEST SELLERS
+      // Based on `sold`
+      // TOP 4 ONLY
+      // =====================================================
+
+      const bestSellerIds = [...menus]
+        .filter((menu) => Number(menu.sold) > 0)
+        .sort((a, b) => {
+          return Number(b.sold) - Number(a.sold);
+        })
+        .slice(0, 4)
+        .map((menu) => menu.id);
+
+      this.bestSellerIds.set(new Set(bestSellerIds));
+
+      console.log('BEST SELLERS:', bestSellerIds);
     } catch (error) {
       console.error('POS MENU ERROR:', error);
 
       this.errorMessage.set('Unable to load menu items.');
+
+      this.bestSellerIds.set(new Set());
     } finally {
       this.loading.set(false);
     }

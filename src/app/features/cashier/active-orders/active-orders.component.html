@@ -1,1 +1,393 @@
-<p>active-orders works!</p>
+<section class="orders-page">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ORDER MANAGEMENT</span>
+
+      <h1>Orders</h1>
+
+      <p>View customer orders and their menu items.</p>
+    </div>
+
+    <div class="header-summary">
+      <strong>{{ orders().length }}</strong>
+      <span>Total Orders</span>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  <div class="state-message error" *ngIf="errorMessage()">
+    <div class="state-icon">
+      <i class="bx bx-error-circle"></i>
+    </div>
+
+    <div class="state-copy">
+      <strong>Something went wrong</strong>
+
+      <span>
+        {{ errorMessage() }}
+      </span>
+    </div>
+
+    <button type="button" (click)="loadOrders()">Retry</button>
+  </div>
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  <div class="state-message" *ngIf="loading() && !errorMessage()">
+    <div class="state-icon">
+      <i class="bx bx-loader-alt bx-spin"></i>
+    </div>
+
+    <div class="state-copy">
+      <strong>Loading orders</strong>
+
+      <span> Fetching orders and menu items... </span>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       EMPTY
+  ====================================================== -->
+
+  <div
+    class="empty-state"
+    *ngIf="!loading() && !errorMessage() && orders().length === 0"
+  >
+    <div class="empty-icon">
+      <i class="bx bx-receipt"></i>
+    </div>
+
+    <strong>No orders yet</strong>
+
+    <span> Customer orders will appear here. </span>
+  </div>
+
+  <!-- =====================================================
+       ORDERS
+  ====================================================== -->
+
+  <div
+    class="orders-list"
+    *ngIf="!loading() && !errorMessage() && orders().length > 0"
+  >
+    <article
+      class="order-card"
+      *ngFor="let order of orders(); trackBy: trackByOrderId"
+    >
+      <!-- =================================================
+           ORDER TOP
+      ================================================== -->
+
+      <div class="order-card-header">
+        <div class="order-number">
+          <span class="order-label"> ORDER </span>
+
+          <strong> #{{ order.id }} </strong>
+        </div>
+
+        <div class="order-date">
+          {{ formatDate(order.createdAt) }}
+        </div>
+      </div>
+
+      <!-- =================================================
+           ORDER CUSTOMER
+      ================================================== -->
+
+      <div class="order-meta">
+        <div class="meta-item">
+          <span class="meta-label"> Customer </span>
+
+          <strong>
+            {{ order.customerName || "Walk-in Customer" }}
+          </strong>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label"> Order Type </span>
+
+          <strong>
+            {{ formatOrderType(order.orderType) }}
+          </strong>
+        </div>
+
+        <div class="meta-item" *ngIf="order.tableNumber">
+          <span class="meta-label"> Table </span>
+
+          <strong>
+            {{ order.tableNumber }}
+          </strong>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label"> Payment </span>
+
+          <strong>
+            {{ formatPaymentMethod(order.paymentMethod) }}
+          </strong>
+        </div>
+      </div>
+
+      <!-- =================================================
+           MENU ITEMS
+      ================================================== -->
+
+      <div class="order-items">
+        <div class="items-header">
+          <span> Menu Items </span>
+
+          <strong>
+            {{ getItemCount(order) }}
+            {{ getItemCount(order) === 1 ? "item" : "items" }}
+          </strong>
+        </div>
+
+        <!-- ITEMS -->
+
+        <div
+          class="item-row"
+          *ngFor="let item of order.items; trackBy: trackByItemId"
+        >
+          <!-- IMAGE PLACEHOLDER -->
+          <div class="item-image">
+            <div class="item-image-placeholder">
+              <i class="bx bx-bowl-hot"></i>
+            </div>
+          </div>
+
+          <!-- ITEM INFO -->
+
+          <div class="item-info">
+            <strong>
+              {{ item.menu_name }}
+            </strong>
+
+            <span>
+              {{ item.quantity }} × ₱{{ item.price | number: "1.2-2" }}
+            </span>
+          </div>
+
+          <!-- ITEM TOTAL -->
+
+          <strong class="item-total">
+            ₱{{ item.total | number: "1.2-2" }}
+          </strong>
+        </div>
+
+        <!-- LOADING ITEMS -->
+
+        <div class="items-loading" *ngIf="order.loadingItems">
+          <i class="bx bx-loader-alt bx-spin"></i>
+
+          <span> Loading menu items... </span>
+        </div>
+
+        <!-- NO ITEMS -->
+
+        <div
+          class="no-items"
+          *ngIf="!order.loadingItems && order.items.length === 0"
+        >
+          <i class="bx bx-info-circle"></i>
+
+          <span> No menu items found for this order. </span>
+        </div>
+      </div>
+
+      <!-- =================================================
+           ORDER FOOTER
+      ================================================== -->
+
+      <div class="order-card-footer">
+        <div class="status">
+          <span
+            class="status-dot"
+            [class.pending]="order.status === 'Pending'"
+            [class.preparing]="order.status === 'Preparing'"
+            [class.ready]="order.status === 'Ready'"
+            [class.completed]="order.status === 'Completed'"
+            [class.cancelled]="order.status === 'Cancelled'"
+          ></span>
+
+          <span>
+            {{ order.status }}
+          </span>
+        </div>
+
+        <div class="order-total">
+          <span>Total</span>
+
+          <strong> ₱{{ order.total | number: "1.2-2" }} </strong>
+        </div>
+
+        <button type="button" class="view-button" (click)="viewOrder(order)">
+          <i class="bx bx-show"></i>
+
+          <span>View</span>
+        </button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- =======================================================
+     VIEW ORDER MODAL
+======================================================== -->
+
+<div class="modal-backdrop" *ngIf="showViewModal()" (click)="closeViewModal()">
+  <section
+    class="order-modal"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- HEADER -->
+
+    <div class="modal-header">
+      <div>
+        <span class="eyebrow"> ORDER DETAILS </span>
+
+        <h2>Order #{{ selectedOrder()?.id }}</h2>
+
+        <p>
+          {{ formatDate(selectedOrder()?.createdAt) }}
+        </p>
+      </div>
+
+      <button type="button" class="modal-close" (click)="closeViewModal()">
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+
+    <!-- BODY -->
+
+    <div class="modal-body" *ngIf="selectedOrder() as order">
+      <!-- CUSTOMER -->
+
+      <section class="detail-section">
+        <div class="detail-title">Customer</div>
+
+        <div class="detail-grid">
+          <div>
+            <span>Name</span>
+
+            <strong>
+              {{ order.customerName || "Walk-in Customer" }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Contact</span>
+
+            <strong>
+              {{ order.customerContact || "—" }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Order Type</span>
+
+            <strong>
+              {{ formatOrderType(order.orderType) }}
+            </strong>
+          </div>
+
+          <div *ngIf="order.tableNumber">
+            <span>Table</span>
+
+            <strong>
+              {{ order.tableNumber }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Payment</span>
+
+            <strong>
+              {{ order.paymentMethod }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+
+            <strong>
+              {{ order.status }}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- MENU -->
+
+      <section class="detail-section">
+        <div class="detail-title">Menu Items</div>
+
+        <div class="modal-items">
+          <div
+            class="modal-item"
+            *ngFor="let item of order.items; trackBy: trackByItemId"
+          >
+            <div class="modal-item-image">
+              <div class="item-image-placeholder">
+                <i class="bx bx-bowl-hot"></i>
+              </div>
+            </div>
+
+            <div class="modal-item-info">
+              <strong>
+                {{ item.menu_name }}
+              </strong>
+
+              <span>
+                {{ item.quantity }}
+                × ₱{{ item.price | number: "1.2-2" }}
+              </span>
+            </div>
+
+            <strong> ₱{{ item.total | number: "1.2-2" }} </strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOTAL -->
+
+      <section class="modal-total">
+        <div>
+          <span>Subtotal</span>
+
+          <strong> ₱{{ order.subtotal | number: "1.2-2" }} </strong>
+        </div>
+
+        <div>
+          <span>Discount</span>
+
+          <strong> − ₱{{ order.discount | number: "1.2-2" }} </strong>
+        </div>
+
+        <div class="grand-total">
+          <span>Total</span>
+
+          <strong> ₱{{ order.total | number: "1.2-2" }} </strong>
+        </div>
+      </section>
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+      <button type="button" class="modal-cancel" (click)="closeViewModal()">
+        Close
+      </button>
+    </div>
+  </section>
+</div>

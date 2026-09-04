@@ -9,9 +9,13 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './cashier-layout.component.scss',
 })
 export class CashierLayoutComponent {
-  sidebarCollapsed = signal(false);
+  menuOpen = signal(false);
 
-  toggleSidebar(): void {
-    this.sidebarCollapsed.update((collapsed) => !collapsed);
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
   }
 }

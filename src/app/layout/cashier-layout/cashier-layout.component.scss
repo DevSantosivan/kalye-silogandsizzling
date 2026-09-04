@@ -1,72 +1,194 @@
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
 :host {
   display: block;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-* {
+:host *,
+:host *::before,
+:host *::after {
   box-sizing: border-box;
 }
 
 .cashier-shell {
-  --sidebar-width: 235px;
-  --sidebar-collapsed-width: 72px;
+  --topbar-height: 64px;
+  --drawer-width: 280px;
 
+  width: 100%;
   min-height: 100vh;
 
-  display: flex;
+  margin: 0;
+  padding: 0;
 
   background: #f6f5f2;
-
   color: #191919;
+
+  overflow-x: hidden;
+}
+
+.main {
+  width: 100%;
+  min-height: calc(100vh - var(--topbar-height));
+
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  width: 100%;
+  min-height: calc(100vh - var(--topbar-height));
+
+  margin: 0;
+  padding: 0;
 }
 
 /* =========================================================
-   SIDEBAR
+   MAIN
 ========================================================= */
 
-.sidebar {
-  width: var(--sidebar-width);
-  min-height: 100vh;
+.main {
+  width: 100%;
+  min-height: calc(100vh - var(--topbar-height));
 
-  position: fixed;
-  inset: 0 auto 0 0;
+  margin: 0;
+  padding: 0;
+}
 
-  z-index: 100;
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content {
+  width: 100%;
+  min-height: calc(100vh - var(--topbar-height));
+
+  margin: 0;
+  padding: 0;
+
+  display: block;
+}
+
+/* =========================================================
+   IMPORTANT:
+   Remove spacing from routed components
+========================================================= */
+
+.content > * {
+  width: 100%;
+  max-width: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+
+  width: 100%;
+  height: var(--topbar-height);
+
+  margin: 0;
+  padding: 0 24px;
 
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
 
   background: #ffffff;
+  border-bottom: 1px solid #e6e4df;
 
-  border-right: 1px solid #e6e4df;
-
-  transition: width 0.2s ease;
+  box-sizing: border-box;
 }
 
 /* =========================================================
-   BRAND
+   TOPBAR LEFT
 ========================================================= */
 
-.brand {
-  height: 78px;
+.topbar-left {
+  min-width: 0;
 
   display: flex;
   align-items: center;
 
-  gap: 11px;
-
-  padding: 0 20px;
-
-  border-bottom: 1px solid #eeeeeb;
-
-  overflow: hidden;
+  gap: 12px;
 }
 
-.brand-mark {
-  width: 36px;
-  height: 36px;
+/* =========================================================
+   MENU BUTTON
+========================================================= */
 
-  flex: 0 0 36px;
+.menu-button {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid #e4e2dd;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #333;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.menu-button:hover {
+  background: #f5f4f1;
+  border-color: #d8d6d1;
+  color: #191919;
+}
+
+.menu-button:active {
+  transform: scale(0.96);
+}
+
+.menu-button i {
+  font-size: 21px;
+}
+
+/* =========================================================
+   TOPBAR BRAND
+========================================================= */
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+  min-width: 0;
+}
+
+.topbar-brand .brand-mark {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
 
   display: grid;
   place-items: center;
@@ -76,11 +198,11 @@
 
   border-radius: 8px;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
 }
 
-.brand-copy {
+.topbar-brand .brand-copy {
   min-width: 0;
 
   display: flex;
@@ -89,148 +211,45 @@
   gap: 2px;
 
   white-space: nowrap;
-
-  transition:
-    opacity 0.15s ease,
-    visibility 0.15s ease;
 }
 
-.brand-copy strong {
-  font-size: 12px;
+.topbar-brand .brand-copy strong {
+  font-size: 11px;
   letter-spacing: 0.04em;
 }
 
-.brand-copy span {
+.topbar-brand .brand-copy span {
   color: #999;
-  font-size: 10px;
-}
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-.navigation {
-  padding: 25px 13px;
-}
-
-.nav-label {
-  padding: 0 11px;
-
-  margin-bottom: 10px;
-
-  color: #a1a09c;
-
   font-size: 9px;
-  font-weight: 800;
-
-  letter-spacing: 0.12em;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-}
-
-.nav-item {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-
-  gap: 11px;
-
-  width: 100%;
-  min-height: 43px;
-
-  padding: 0 12px;
-
-  margin-bottom: 4px;
-
-  color: #73716d;
-
-  text-decoration: none;
-
-  border-radius: 7px;
-
-  font-size: 13px;
-
-  white-space: nowrap;
-
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-}
-
-.nav-item i {
-  width: 20px;
-
-  flex: 0 0 20px;
-
-  display: grid;
-  place-items: center;
-
-  font-size: 18px;
-}
-
-.nav-item:hover {
-  background: #f5f4f1;
-  color: #191919;
-}
-
-.nav-item.active {
-  background: #191919;
-  color: #ffffff;
-}
-
-.nav-count {
-  margin-left: auto;
-
-  min-width: 20px;
-  height: 20px;
-
-  display: grid;
-  place-items: center;
-
-  background: #eceae6;
-  color: #555;
-
-  border-radius: 10px;
-
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.nav-item.active .nav-count {
-  background: #ffffff;
-  color: #191919;
 }
 
 /* =========================================================
-   SIDEBAR BOTTOM
+   TOPBAR RIGHT
 ========================================================= */
 
-.sidebar-bottom {
-  margin-top: auto;
-
-  padding: 15px;
-
-  border-top: 1px solid #eeeeeb;
-}
-
-.cashier-status {
+.topbar-right {
   display: flex;
   align-items: center;
 
-  gap: 9px;
+  gap: 18px;
 
-  padding: 12px;
+  flex: 0 0 auto;
+}
 
-  margin-bottom: 8px;
+/* =========================================================
+   STORE STATUS
+========================================================= */
 
-  background: #f7f7f5;
+.store-status {
+  display: flex;
+  align-items: center;
 
-  border-radius: 7px;
+  gap: 7px;
 
-  overflow: hidden;
+  color: #666;
+  font-size: 11px;
+
+  white-space: nowrap;
 }
 
 .status-dot {
@@ -244,184 +263,9 @@
   background: #45a85b;
 }
 
-.cashier-status .status-copy {
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-
-  white-space: nowrap;
-}
-
-.cashier-status strong {
-  font-size: 11px;
-}
-
-.cashier-status small {
-  color: #999;
-  font-size: 9px;
-}
-
-.logout {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  min-height: 38px;
-
-  padding: 0 12px;
-
-  color: #777;
-
-  text-decoration: none;
-
-  font-size: 12px;
-
-  border-radius: 7px;
-
-  white-space: nowrap;
-}
-
-.logout:hover {
-  background: #f5f4f1;
-  color: #191919;
-}
-
-.logout i {
-  width: 20px;
-
-  flex: 0 0 20px;
-
-  font-size: 17px;
-
-  text-align: center;
-}
-
 /* =========================================================
-   MAIN
+   DIVIDER
 ========================================================= */
-
-.main {
-  width: calc(100% - var(--sidebar-width));
-
-  min-height: 100vh;
-
-  margin-left: var(--sidebar-width);
-
-  transition:
-    width 0.2s ease,
-    margin-left 0.2s ease;
-}
-
-/* =========================================================
-   TOPBAR
-========================================================= */
-
-.topbar {
-  height: 64px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 15px;
-
-  padding: 0 28px;
-
-  background: #ffffff;
-
-  border-bottom: 1px solid #e6e4df;
-}
-
-.topbar-left {
-  min-width: 0;
-
-  display: flex;
-  align-items: center;
-
-  gap: 13px;
-}
-
-.page-label {
-  color: #999;
-
-  font-size: 10px;
-  font-weight: 800;
-
-  letter-spacing: 0.13em;
-
-  white-space: nowrap;
-}
-
-/* =========================================================
-   SIDEBAR TOGGLE
-========================================================= */
-
-.sidebar-toggle {
-  width: 34px;
-  height: 34px;
-
-  display: grid;
-  place-items: center;
-
-  flex: 0 0 auto;
-
-  padding: 0;
-
-  border: 1px solid #e4e2dd;
-
-  border-radius: 7px;
-
-  background: #ffffff;
-
-  color: #555;
-
-  cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.sidebar-toggle:hover {
-  background: #f5f4f1;
-
-  border-color: #d8d6d1;
-
-  color: #191919;
-}
-
-.sidebar-toggle i {
-  font-size: 18px;
-}
-
-/* =========================================================
-   TOPBAR RIGHT
-========================================================= */
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-
-  gap: 18px;
-}
-
-.store-status {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  color: #666;
-
-  font-size: 11px;
-
-  white-space: nowrap;
-}
 
 .divider {
   width: 1px;
@@ -429,6 +273,10 @@
 
   background: #e5e3df;
 }
+
+/* =========================================================
+   CASHIER PROFILE
+========================================================= */
 
 .cashier-profile {
   display: flex;
@@ -469,373 +317,484 @@
 
 .profile-copy span {
   color: #999;
-
   font-size: 9px;
 }
 
 .cashier-profile > i {
   color: #999;
-
   font-size: 16px;
 }
 
 /* =========================================================
-   CONTENT
+   MENU OVERLAY
 ========================================================= */
 
-.content {
-  min-height: calc(100vh - 64px);
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 90;
+
+  background: rgba(0, 0, 0, 0.28);
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.menu-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* =========================================================
-   COLLAPSED SIDEBAR
+   SIDEBAR
 ========================================================= */
 
-.cashier-shell.sidebar-collapsed {
-  --sidebar-width: var(--sidebar-collapsed-width);
+.sidebar {
+  position: fixed;
 
-  .brand {
-    justify-content: center;
+  top: 0;
+  left: 0;
+  bottom: 0;
 
-    padding: 0;
-  }
+  z-index: 100;
 
-  .brand-copy {
-    width: 0;
+  width: var(--drawer-width);
 
-    opacity: 0;
+  display: flex;
+  flex-direction: column;
 
-    visibility: hidden;
-  }
+  margin: 0;
+  padding: 0;
 
-  .navigation {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+  background: #ffffff;
 
-  .nav-label {
-    height: 0;
+  border-right: 1px solid #e6e4df;
 
-    margin: 0;
+  box-shadow: 12px 0 35px rgba(0, 0, 0, 0.08);
 
-    padding: 0;
+  transform: translateX(-100%);
 
-    opacity: 0;
-  }
+  transition: transform 0.22s ease;
 
-  .nav-item {
-    justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-    gap: 0;
-
-    padding: 0;
-  }
-
-  .nav-item i {
-    width: 22px;
-    flex-basis: 22px;
-  }
-
-  .nav-item span:not(.nav-count) {
-    width: 0;
-
-    position: absolute;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
-
-  .nav-count {
-    position: absolute;
-
-    top: 4px;
-    right: 4px;
-
-    min-width: 15px;
-    height: 15px;
-
-    font-size: 8px;
-  }
-
-  .sidebar-bottom {
-    padding: 12px 10px;
-  }
-
-  .cashier-status {
-    justify-content: center;
-
-    padding: 12px 0;
-  }
-
-  .cashier-status .status-copy {
-    width: 0;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
-
-  .logout {
-    justify-content: center;
-
-    padding: 0;
-  }
-
-  .logout span {
-    width: 0;
-
-    position: absolute;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
+.sidebar.open {
+  transform: translateX(0);
 }
 
 /* =========================================================
-   LARGE LAPTOP
-   <= 1200px
+   SIDEBAR HEADER
 ========================================================= */
 
-@media (max-width: 1200px) {
-  .topbar {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.sidebar-header {
+  min-height: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 0 18px;
+
+  border-bottom: 1px solid #eeeeeb;
+}
+
+.sidebar-header .brand {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+}
+
+.sidebar-header .brand-mark {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: grid;
+  place-items: center;
+
+  background: #191919;
+  color: #ffffff;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.sidebar-header .brand-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  white-space: nowrap;
+}
+
+.sidebar-header .brand-copy strong {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-header .brand-copy span {
+  color: #999;
+  font-size: 10px;
 }
 
 /* =========================================================
-   TABLET
-   <= 900px
+   CLOSE BUTTON
+========================================================= */
 
-   Automatically collapsed.
+.close-menu {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 1px solid #e4e2dd;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #666;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.close-menu:hover {
+  background: #f5f4f1;
+  color: #191919;
+}
+
+.close-menu i {
+  font-size: 19px;
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.navigation {
+  padding: 24px 13px;
+}
+
+.nav-label {
+  padding: 0 11px;
+
+  margin-bottom: 10px;
+
+  color: #a1a09c;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  white-space: nowrap;
+}
+
+.nav-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 12px;
+  margin-bottom: 4px;
+
+  color: #73716d;
+
+  text-decoration: none;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.nav-item:hover {
+  background: #f5f4f1;
+  color: #191919;
+}
+
+.nav-item.active {
+  background: #191919;
+  color: #ffffff;
+}
+
+.nav-item i {
+  width: 21px;
+  flex: 0 0 21px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 19px;
+}
+
+.nav-item span:not(.nav-count) {
+  flex: 1;
+}
+
+.nav-count {
+  min-width: 21px;
+  height: 21px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0 5px;
+
+  background: #eceae6;
+  color: #555;
+
+  border-radius: 11px;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.nav-item.active .nav-count {
+  background: #ffffff;
+  color: #191919;
+}
+
+/* =========================================================
+   NAV DIVIDER
+========================================================= */
+
+.nav-divider {
+  height: 1px;
+
+  margin: 18px 10px;
+
+  background: #eeeeeb;
+}
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.sidebar-bottom {
+  margin-top: auto;
+
+  padding: 15px;
+
+  border-top: 1px solid #eeeeeb;
+}
+
+/* =========================================================
+   CASHIER STATUS
+========================================================= */
+
+.cashier-status {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 12px;
+  margin-bottom: 8px;
+
+  background: #f7f7f5;
+
+  border-radius: 8px;
+}
+
+.cashier-status .status-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.cashier-status strong {
+  font-size: 11px;
+}
+
+.cashier-status small {
+  color: #999;
+  font-size: 9px;
+}
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.logout {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-height: 42px;
+
+  padding: 0 12px;
+
+  color: #777;
+
+  text-decoration: none;
+
+  font-size: 12px;
+
+  border-radius: 8px;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.logout:hover {
+  background: #f5f4f1;
+  color: #191919;
+}
+
+.logout i {
+  width: 20px;
+
+  flex: 0 0 20px;
+
+  font-size: 17px;
+
+  text-align: center;
+}
+
+/* =========================================================
+   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 900px) {
-  .cashier-shell {
-    --sidebar-width: 72px;
+  .topbar {
+    padding: 0 18px;
   }
 
-  .sidebar {
-    width: 72px;
+  .topbar-right {
+    gap: 13px;
   }
 
-  .main {
-    width: calc(100% - 72px);
-
-    margin-left: 72px;
-  }
-
-  .brand {
-    justify-content: center;
-
-    padding: 0;
-  }
-
-  .brand-copy {
-    width: 0;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
-
-  .navigation {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .nav-label {
-    height: 0;
-
-    margin: 0;
-
-    padding: 0;
-
-    opacity: 0;
-  }
-
-  .nav-item {
-    justify-content: center;
-
-    gap: 0;
-
-    padding: 0;
-  }
-
-  .nav-item span:not(.nav-count) {
-    width: 0;
-
-    position: absolute;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
-
-  .nav-item i {
-    width: 22px;
-    flex-basis: 22px;
-  }
-
-  .nav-count {
-    position: absolute;
-
-    top: 4px;
-    right: 4px;
-
-    min-width: 15px;
-    height: 15px;
-
-    font-size: 8px;
-  }
-
-  .sidebar-bottom {
-    padding: 12px 10px;
-  }
-
-  .cashier-status {
-    justify-content: center;
-
-    padding: 12px 0;
-  }
-
-  .cashier-status .status-copy {
-    width: 0;
-
-    opacity: 0;
-
-    visibility: hidden;
-  }
-
-  .logout {
-    justify-content: center;
-
-    padding: 0;
-  }
-
-  .logout span {
-    width: 0;
-
-    position: absolute;
-
-    opacity: 0;
-
-    visibility: hidden;
+  .cashier-profile > i {
+    display: none;
   }
 }
-
-/* =========================================================
-   TABLET / SMALL
-   <= 700px
-========================================================= */
 
 @media (max-width: 700px) {
   .topbar {
     height: 58px;
-
-    padding: 0 14px;
+    padding: 0 12px;
   }
 
-  .content {
+  .content,
+  .main {
     min-height: calc(100vh - 58px);
   }
 
-  .store-status span:last-child,
-  .divider,
-  .profile-copy,
-  .cashier-profile > i {
+  .menu-button {
+    width: 42px;
+    height: 42px;
+
+    flex-basis: 42px;
+  }
+
+  .topbar-brand .brand-copy span {
     display: none;
   }
 
-  .topbar-right {
-    gap: 10px;
+  .store-status span:last-child {
+    display: none;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .profile-copy {
+    display: none;
   }
 
   .cashier-profile {
     gap: 0;
   }
-}
 
-/* =========================================================
-   MOBILE
-   <= 520px
-========================================================= */
+  .topbar-right {
+    gap: 8px;
+  }
+}
 
 @media (max-width: 520px) {
-  .cashier-shell {
-    --sidebar-width: 60px;
+  .topbar {
+    padding: 0 10px;
+  }
+
+  .topbar-brand .brand-mark {
+    width: 32px;
+    height: 32px;
+
+    flex-basis: 32px;
+  }
+
+  .topbar-brand .brand-copy strong {
+    font-size: 10px;
   }
 
   .sidebar {
-    width: 60px;
+    width: min(280px, 86vw);
   }
 
-  .main {
-    width: calc(100% - 60px);
-
-    margin-left: 60px;
-  }
-
-  .brand {
-    height: 64px;
-  }
-
-  .brand-mark {
-    width: 34px;
-    height: 34px;
-
-    flex-basis: 34px;
-  }
-
-  .navigation {
-    padding: 18px 8px;
-  }
-
-  .nav-item {
-    min-height: 44px;
-  }
-
-  .sidebar-bottom {
-    padding: 10px 8px;
-  }
-
-  .page-label {
-    font-size: 9px;
-  }
-
-  .sidebar-toggle {
-    width: 32px;
-    height: 32px;
+  .sidebar-header {
+    min-height: 70px;
+    padding: 0 14px;
   }
 }
 
-/* =========================================================
-   VERY SMALL MOBILE
-   <= 380px
-========================================================= */
-
 @media (max-width: 380px) {
-  .cashier-shell {
-    --sidebar-width: 56px;
+  .topbar-brand {
+    gap: 7px;
   }
 
-  .sidebar {
-    width: 56px;
-  }
-
-  .main {
-    width: calc(100% - 56px);
-
-    margin-left: 56px;
-  }
-
-  .page-label {
+  .topbar-brand .brand-copy {
     display: none;
   }
 
-  .topbar {
-    padding: 0 10px;
+  .store-status {
+    display: none;
   }
 }
