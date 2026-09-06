@@ -272,6 +272,14 @@ export const routes: Routes = [
           ),
       },
 
+      {
+        path: 'expenses',
+        loadComponent: () =>
+          import('./features/admin/expenses/expenses.component').then(
+            (m) => m.ExpensesComponent,
+          ),
+      },
+
       // ========================================
       // REPORTS
       // /admin/reports

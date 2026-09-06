@@ -1,5 +1,8 @@
 <section class="add-ingredient-page">
-  <!-- PAGE HEADER -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
   <div class="page-header">
     <div class="header-left">
       <a
@@ -15,14 +18,22 @@
 
         <h1>Add Ingredient</h1>
 
-        <p>Add a new ingredient to your inventory.</p>
+        <p>
+          Add the ingredient, stock quantity, purchase price, and recipe usage.
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- FORM LAYOUT -->
+  <!-- =====================================================
+       MAIN LAYOUT
+  ====================================================== -->
+
   <div class="form-layout">
-    <!-- FORM CARD -->
+    <!-- ===================================================
+         FORM CARD
+    ==================================================== -->
+
     <div class="form-card">
       <div class="card-header">
         <div class="header-icon">
@@ -32,12 +43,15 @@
         <div>
           <h2>Ingredient Information</h2>
 
-          <p>Enter the basic information of the ingredient.</p>
+          <p>Ilagay ang mga detalye ng ingredient na gagamitin sa inventory.</p>
         </div>
       </div>
 
       <form class="ingredient-form" (ngSubmit)="saveIngredient()">
-        <!-- NAME -->
+        <!-- =================================================
+             INGREDIENT NAME
+        ================================================== -->
+
         <div class="form-group full-width">
           <label for="ingredientName">
             Ingredient Name
@@ -49,14 +63,19 @@
             type="text"
             name="ingredientName"
             [(ngModel)]="ingredientName"
-            placeholder="e.g. Chicken Breast"
+            placeholder="e.g. Pork Tapa"
             autocomplete="off"
           />
 
-          <small> Use a clear name that staff can easily identify. </small>
+          <small>
+            Ilagay ang pangalan ng ingredient na madaling makilala ng staff.
+          </small>
         </div>
 
-        <!-- CATEGORY -->
+        <!-- =================================================
+             CATEGORY
+        ================================================== -->
+
         <div class="form-group">
           <label for="category">
             Category
@@ -76,20 +95,33 @@
 
             <i class="bx bx-chevron-down"></i>
           </div>
+
+          <small>
+            Piliin kung anong uri ng ingredient ito para mas madaling ayusin at
+            hanapin sa inventory.
+          </small>
         </div>
 
-        <!-- UNIT -->
+        <!-- =================================================
+             INVENTORY UNIT
+        ================================================== -->
+
         <div class="form-group">
           <label for="unit">
-            Stock Unit
+            Inventory Unit
             <span>*</span>
           </label>
 
           <div class="select-wrapper">
-            <select id="unit" name="unit" [(ngModel)]="unit">
+            <select
+              id="unit"
+              name="unit"
+              [(ngModel)]="unit"
+              (ngModelChange)="onInventoryUnitChange()"
+            >
               <option value="" disabled>Select unit</option>
 
-              @for (item of units; track item) {
+              @for (item of inventoryUnits; track item) {
                 <option [value]="item">
                   {{ item }}
                 </option>
@@ -99,13 +131,19 @@
             <i class="bx bx-chevron-down"></i>
           </div>
 
-          <small> This will be the base unit used for inventory. </small>
+          <small>
+            Ito ang unit na ginagamit kapag bumibili at nagbibilang ng stock.
+            Halimbawa: kg, g, L, ml, o pcs.
+          </small>
         </div>
 
-        <!-- STOCK -->
+        <!-- =================================================
+             CURRENT STOCK
+        ================================================== -->
+
         <div class="form-group">
           <label for="stock">
-            Stock
+            Current Stock
             <span>*</span>
           </label>
 
@@ -116,19 +154,26 @@
               name="stock"
               [(ngModel)]="stock"
               min="0"
-              step="0.01"
-              placeholder="0"
+              step="0.001"
+              placeholder="e.g. 10"
             />
 
             @if (unit) {
-              <span>{{ unit }}</span>
+              <span>
+                {{ unit }}
+              </span>
             }
           </div>
 
-          <small> Enter the current quantity available in inventory. </small>
+          <small>
+            Ilagay kung gaano karami ang available na stock ngayon.
+          </small>
         </div>
 
-        <!-- REORDER LEVEL -->
+        <!-- =================================================
+             REORDER LEVEL
+        ================================================== -->
+
         <div class="form-group">
           <label for="reorderLevel">
             Reorder Level
@@ -142,22 +187,30 @@
               name="reorderLevel"
               [(ngModel)]="reorderLevel"
               min="0"
-              step="0.01"
-              placeholder="0"
+              step="0.001"
+              placeholder="e.g. 2"
             />
 
             @if (unit) {
-              <span>{{ unit }}</span>
+              <span>
+                {{ unit }}
+              </span>
             }
           </div>
 
-          <small> You'll be alerted when stock reaches this level. </small>
+          <small>
+            Ito ang minimum na stock. Kapag umabot dito, mag-aalert ang system
+            na kailangan nang bumili ulit.
+          </small>
         </div>
 
-        <!-- COST -->
+        <!-- =================================================
+             TOTAL PURCHASE COST
+        ================================================== -->
+
         <div class="form-group">
-          <label for="costPerUnit">
-            Cost per Unit
+          <label for="totalPurchaseCost">
+            Total Purchase Cost
             <span>*</span>
           </label>
 
@@ -165,31 +218,214 @@
             <span>₱</span>
 
             <input
-              id="costPerUnit"
+              id="totalPurchaseCost"
               type="number"
-              name="costPerUnit"
-              [(ngModel)]="costPerUnit"
+              name="totalPurchaseCost"
+              [(ngModel)]="totalPurchaseCost"
               min="0"
               step="0.01"
               placeholder="0.00"
             />
           </div>
 
-          <small> Estimated purchase cost for one stock unit. </small>
+          <small>
+            Ilagay ang kabuuang halagang binayaran para sa stock. Halimbawa: 10
+            kg Pork Tapa = ₱1,500.
+          </small>
         </div>
 
-        <!-- ACTIONS -->
+        <!-- =================================================
+             AUTO INVENTORY COST
+        ================================================== -->
+
+        @if (
+          stock !== null &&
+          stock > 0 &&
+          totalPurchaseCost !== null &&
+          totalPurchaseCost >= 0
+        ) {
+          <div class="conversion-box full-width">
+            <div class="conversion-icon">
+              <i class="bx bx-calculator"></i>
+            </div>
+
+            <div>
+              <span>INVENTORY COST</span>
+
+              <strong>
+                ₱{{ getInventoryCostPerUnit().toFixed(2) }}
+                /
+                {{ unit || "unit" }}
+              </strong>
+
+              <p>
+                Awtomatikong kinakalkula ang presyo bawat unit base sa dami ng
+                stock at kabuuang halaga ng binili.
+              </p>
+
+              <p>
+                {{ stock }} {{ unit }} stock = ₱{{
+                  totalPurchaseCost.toFixed(2)
+                }}
+              </p>
+            </div>
+          </div>
+        }
+
+        <!-- =================================================
+             RECIPE SECTION
+        ================================================== -->
+
+        <div class="section-divider full-width">
+          <div>
+            <span>RECIPE SETTINGS</span>
+
+            <h3>Recipe Usage</h3>
+
+            <p>
+              Piliin kung anong unit ang ginagamit kapag inilalagay ang
+              ingredient sa isang recipe.
+            </p>
+          </div>
+        </div>
+
+        <!-- =================================================
+             RECIPE UNIT
+        ================================================== -->
+
+        <div class="form-group">
+          <label for="recipeUnit">
+            Recipe Unit
+            <span>*</span>
+          </label>
+
+          <div class="select-wrapper">
+            <select
+              id="recipeUnit"
+              name="recipeUnit"
+              [(ngModel)]="recipeUnit"
+              (ngModelChange)="onRecipeUnitChange()"
+            >
+              <option value="" disabled>Select recipe unit</option>
+
+              @for (item of recipeUnits; track item) {
+                <option [value]="item">
+                  {{ item }}
+                </option>
+              }
+            </select>
+
+            <i class="bx bx-chevron-down"></i>
+          </div>
+
+          <small>
+            Ito ang unit na gagamitin ng staff kapag gumagawa ng recipe.
+            Halimbawa: g, ml, o pcs.
+          </small>
+        </div>
+
+        <!-- =================================================
+             RECIPE YIELD
+        ================================================== -->
+
+        <div class="form-group">
+          <label for="recipeYield">
+            Recipe Yield
+            <span>*</span>
+          </label>
+
+          <div class="input-with-unit">
+            <input
+              id="recipeYield"
+              type="number"
+              name="recipeYield"
+              [(ngModel)]="recipeYield"
+              min="0"
+              step="0.001"
+              placeholder="e.g. 30"
+            />
+
+            @if (recipeUnit) {
+              <span>
+                {{ recipeUnit }}
+              </span>
+            }
+          </div>
+
+          <small>
+            Ilagay kung ilang recipe units ang maaaring magawa mula sa
+            kasalukuyang stock.
+          </small>
+        </div>
+
+        <!-- =================================================
+             RECIPE CONVERSION
+        ================================================== -->
+
+        @if (
+          unit &&
+          recipeUnit &&
+          stock !== null &&
+          stock > 0 &&
+          recipeYield !== null &&
+          recipeYield > 0
+        ) {
+          <div class="conversion-box full-width">
+            <div class="conversion-icon">
+              <i class="bx bx-transfer"></i>
+            </div>
+
+            <div>
+              <span>RECIPE CONVERSION</span>
+
+              <strong>
+                1 {{ recipeUnit }}
+                =
+                {{ getInventoryPerRecipeUnit().toFixed(6) }}
+                {{ unit }}
+              </strong>
+
+              <p>
+                Awtomatikong ipinapakita kung gaano karaming inventory ang
+                kailangan para sa bawat recipe unit.
+              </p>
+
+              <p>
+                Ang
+                <strong> {{ stock }} {{ unit }} </strong>
+                na stock ay kayang gumawa ng humigit-kumulang
+                <strong> {{ recipeYield }} {{ recipeUnit }} </strong>.
+              </p>
+
+              <p>
+                Cost per
+                <strong>{{ recipeUnit }}</strong
+                >:
+                <strong> ₱{{ getRecipeUnitCost().toFixed(2) }} </strong>
+              </p>
+            </div>
+          </div>
+        }
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
         <div class="form-actions">
           <button type="button" class="cancel-button" (click)="cancel()">
+            <i class="bx bx-x"></i>
+
             Cancel
           </button>
 
           <button type="submit" class="save-button" [disabled]="isSaving()">
             @if (isSaving()) {
               <i class="bx bx-loader-alt bx-spin"></i>
+
               Saving...
             } @else {
               <i class="bx bx-check"></i>
+
               Save Ingredient
             }
           </button>
@@ -197,10 +433,17 @@
       </form>
     </div>
 
-    <!-- PREVIEW -->
+    <!-- =====================================================
+         PREVIEW
+    ====================================================== -->
+
     <aside class="preview-card">
       <div class="preview-header">
-        <span class="preview-label"> PREVIEW </span>
+        <div>
+          <span class="preview-label"> PREVIEW </span>
+
+          <p>I-check kung tama ang mga detalye bago i-save.</p>
+        </div>
 
         <div class="preview-icon">
           <i class="bx bx-package"></i>
@@ -216,10 +459,15 @@
           {{ ingredientName || "Ingredient Name" }}
         </h3>
 
-        <div class="preview-stock">
-          <!-- STOCK -->
-          <div>
-            <span>Stock</span>
+        <!-- =================================================
+             INVENTORY
+        ================================================== -->
+
+        <div class="preview-section">
+          <span class="preview-section-title"> INVENTORY </span>
+
+          <div class="preview-row">
+            <span> Current Stock </span>
 
             <strong>
               {{ stock ?? 0 }}
@@ -227,9 +475,8 @@
             </strong>
           </div>
 
-          <!-- REORDER -->
-          <div>
-            <span>Reorder At</span>
+          <div class="preview-row">
+            <span> Reorder At </span>
 
             <strong>
               {{ reorderLevel ?? 0 }}
@@ -240,23 +487,104 @@
 
         <div class="preview-divider"></div>
 
-        <!-- COST -->
-        <div class="preview-cost">
-          <span> Cost per {{ unit || "unit" }} </span>
+        <!-- =================================================
+             PURCHASE
+        ================================================== -->
 
-          <strong> ₱{{ costPerUnit ?? 0 }} </strong>
+        <div class="preview-section">
+          <span class="preview-section-title"> PURCHASE </span>
+
+          <div class="preview-row">
+            <span> Total Cost </span>
+
+            <strong> ₱{{ totalPurchaseCost ?? 0 }} </strong>
+          </div>
+
+          <div class="preview-row">
+            <span> Cost per {{ unit || "unit" }} </span>
+
+            <strong> ₱{{ getInventoryCostPerUnit().toFixed(2) }} </strong>
+          </div>
         </div>
 
-        <!-- INFORMATION -->
-        <div class="preview-note">
-          <i class="bx bx-info-circle"></i>
+        <div class="preview-divider"></div>
 
-          <p>
-            Stock represents the current quantity available. Future stock
-            changes will be recorded through Stock In, Stock Out, and actual
-            orders.
-          </p>
+        <!-- =================================================
+             RECIPE
+        ================================================== -->
+
+        <div class="preview-section">
+          <span class="preview-section-title"> RECIPE </span>
+
+          <div class="preview-row">
+            <span> Recipe Unit </span>
+
+            <strong>
+              {{ recipeUnit || "—" }}
+            </strong>
+          </div>
+
+          <div class="preview-row">
+            <span> Recipe Yield </span>
+
+            <strong>
+              {{ recipeYield ?? 0 }}
+              {{ recipeUnit }}
+            </strong>
+          </div>
+
+          <div class="preview-row">
+            <span> Inventory per {{ recipeUnit || "unit" }} </span>
+
+            <strong>
+              {{ getInventoryPerRecipeUnit().toFixed(6) }}
+              {{ unit }}
+            </strong>
+          </div>
+
+          <div class="preview-row">
+            <span> Cost per {{ recipeUnit || "unit" }} </span>
+
+            <strong> ₱{{ getRecipeUnitCost().toFixed(2) }} </strong>
+          </div>
         </div>
+
+        <!-- =================================================
+             PREVIEW NOTE
+        ================================================== -->
+
+        @if (
+          stock !== null &&
+          stock > 0 &&
+          recipeYield !== null &&
+          recipeYield > 0 &&
+          recipeUnit
+        ) {
+          <div class="preview-note">
+            <i class="bx bx-info-circle"></i>
+
+            <p>
+              Ipinapakita dito kung gaano karaming recipe units ang maaaring
+              gawin mula sa available na stock. May
+              <strong> {{ stock }} {{ unit }} </strong>
+
+              na stock na kayang gumawa ng humigit-kumulang
+
+              <strong> {{ recipeYield }} {{ recipeUnit }} </strong>. Bawat
+
+              <strong>
+                {{ recipeUnit }}
+              </strong>
+
+              ay gumagamit ng humigit-kumulang
+
+              <strong>
+                {{ getInventoryPerRecipeUnit().toFixed(6) }}
+                {{ unit }} </strong
+              >.
+            </p>
+          </div>
+        }
       </div>
     </aside>
   </div>

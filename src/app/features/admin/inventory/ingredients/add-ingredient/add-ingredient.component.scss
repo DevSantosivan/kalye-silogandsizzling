@@ -23,13 +23,12 @@
 .header-left {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 }
 
 .back-button {
   width: 42px;
   height: 42px;
-
   flex-shrink: 0;
 
   display: flex;
@@ -41,7 +40,7 @@
   border: 1px solid #deddd9;
   border-radius: 10px;
 
-  background: #ffffff;
+  background: #fff;
   color: #191919;
 
   text-decoration: none;
@@ -52,14 +51,14 @@
     transform 0.2s ease;
 }
 
-.back-button i {
-  font-size: 21px;
+.back-button:hover {
+  background: #f5f4f1;
+  border-color: #cccac4;
+  transform: translateX(-2px);
 }
 
-.back-button:hover {
-  background: #f4f3f0;
-  border-color: #cfcfc9;
-  transform: translateX(-2px);
+.back-button i {
+  font-size: 20px;
 }
 
 .eyebrow {
@@ -69,7 +68,6 @@
 
   font-size: 11px;
   font-weight: 700;
-
   letter-spacing: 0.12em;
 
   color: #8a8882;
@@ -80,24 +78,25 @@
 
   font-size: 30px;
   line-height: 1.15;
-
   font-weight: 700;
-
   letter-spacing: -0.03em;
 
   color: #191919;
 }
 
 .page-header p {
+  max-width: 700px;
+
   margin: 8px 0 0;
 
   font-size: 14px;
+  line-height: 1.5;
 
   color: #77756f;
 }
 
 /* =========================================================
-   FORM LAYOUT
+   MAIN LAYOUT
 ========================================================= */
 
 .form-layout {
@@ -105,7 +104,7 @@
 
   grid-template-columns:
     minmax(0, 1fr)
-    340px;
+    350px;
 
   gap: 22px;
 
@@ -117,13 +116,12 @@
 ========================================================= */
 
 .form-card {
-  background: #ffffff;
+  overflow: hidden;
+
+  background: #fff;
 
   border: 1px solid #e2e1dd;
-
   border-radius: 16px;
-
-  overflow: hidden;
 }
 
 .card-header {
@@ -170,6 +168,7 @@
   margin: 4px 0 0;
 
   font-size: 13px;
+  line-height: 1.45;
 
   color: #888680;
 }
@@ -196,6 +195,10 @@
   grid-column: 1 / -1;
 }
 
+/* =========================================================
+   LABELS
+========================================================= */
+
 .form-group label {
   display: block;
 
@@ -208,9 +211,14 @@
 }
 
 .form-group label span {
-  color: #a13a2d;
   margin-left: 2px;
+
+  color: #a13a2d;
 }
+
+/* =========================================================
+   INPUTS
+========================================================= */
 
 .form-group input,
 .form-group select {
@@ -222,7 +230,7 @@
   border: 1px solid #dcdad5;
   border-radius: 9px;
 
-  background: #ffffff;
+  background: #fff;
 
   color: #1d1c19;
 
@@ -233,18 +241,24 @@
 
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.form-group input::placeholder {
-  color: #aaa8a1;
+.form-group input:hover,
+.form-group select:hover {
+  border-color: #c8c6c0;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #9d9a92;
+  border-color: #8f8c84;
 
   box-shadow: 0 0 0 3px rgba(25, 25, 25, 0.05);
+}
+
+.form-group input::placeholder {
+  color: #aaa8a1;
 }
 
 .form-group small {
@@ -253,7 +267,7 @@
   margin-top: 7px;
 
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1.45;
 
   color: #94918a;
 }
@@ -298,7 +312,7 @@
 }
 
 .input-with-unit input {
-  padding-right: 60px;
+  padding-right: 65px;
 }
 
 .input-with-unit span {
@@ -318,7 +332,7 @@
 }
 
 /* =========================================================
-   CURRENCY INPUT
+   CURRENCY
 ========================================================= */
 
 .currency-input {
@@ -343,6 +357,121 @@
 
 .currency-input input {
   padding-left: 32px;
+}
+
+/* =========================================================
+   AUTO CALCULATION BOX
+========================================================= */
+
+.conversion-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding: 15px 16px;
+
+  border: 1px solid #deddd9;
+  border-radius: 11px;
+
+  background: #f8f7f4;
+}
+
+.conversion-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: #ebeae5;
+  color: #4f4d48;
+}
+
+.conversion-icon i {
+  font-size: 17px;
+}
+
+.conversion-box span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+
+  color: #8c8981;
+}
+
+.conversion-box strong {
+  display: inline-block;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #252421;
+}
+
+.conversion-box p {
+  margin: 5px 0 0;
+
+  font-size: 11px;
+  line-height: 1.45;
+
+  color: #77746d;
+}
+
+/* =========================================================
+   RECIPE SECTION
+========================================================= */
+
+.section-divider {
+  padding-top: 4px;
+  padding-bottom: 2px;
+
+  border-top: 1px solid #e9e8e4;
+}
+
+.section-divider > div {
+  padding-top: 20px;
+}
+
+.section-divider span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+
+  color: #8a8882;
+}
+
+.section-divider h3 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #252421;
+}
+
+.section-divider p {
+  max-width: 650px;
+
+  margin: 5px 0 0;
+
+  font-size: 12px;
+  line-height: 1.45;
+
+  color: #8b8881;
 }
 
 /* =========================================================
@@ -392,7 +521,8 @@
 .cancel-button {
   border: 1px solid #deddd9;
 
-  background: #ffffff;
+  background: #fff;
+
   color: #393733;
 }
 
@@ -405,7 +535,8 @@
   border: 1px solid #191919;
 
   background: #191919;
-  color: #ffffff;
+
+  color: #fff;
 }
 
 .save-button:hover:not(:disabled) {
@@ -419,9 +550,11 @@
 
 .save-button:disabled {
   opacity: 0.55;
+
   cursor: not-allowed;
 }
 
+.cancel-button i,
 .save-button i {
   font-size: 17px;
 }
@@ -434,13 +567,13 @@
   position: sticky;
   top: 24px;
 
-  background: #191919;
+  overflow: hidden;
 
   border-radius: 16px;
 
-  overflow: hidden;
+  background: #191919;
 
-  color: #ffffff;
+  color: #fff;
 }
 
 .preview-header {
@@ -448,18 +581,29 @@
   align-items: center;
   justify-content: space-between;
 
-  padding: 20px;
+  gap: 12px;
+
+  padding: 18px 20px;
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .preview-label {
+  display: block;
+
   font-size: 10px;
   font-weight: 700;
-
   letter-spacing: 0.14em;
 
-  color: #a8a6a0;
+  color: #aaa8a2;
+}
+
+.preview-header p {
+  margin: 4px 0 0;
+
+  font-size: 11px;
+
+  color: #77756f;
 }
 
 .preview-icon {
@@ -470,11 +614,12 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9px;
 
-  color: #ffffff;
+  color: #fff;
 }
 
 .preview-icon i {
@@ -482,7 +627,7 @@
 }
 
 .preview-content {
-  padding: 22px 20px 20px;
+  padding: 20px;
 }
 
 .preview-category {
@@ -495,84 +640,76 @@
 
   font-size: 9px;
   font-weight: 700;
-
   letter-spacing: 0.1em;
 
   color: #aaa8a2;
 }
 
 .preview-content h3 {
-  margin: 14px 0 24px;
+  margin: 13px 0 22px;
 
-  font-size: 23px;
+  font-size: 22px;
   line-height: 1.2;
-
   font-weight: 700;
-
   letter-spacing: -0.025em;
 
   word-break: break-word;
+
+  color: #fff;
 }
 
-.preview-stock {
-  display: grid;
+/* =========================================================
+   PREVIEW SECTIONS
+========================================================= */
 
-  grid-template-columns: 1fr 1fr;
-
-  gap: 12px;
-}
-
-.preview-stock > div {
-  padding: 13px;
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-
-  border-radius: 10px;
-}
-
-.preview-stock span,
-.preview-cost span {
+.preview-section-title {
   display: block;
 
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
 
-  color: #96948e;
+  color: #77756f;
 }
 
-.preview-stock strong {
-  display: block;
+.preview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  font-size: 15px;
+  gap: 15px;
 
-  color: #ffffff;
+  padding: 7px 0;
+}
+
+.preview-row span {
+  font-size: 11px;
+
+  color: #9a9892;
+}
+
+.preview-row strong {
+  font-size: 12px;
+  font-weight: 650;
+
+  text-align: right;
+
+  color: #f4f4f2;
 }
 
 .preview-divider {
   height: 1px;
 
-  margin: 20px 0;
+  margin: 17px 0;
 
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.09);
 }
 
-.preview-cost {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-}
-
-.preview-cost span {
-  margin: 0;
-}
-
-.preview-cost strong {
-  font-size: 17px;
-  font-weight: 700;
-}
+/* =========================================================
+   PREVIEW NOTE
+========================================================= */
 
 .preview-note {
   display: flex;
@@ -580,11 +717,10 @@
 
   gap: 9px;
 
-  margin-top: 22px;
-  padding: 13px;
+  margin-top: 18px;
+  padding: 12px;
 
   border: 1px solid rgba(255, 255, 255, 0.09);
-
   border-radius: 10px;
 
   background: rgba(255, 255, 255, 0.04);
@@ -603,17 +739,39 @@
 .preview-note p {
   margin: 0;
 
-  font-size: 11px;
+  font-size: 10.5px;
   line-height: 1.55;
 
   color: #aaa8a2;
 }
 
 /* =========================================================
+   LARGE TABLET
+========================================================= */
+
+@media (max-width: 1150px) {
+  .form-layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      310px;
+
+    gap: 18px;
+  }
+
+  .ingredient-form {
+    gap: 18px;
+  }
+
+  .preview-content {
+    padding: 18px;
+  }
+}
+
+/* =========================================================
    TABLET
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 950px) {
   .form-layout {
     grid-template-columns: 1fr;
   }
@@ -623,30 +781,47 @@
   }
 
   .preview-content {
-    padding-bottom: 24px;
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    column-gap: 30px;
+    row-gap: 0;
+  }
+
+  .preview-content h3,
+  .preview-category {
+    grid-column: 1 / -1;
+  }
+
+  .preview-category {
+    width: fit-content;
+  }
+
+  .preview-section {
+    min-width: 0;
+  }
+
+  .preview-divider {
+    display: none;
+  }
+
+  .preview-note {
+    grid-column: 1 / -1;
   }
 }
 
 /* =========================================================
-   MOBILE
+   SMALL TABLET
 ========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .page-header {
     margin-bottom: 20px;
   }
 
-  .header-left {
-    gap: 11px;
-  }
-
-  .back-button {
-    width: 38px;
-    height: 38px;
-  }
-
   .page-header h1 {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .page-header p {
@@ -656,7 +831,7 @@
   .ingredient-form {
     grid-template-columns: 1fr;
 
-    padding: 18px;
+    padding: 20px;
 
     gap: 19px;
   }
@@ -665,8 +840,54 @@
     grid-column: auto;
   }
 
+  .form-actions {
+    grid-column: auto;
+  }
+
+  .preview-content {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-content h3,
+  .preview-category,
+  .preview-note {
+    grid-column: auto;
+  }
+
+  .preview-divider {
+    display: block;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 560px) {
+  .header-left {
+    gap: 10px;
+  }
+
+  .back-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+  .page-header p {
+    font-size: 12px;
+  }
+
   .card-header {
     padding: 18px;
+  }
+
+  .header-icon {
+    width: 38px;
+    height: 38px;
   }
 
   .card-header h2 {
@@ -674,12 +895,16 @@
   }
 
   .card-header p {
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .ingredient-form {
+    padding: 18px;
+
+    gap: 18px;
   }
 
   .form-actions {
-    grid-column: auto;
-
     flex-direction: column-reverse;
 
     align-items: stretch;
@@ -689,18 +914,26 @@
   .save-button {
     width: 100%;
   }
-
-  .preview-content h3 {
-    font-size: 21px;
-  }
 }
 
 /* =========================================================
-   SMALL MOBILE
+   VERY SMALL MOBILE
 ========================================================= */
 
-@media (max-width: 420px) {
-  .preview-stock {
-    grid-template-columns: 1fr;
+@media (max-width: 380px) {
+  .page-header h1 {
+    font-size: 21px;
+  }
+
+  .ingredient-form {
+    padding: 15px;
+  }
+
+  .preview-content {
+    padding: 16px;
+  }
+
+  .preview-content h3 {
+    font-size: 20px;
   }
 }

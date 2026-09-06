@@ -131,6 +131,19 @@
       </a>
 
       <a
+        routerLink="/admin/expenses"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-wallet"></i>
+        </span>
+
+        <span class="nav-label"> Expenses </span>
+      </a>
+
+      <a
         routerLink="/admin/reports"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: false }"

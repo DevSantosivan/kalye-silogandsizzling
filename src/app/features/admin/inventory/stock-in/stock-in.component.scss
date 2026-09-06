@@ -3,7 +3,16 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.form-group > small {
+  display: block;
+  margin-top: 6px;
 
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  color: #aaa;
+}
 /* HEADER */
 
 .page-header {
@@ -414,4 +423,54 @@
   .btn {
     width: 100%;
   }
+}
+/* PANEL DESCRIPTION */
+
+.panel-header p,
+.summary-header p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #999;
+}
+
+/* CURRENT STOCK DESCRIPTION */
+
+.current-stock small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #aaa;
+}
+
+/* PREVIEW NOTE */
+
+.preview-note {
+  margin: 16px 20px 20px;
+  padding: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid #e9e7e3;
+  border-radius: 9px;
+  background: #faf9f7;
+}
+
+.preview-note i {
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 16px;
+  color: #777;
+}
+
+.preview-note p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #888;
+}
+
+.preview-note strong {
+  color: #444;
 }

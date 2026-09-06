@@ -18,21 +18,6 @@ import { MenuService } from '../../../../core/services/admin/menu.service';
 // ==========================================================
 // UI RECIPE INGREDIENT
 // ==========================================================
-//
-// Ito ang ginagamit ng FORM.
-//
-// Example:
-//
-// Inventory:
-// Chicken = 10 kg
-//
-// User enters:
-// 20 g
-//
-// Kaya quantity dito = 20
-// at hindi 0.02.
-//
-// ==========================================================
 
 interface RecipeFormIngredient {
   ingredientId: number | null;
@@ -56,9 +41,7 @@ export class CreateMenuComponent implements OnInit {
   // ========================================================
 
   private router = inject(Router);
-
   private ingredientService = inject(IngredientService);
-
   private menuService = inject(MenuService);
 
   // ========================================================
@@ -66,15 +49,10 @@ export class CreateMenuComponent implements OnInit {
   // ========================================================
 
   name = '';
-
   category = '';
-
   price = 0;
-
   image = '';
-
   description = '';
-
   available = true;
 
   // ========================================================
@@ -99,7 +77,6 @@ export class CreateMenuComponent implements OnInit {
   // ========================================================
 
   ingredients = signal<Ingredient[]>([]);
-
   isLoadingIngredients = signal(false);
 
   // ========================================================
@@ -168,15 +145,15 @@ export class CreateMenuComponent implements OnInit {
   }
 
   // ========================================================
-  // DISPLAY UNIT
+  // NORMALIZE UNIT
   // ========================================================
-  //
-  // Inventory:
-  //
-  // kg -> UI = g
-  // L  -> UI = ml
-  // pcs -> UI = pcs
-  //
+
+  normalizeUnit(unit: string | null | undefined): string {
+    return (unit ?? '').toLowerCase().trim();
+  }
+
+  // ========================================================
+  // DISPLAY RECIPE UNIT
   // ========================================================
 
   getDisplayUnit(ingredientId: number | null): string {
@@ -186,49 +163,11 @@ export class CreateMenuComponent implements OnInit {
       return 'unit';
     }
 
-    const unit = ingredient.unit?.toLowerCase().trim();
-
-    switch (unit) {
-      case 'kg':
-      case 'kilogram':
-      case 'kilograms':
-        return 'g';
-
-      case 'g':
-      case 'gram':
-      case 'grams':
-        return 'g';
-
-      case 'mg':
-      case 'milligram':
-      case 'milligrams':
-        return 'mg';
-
-      case 'l':
-      case 'liter':
-      case 'liters':
-      case 'litre':
-      case 'litres':
-        return 'ml';
-
-      case 'ml':
-      case 'milliliter':
-      case 'milliliters':
-        return 'ml';
-
-      case 'pcs':
-      case 'pc':
-      case 'piece':
-      case 'pieces':
-        return 'pcs';
-
-      default:
-        return ingredient.unit;
-    }
+    return ingredient.recipeUnit || ingredient.unit;
   }
 
   // ========================================================
-  // GET INVENTORY UNIT
+  // INVENTORY UNIT
   // ========================================================
 
   getInventoryUnit(ingredientId: number | null): string {
@@ -238,20 +177,69 @@ export class CreateMenuComponent implements OnInit {
   }
 
   // ========================================================
-  // CONVERT UI QUANTITY -> INVENTORY QUANTITY
+  // RECIPE YIELD
+  // ========================================================
+
+  getRecipeYield(ingredientId: number | null): number {
+    const ingredient = this.getIngredient(ingredientId);
+
+    return Number(ingredient?.recipeYield) || 0;
+  }
+
+  // ========================================================
+  // CONVERSION
   // ========================================================
   //
-  // Example:
+  // IMPORTANT:
   //
-  // Inventory = kg
-  // UI = g
+  // recipeYield means:
   //
-  // 20g -> 0.02kg
+  // HOW MANY RECIPE UNITS ARE PRODUCED
+  // FROM ONE INVENTORY UNIT.
+  //
+  // Examples:
+  //
+  // Chicken
+  // inventory = kg
+  // recipe     = pcs
+  // yield      = 10
+  //
+  // Means:
+  //
+  // 1 kg = 10 pcs
+  //
+  // Therefore:
+  //
+  // 1 pcs = 0.1 kg
+  //
+  // 2 pcs = 0.2 kg
+  //
+  // 5 pcs = 0.5 kg
+  //
+  // --------------------------------------------------------
+  //
+  // Egg
+  // inventory = pcs
+  // recipe     = pcs
+  //
+  // Same unit.
+  //
+  // 1 pcs = 1 pcs
+  //
+  // --------------------------------------------------------
+  //
+  // Tapa
+  // inventory = kg
+  // recipe     = g
+  //
+  // 1 kg = 1000 g
+  //
+  // 100 g = 0.1 kg
   //
   // ========================================================
 
   convertToInventoryUnit(
-    quantity: number,
+    recipeQuantity: number,
     ingredientId: number | null,
   ): number {
     const ingredient = this.getIngredient(ingredientId);
@@ -260,75 +248,168 @@ export class CreateMenuComponent implements OnInit {
       return 0;
     }
 
-    const value = Number(quantity) || 0;
+    const quantity = Number(recipeQuantity) || 0;
 
-    const unit = ingredient.unit?.toLowerCase().trim();
-
-    switch (unit) {
-      // ----------------------------------------------------
-      // KG
-      // ----------------------------------------------------
-
-      case 'kg':
-      case 'kilogram':
-      case 'kilograms':
-        return value / 1000;
-
-      // ----------------------------------------------------
-      // GRAMS
-      // ----------------------------------------------------
-
-      case 'g':
-      case 'gram':
-      case 'grams':
-        return value;
-
-      // ----------------------------------------------------
-      // MILLIGRAMS
-      // ----------------------------------------------------
-
-      case 'mg':
-      case 'milligram':
-      case 'milligrams':
-        return value / 1000;
-
-      // ----------------------------------------------------
-      // LITERS
-      // ----------------------------------------------------
-
-      case 'l':
-      case 'liter':
-      case 'liters':
-      case 'litre':
-      case 'litres':
-        return value / 1000;
-
-      // ----------------------------------------------------
-      // MILLILITERS
-      // ----------------------------------------------------
-
-      case 'ml':
-      case 'milliliter':
-      case 'milliliters':
-        return value;
-
-      // ----------------------------------------------------
-      // PIECES
-      // ----------------------------------------------------
-
-      case 'pcs':
-      case 'pc':
-      case 'piece':
-      case 'pieces':
-        return value;
-
-      // ----------------------------------------------------
-      // DEFAULT
-      // ----------------------------------------------------
-
-      default:
-        return value;
+    if (quantity <= 0) {
+      return 0;
     }
+
+    const inventoryUnit = this.normalizeUnit(ingredient.unit);
+
+    const recipeUnit = this.normalizeUnit(
+      ingredient.recipeUnit || ingredient.unit,
+    );
+
+    const recipeYield = Number(ingredient.recipeYield) || 0;
+
+    // ======================================================
+    // SAME UNIT
+    // ======================================================
+
+    if (this.unitsAreSame(recipeUnit, inventoryUnit)) {
+      return quantity;
+    }
+
+    // ======================================================
+    // PCS FROM WEIGHT
+    // ======================================================
+    //
+    // Example:
+    //
+    // 1 kg = 10 pcs
+    //
+    // 1 pcs = 1 / 10 kg
+    //
+    // ======================================================
+
+    if (this.isPieceUnit(recipeUnit) && this.isWeightUnit(inventoryUnit)) {
+      if (recipeYield <= 0) {
+        return 0;
+      }
+
+      return quantity / recipeYield;
+    }
+
+    // ======================================================
+    // GRAMS FROM KG
+    // ======================================================
+
+    if (this.isGramUnit(recipeUnit) && this.isKilogramUnit(inventoryUnit)) {
+      return quantity / 1000;
+    }
+
+    // ======================================================
+    // MG FROM KG
+    // ======================================================
+
+    if (
+      this.isMilligramUnit(recipeUnit) &&
+      this.isKilogramUnit(inventoryUnit)
+    ) {
+      return quantity / 1_000_000;
+    }
+
+    // ======================================================
+    // ML FROM LITER
+    // ======================================================
+
+    if (this.isMilliliterUnit(recipeUnit) && this.isLiterUnit(inventoryUnit)) {
+      return quantity / 1000;
+    }
+
+    // ======================================================
+    // MG FROM GRAMS
+    // ======================================================
+
+    if (this.isMilligramUnit(recipeUnit) && this.isGramUnit(inventoryUnit)) {
+      return quantity / 1000;
+    }
+
+    // ======================================================
+    // DEFAULT
+    // ======================================================
+
+    return quantity;
+  }
+
+  // ========================================================
+  // UNIT HELPERS
+  // ========================================================
+
+  isPieceUnit(unit: string): boolean {
+    return ['pcs', 'pc', 'piece', 'pieces'].includes(unit);
+  }
+
+  isWeightUnit(unit: string): boolean {
+    return [
+      'kg',
+      'kilogram',
+      'kilograms',
+      'g',
+      'gram',
+      'grams',
+      'mg',
+      'milligram',
+      'milligrams',
+    ].includes(unit);
+  }
+
+  isKilogramUnit(unit: string): boolean {
+    return ['kg', 'kilogram', 'kilograms'].includes(unit);
+  }
+
+  isGramUnit(unit: string): boolean {
+    return ['g', 'gram', 'grams'].includes(unit);
+  }
+
+  isMilligramUnit(unit: string): boolean {
+    return ['mg', 'milligram', 'milligrams'].includes(unit);
+  }
+
+  isLiterUnit(unit: string): boolean {
+    return ['l', 'liter', 'liters', 'litre', 'litres'].includes(unit);
+  }
+
+  isMilliliterUnit(unit: string): boolean {
+    return ['ml', 'milliliter', 'milliliters'].includes(unit);
+  }
+
+  unitsAreSame(first: string, second: string): boolean {
+    const normalize = (unit: string): string => {
+      switch (unit) {
+        case 'pc':
+        case 'piece':
+        case 'pieces':
+          return 'pcs';
+
+        case 'gram':
+        case 'grams':
+          return 'g';
+
+        case 'kilogram':
+        case 'kilograms':
+          return 'kg';
+
+        case 'milligram':
+        case 'milligrams':
+          return 'mg';
+
+        case 'liter':
+        case 'liters':
+        case 'litre':
+        case 'litres':
+          return 'l';
+
+        case 'milliliter':
+        case 'milliliters':
+          return 'ml';
+
+        default:
+          return unit;
+      }
+    };
+
+    return normalize(first) === normalize(second);
   }
 
   // ========================================================
@@ -337,6 +418,80 @@ export class CreateMenuComponent implements OnInit {
 
   getConvertedQuantity(item: RecipeFormIngredient): number {
     return this.convertToInventoryUnit(item.quantity, item.ingredientId);
+  }
+
+  // ========================================================
+  // FORMAT INVENTORY QUANTITY
+  // ========================================================
+
+  formatInventoryQuantity(
+    quantity: number,
+    ingredientId: number | null,
+  ): string {
+    const ingredient = this.getIngredient(ingredientId);
+
+    if (!ingredient) {
+      return '0';
+    }
+
+    const value = this.convertToInventoryUnit(quantity, ingredientId);
+
+    return value.toFixed(4).replace(/\.?0+$/, '');
+  }
+
+  // ========================================================
+  // RECIPE PREVIEW
+  // ========================================================
+  //
+  // Example:
+  //
+  // Chicken
+  // Recipe: 1 pcs
+  // Yield: 10 pcs/kg
+  //
+  // Uses: 0.1 kg
+  //
+  // ========================================================
+
+  getRecipeUsageText(item: RecipeFormIngredient): string {
+    const ingredient = this.getIngredient(item.ingredientId);
+
+    if (!ingredient) {
+      return '';
+    }
+
+    const converted = this.getConvertedQuantity(item);
+
+    const inventoryUnit = ingredient.unit;
+
+    const recipeUnit = ingredient.recipeUnit || ingredient.unit;
+
+    const yieldValue = Number(ingredient.recipeYield) || 0;
+
+    if (this.unitsAreSame(recipeUnit, inventoryUnit)) {
+      return `Uses ${this.formatNumber(converted)} ${inventoryUnit}`;
+    }
+
+    if (
+      this.isPieceUnit(this.normalizeUnit(recipeUnit)) &&
+      this.isWeightUnit(this.normalizeUnit(inventoryUnit))
+    ) {
+      if (yieldValue <= 0) {
+        return 'Recipe yield is not configured';
+      }
+
+      return `Uses ${this.formatNumber(converted)} ${inventoryUnit} from ${yieldValue} ${recipeUnit}/${inventoryUnit}`;
+    }
+
+    return `Uses ${this.formatNumber(converted)} ${inventoryUnit}`;
+  }
+
+  // ========================================================
+  // FORMAT NUMBER
+  // ========================================================
+
+  formatNumber(value: number): string {
+    return value.toFixed(4).replace(/\.?0+$/, '');
   }
 
   // ========================================================
@@ -374,25 +529,30 @@ export class CreateMenuComponent implements OnInit {
   }
 
   // ========================================================
+  // INGREDIENT COST
+  // ========================================================
+
+  getIngredientCost(item: RecipeFormIngredient): number {
+    const ingredient = this.getIngredient(item.ingredientId);
+
+    if (!ingredient) {
+      return 0;
+    }
+
+    const inventoryQuantity = this.getConvertedQuantity(item);
+
+    const costPerUnit = Number(ingredient.costPerUnit) || 0;
+
+    return inventoryQuantity * costPerUnit;
+  }
+
+  // ========================================================
   // RECIPE COST
   // ========================================================
 
   getRecipeCost(): number {
     return this.menuIngredients.reduce((total, item) => {
-      const ingredient = this.getIngredient(item.ingredientId);
-
-      if (!ingredient) {
-        return total;
-      }
-
-      const quantity = this.convertToInventoryUnit(
-        item.quantity,
-        item.ingredientId,
-      );
-
-      const costPerUnit = Number(ingredient.costPerUnit) || 0;
-
-      return total + quantity * costPerUnit;
+      return total + this.getIngredientCost(item);
     }, 0);
   }
 
@@ -440,6 +600,36 @@ export class CreateMenuComponent implements OnInit {
   }
 
   // ========================================================
+  // INVALID YIELD
+  // ========================================================
+
+  hasInvalidYield(): Ingredient | null {
+    for (const item of this.menuIngredients) {
+      const ingredient = this.getIngredient(item.ingredientId);
+
+      if (!ingredient) {
+        continue;
+      }
+
+      const recipeUnit = this.normalizeUnit(ingredient.recipeUnit);
+
+      const inventoryUnit = this.normalizeUnit(ingredient.unit);
+
+      // Same units don't need yield.
+      if (this.unitsAreSame(recipeUnit, inventoryUnit)) {
+        continue;
+      }
+
+      // Different units require a yield.
+      if (Number(ingredient.recipeYield) <= 0) {
+        return ingredient;
+      }
+    }
+
+    return null;
+  }
+
+  // ========================================================
   // STOCK VALIDATION
   // ========================================================
 
@@ -451,10 +641,7 @@ export class CreateMenuComponent implements OnInit {
         continue;
       }
 
-      const requiredQuantity = this.convertToInventoryUnit(
-        item.quantity,
-        item.ingredientId,
-      );
+      const requiredQuantity = this.getConvertedQuantity(item);
 
       const availableStock = Number(ingredient.stock) || 0;
 
@@ -543,6 +730,47 @@ export class CreateMenuComponent implements OnInit {
     }
 
     // ======================================================
+    // YIELD
+    // ======================================================
+
+    const invalidYield = this.hasInvalidYield();
+
+    if (invalidYield) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Recipe Yield Required',
+        html: `
+          <strong>
+            ${invalidYield.name}
+          </strong>
+
+          <br><br>
+
+          Inventory Unit:
+          <strong>
+            ${invalidYield.unit}
+          </strong>
+
+          <br>
+
+          Recipe Unit:
+          <strong>
+            ${invalidYield.recipeUnit}
+          </strong>
+
+          <br><br>
+
+          Please configure a valid
+          <strong>Recipe Yield</strong>
+          for this ingredient.
+        `,
+        confirmButtonColor: '#191919',
+      });
+
+      return;
+    }
+
+    // ======================================================
     // DUPLICATES
     // ======================================================
 
@@ -570,6 +798,12 @@ export class CreateMenuComponent implements OnInit {
     const insufficientIngredient = this.hasInsufficientStock();
 
     if (insufficientIngredient) {
+      const item = this.menuIngredients.find(
+        (row) => row.ingredientId === insufficientIngredient.id,
+      );
+
+      const required = item ? this.getConvertedQuantity(item) : 0;
+
       await Swal.fire({
         icon: 'warning',
         title: 'Insufficient Stock',
@@ -577,12 +811,18 @@ export class CreateMenuComponent implements OnInit {
           <strong>
             ${insufficientIngredient.name}
           </strong>
-          does not have enough stock.
 
           <br><br>
 
-          Available:
+          Required:
+          <strong>
+            ${this.formatNumber(required)}
+            ${insufficientIngredient.unit}
+          </strong>
 
+          <br>
+
+          Available:
           <strong>
             ${insufficientIngredient.stock}
             ${insufficientIngredient.unit}
@@ -597,23 +837,6 @@ export class CreateMenuComponent implements OnInit {
     // ======================================================
     // BUILD RECIPE
     // ======================================================
-    //
-    // IMPORTANT:
-    //
-    // UI:
-    //
-    // Chicken = 20 g
-    //
-    // Inventory:
-    //
-    // Chicken = kg
-    //
-    // Database:
-    //
-    // quantity = 0.02
-    // unit = kg
-    //
-    // ======================================================
 
     const recipeIngredients: CreateMenuIngredient[] = this.menuIngredients.map(
       (item) => {
@@ -623,15 +846,12 @@ export class CreateMenuComponent implements OnInit {
           throw new Error('Ingredient not found.');
         }
 
+        const inventoryQuantity = this.getConvertedQuantity(item);
+
         return {
           ingredientId: item.ingredientId!,
 
-          quantity: Number(
-            this.convertToInventoryUnit(
-              item.quantity,
-              item.ingredientId,
-            ).toFixed(6),
-          ),
+          quantity: Number(inventoryQuantity.toFixed(6)),
 
           unit: ingredient.unit as any,
         };
@@ -727,10 +947,6 @@ export class CreateMenuComponent implements OnInit {
 
     try {
       await this.menuService.createMenu(payload);
-
-      // ====================================================
-      // SUCCESS
-      // ====================================================
 
       await Swal.fire({
         icon: 'success',

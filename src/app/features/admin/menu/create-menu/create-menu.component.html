@@ -16,7 +16,6 @@
 
     <a routerLink="/admin/menu" class="back-link">
       <i class="bx bx-arrow-back"></i>
-
       Back to Menu
     </a>
   </div>
@@ -112,8 +111,7 @@
         <div class="form-group">
           <label for="image">
             Image URL
-
-            <small> Optional </small>
+            <small>Optional</small>
           </label>
 
           <input
@@ -124,6 +122,8 @@
             placeholder="https://example.com/image.jpg"
           />
         </div>
+
+        <!-- DESCRIPTION -->
 
         <div class="form-group">
           <label>
@@ -136,6 +136,7 @@
             placeholder="Describe this menu item..."
           ></app-rich-text-editor>
         </div>
+
         <!-- AVAILABILITY -->
 
         <div class="availability-row">
@@ -165,7 +166,9 @@
 
               <h2>Ingredients Per Serving</h2>
 
-              <p>Define how much inventory is consumed for one serving.</p>
+              <p>
+                Define how much of each ingredient is consumed for one serving.
+              </p>
             </div>
 
             <button
@@ -174,7 +177,6 @@
               (click)="addIngredient()"
             >
               <i class="bx bx-plus"></i>
-
               Add Ingredient
             </button>
           </div>
@@ -221,14 +223,23 @@
                         [disabled]="isIngredientSelected(ingredient.id, i)"
                       >
                         {{ ingredient.name }}
-
-                        ({{ ingredient.stock }} {{ ingredient.unit }})
+                        —
+                        {{ ingredient.stock }}
+                        {{ ingredient.unit }}
                       </option>
                     }
                   </select>
-                </div>
 
-                <!-- QUANTITY -->
+                  @if (getIngredient(item.ingredientId); as ingredient) {
+                    <small class="inventory-info">
+                      Inventory:
+                      <strong>
+                        {{ ingredient.stock }}
+                        {{ ingredient.unit }}
+                      </strong>
+                    </small>
+                  }
+                </div>
 
                 <!-- QUANTITY -->
 
@@ -252,28 +263,47 @@
 
                   @if (getIngredient(item.ingredientId); as ingredient) {
                     <small class="quantity-hint">
-                      Inventory:
-                      {{ ingredient.stock }}
-                      {{ ingredient.unit }}
+                      @if (ingredient.recipeUnit !== ingredient.unit) {
+                        1
+                        {{ ingredient.unit }}
+                        =
+                        {{ ingredient.recipeYield }}
+                        {{ ingredient.recipeUnit }}
+                      } @else {
+                        Recipe unit:
+                        {{ ingredient.recipeUnit }}
+                      }
                     </small>
                   }
                 </div>
 
-                <div class="ingredient-cost">
-                  <label>Cost</label>
+                <!-- CONVERTED -->
 
-                  <strong>
-                    @if (getIngredient(item.ingredientId); as ingredient) {
-                      ₱{{
-                        (
-                          getConvertedQuantity(item) *
-                          (ingredient.costPerUnit || 0)
-                        ).toFixed(2)
+                <div class="ingredient-conversion">
+                  <label> Uses </label>
+
+                  @if (getIngredient(item.ingredientId); as ingredient) {
+                    <strong>
+                      {{
+                        formatInventoryQuantity(
+                          item.quantity,
+                          item.ingredientId
+                        )
                       }}
-                    } @else {
-                      ₱0.00
-                    }
-                  </strong>
+
+                      {{ ingredient.unit }}
+                    </strong>
+                  } @else {
+                    <strong> 0 </strong>
+                  }
+                </div>
+
+                <!-- COST -->
+
+                <div class="ingredient-cost">
+                  <label> Cost </label>
+
+                  <strong> ₱{{ getIngredientCost(item).toFixed(2) }} </strong>
                 </div>
 
                 <!-- REMOVE -->
@@ -338,13 +368,9 @@
     ========================================= -->
 
     <aside class="preview-column">
-      <!-- ======================================
-           FOOD PREVIEW
-      ======================================= -->
+      <!-- FOOD PREVIEW -->
 
       <section class="preview-card">
-        <!-- IMAGE -->
-
         <div class="preview-image">
           @if (image.trim()) {
             <img [src]="image" [alt]="name || 'Menu preview'" />
@@ -355,8 +381,6 @@
               <span> Menu Image </span>
             </div>
           }
-
-          <!-- AVAILABILITY -->
 
           @if (available) {
             <span class="available-badge">
@@ -372,8 +396,6 @@
             </span>
           }
         </div>
-
-        <!-- CONTENT -->
 
         <div class="preview-content">
           <span class="preview-category">
@@ -404,8 +426,6 @@
       ======================================= -->
 
       <section class="summary-card">
-        <!-- HEADER -->
-
         <div class="summary-header">
           <div>
             <span class="panel-eyebrow"> RECIPE PREVIEW </span>
@@ -418,9 +438,7 @@
           </div>
         </div>
 
-        <!-- ====================================
-             INGREDIENT SUMMARY
-        ===================================== -->
+        <!-- INGREDIENT SUMMARY -->
 
         <div class="recipe-summary-list">
           @for (item of menuIngredients; track $index) {
@@ -438,7 +456,9 @@
 
                     <span>
                       ₱{{ ingredient.costPerUnit.toFixed(2) }}
+
                       /
+
                       {{ ingredient.unit }}
                     </span>
                   </div>
@@ -447,19 +467,23 @@
                 <div class="recipe-quantity">
                   <strong>
                     {{ item.quantity || 0 }}
+
                     {{ getDisplayUnit(item.ingredientId) }}
                   </strong>
 
                   <small>
-                    = {{ getConvertedQuantity(item) }}
+                    Uses
+
+                    {{
+                      formatInventoryQuantity(item.quantity, item.ingredientId)
+                    }}
+
                     {{ ingredient.unit }}
                   </small>
                 </div>
               </div>
             }
           }
-
-          <!-- EMPTY RECIPE -->
 
           @if (hasNoIngredients()) {
             <div class="recipe-empty">
@@ -472,9 +496,7 @@
           }
         </div>
 
-        <!-- ====================================
-             COST BREAKDOWN
-        ===================================== -->
+        <!-- COST -->
 
         <div class="cost-breakdown">
           <div>
@@ -490,9 +512,7 @@
           </div>
         </div>
 
-        <!-- ====================================
-             PROFIT
-        ===================================== -->
+        <!-- PROFIT -->
 
         <div class="profit-box">
           <div>

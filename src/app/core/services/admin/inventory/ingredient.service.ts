@@ -9,9 +9,9 @@ import { SupabaseService } from '../../supabase.service';
 export class IngredientService {
   private supabase = inject(SupabaseService);
 
-  // ==========================================
+  // =========================================================
   // GET ALL INGREDIENTS
-  // ==========================================
+  // =========================================================
 
   async getIngredients(): Promise<Ingredient[]> {
     const { data, error } = await this.supabase.client
@@ -28,9 +28,9 @@ export class IngredientService {
     return (data ?? []).map((item) => this.mapIngredient(item));
   }
 
-  // ==========================================
+  // =========================================================
   // GET INGREDIENT BY ID
-  // ==========================================
+  // =========================================================
 
   async getIngredientById(id: number): Promise<Ingredient | null> {
     const { data, error } = await this.supabase.client
@@ -41,33 +41,51 @@ export class IngredientService {
 
     if (error) {
       console.error('Error fetching ingredient:', error);
+
+      return null;
+    }
+
+    if (!data) {
       return null;
     }
 
     return this.mapIngredient(data);
   }
 
-  // ==========================================
+  // =========================================================
   // CREATE INGREDIENT
-  // ==========================================
+  // =========================================================
 
   async createIngredient(payload: {
     name: string;
     category: string;
+
     stock: number;
     unit: string;
+
     reorderLevel: number;
+
     costPerUnit: number;
+
+    recipeUnit: string;
+    recipeYield: number;
   }): Promise<Ingredient> {
     const { data, error } = await this.supabase.client
       .from('ingredients')
       .insert({
         name: payload.name,
         category: payload.category,
+
         stock: payload.stock,
         unit: payload.unit,
+
         reorder_level: payload.reorderLevel,
+
         cost_per_unit: payload.costPerUnit,
+
+        recipe_unit: payload.recipeUnit,
+        recipe_yield: payload.recipeYield,
+
         is_active: true,
       })
       .select()
@@ -75,24 +93,31 @@ export class IngredientService {
 
     if (error) {
       console.error('Error creating ingredient:', error);
+
       throw error;
     }
 
     return this.mapIngredient(data);
   }
 
-  // ==========================================
+  // =========================================================
   // UPDATE INGREDIENT
-  // ==========================================
+  // =========================================================
 
   async updateIngredient(
     id: number,
     payload: {
       name: string;
       category: string;
+
       unit: string;
+
       reorderLevel: number;
+
       costPerUnit: number;
+
+      recipeUnit: string;
+      recipeYield: number;
     },
   ): Promise<Ingredient> {
     const { data, error } = await this.supabase.client
@@ -100,9 +125,16 @@ export class IngredientService {
       .update({
         name: payload.name,
         category: payload.category,
+
         unit: payload.unit,
+
         reorder_level: payload.reorderLevel,
+
         cost_per_unit: payload.costPerUnit,
+
+        recipe_unit: payload.recipeUnit,
+        recipe_yield: payload.recipeYield,
+
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -111,16 +143,17 @@ export class IngredientService {
 
     if (error) {
       console.error('Error updating ingredient:', error);
+
       throw error;
     }
 
     return this.mapIngredient(data);
   }
 
-  // ==========================================
+  // =========================================================
   // DELETE INGREDIENT
   // SOFT DELETE
-  // ==========================================
+  // =========================================================
 
   async deleteIngredient(id: number): Promise<void> {
     const { error } = await this.supabase.client
@@ -133,25 +166,55 @@ export class IngredientService {
 
     if (error) {
       console.error('Error deleting ingredient:', error);
+
       throw error;
     }
   }
 
-  // ==========================================
+  // =========================================================
   // MAP SUPABASE → ANGULAR MODEL
-  // ==========================================
+  // =========================================================
 
   private mapIngredient(item: any): Ingredient {
     return {
-      id: item.id,
+      id: Number(item.id),
+
       name: item.name,
+
       category: item.category,
-      stock: Number(item.stock),
+
+      // ==========================================
+      // INVENTORY
+      // ==========================================
+
+      stock: Number(item.stock) || 0,
+
       unit: item.unit,
-      reorderLevel: Number(item.reorder_level),
-      costPerUnit: Number(item.cost_per_unit),
-      isActive: item.is_active,
+
+      reorderLevel: Number(item.reorder_level) || 0,
+
+      costPerUnit: Number(item.cost_per_unit) || 0,
+
+      // ==========================================
+      // RECIPE CONFIGURATION
+      // ==========================================
+
+      recipeUnit: item.recipe_unit ?? item.unit,
+
+      recipeYield: Number(item.recipe_yield) || 0,
+
+      // ==========================================
+      // STATUS
+      // ==========================================
+
+      isActive: item.is_active ?? true,
+
+      // ==========================================
+      // TIMESTAMPS
+      // ==========================================
+
       createdAt: item.created_at,
+
       updatedAt: item.updated_at,
     };
   }

@@ -1,13 +1,15 @@
 <section class="ingredients-page">
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
   <div class="page-header">
     <div class="page-heading">
-      <span class="eyebrow">INVENTORY</span>
+      <span class="eyebrow"> INVENTORY </span>
 
       <h1>Ingredients</h1>
 
-      <p>Manage your restaurant's ingredients and stock levels.</p>
+      <p>Manage ingredients, stock levels, costs, and recipe settings.</p>
     </div>
 
     <button type="button" class="btn btn-primary" (click)="goToAddIngredient()">
@@ -16,7 +18,9 @@
     </button>
   </div>
 
-  <!-- TOOLBAR -->
+  <!-- =====================================================
+       TOOLBAR
+  ====================================================== -->
 
   <section class="toolbar">
     <div class="search-box">
@@ -42,35 +46,53 @@
     </div>
   </section>
 
-  <!-- TABLE -->
+  <!-- =====================================================
+       TABLE
+  ====================================================== -->
 
   <section class="table-panel">
+    <!-- TABLE TOP -->
+
     <div class="table-top">
       <div>
-        <strong>Ingredient List</strong>
+        <strong> Ingredient List </strong>
 
-        <span> {{ filteredIngredients().length }} ingredients </span>
+        <span>
+          {{ filteredIngredients().length }}
+          ingredients
+        </span>
       </div>
     </div>
+
+    <!-- TABLE -->
 
     <div class="table-wrapper">
       <table>
         <thead>
           <tr>
             <th>Ingredient</th>
+
             <th>Category</th>
+
             <th>Stock</th>
+
             <th>Unit</th>
+
             <th>Cost / Unit</th>
+
             <th>Status</th>
-            <th></th>
+
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
           @for (item of filteredIngredients(); track item.id) {
             <tr>
-              <!-- INGREDIENT -->
+              <!-- =================================================
+                   INGREDIENT
+              ================================================== -->
+
               <td>
                 <div class="ingredient-cell">
                   <div class="ingredient-icon">
@@ -78,39 +100,64 @@
                   </div>
 
                   <div>
-                    <strong>{{ item.name }}</strong>
-                    <span>ID #{{ item.id }}</span>
+                    <strong>
+                      {{ item.name }}
+                    </strong>
+
+                    <span> ID #{{ item.id }} </span>
                   </div>
                 </div>
               </td>
 
-              <!-- CATEGORY -->
+              <!-- =================================================
+                   CATEGORY
+              ================================================== -->
+
               <td>
                 <span class="category">
                   {{ item.category }}
                 </span>
               </td>
 
-              <!-- STOCK -->
-              <td>
-                <strong class="stock-number">
-                  {{ item.stock }}
-                </strong>
+              <!-- =================================================
+                   STOCK
+              ================================================== -->
 
-                <span class="reorder"> Reorder: {{ item.reorderLevel }} </span>
+              <td>
+                <div class="stock-cell">
+                  <strong class="stock-number">
+                    {{ item.stock }}
+                  </strong>
+
+                  <span class="reorder">
+                    Reorder:
+                    {{ item.reorderLevel }}
+                  </span>
+                </div>
               </td>
 
-              <!-- UNIT -->
+              <!-- =================================================
+                   UNIT
+              ================================================== -->
+
               <td>
                 {{ item.unit }}
               </td>
 
-              <!-- COST PER UNIT -->
+              <!-- =================================================
+                   COST
+              ================================================== -->
+
               <td>
-                <strong class="cost-number"> ₱{{ item.costPerUnit }} </strong>
+                <strong class="cost-number">
+                  ₱{{ item.costPerUnit.toFixed(2) }}
+                </strong>
               </td>
 
-              <!-- STATUS -->
+              <!-- =================================================
+                   STATUS
+              ================================================== -->
+
               <td>
                 <span
                   class="status"
@@ -121,9 +168,25 @@
                 </span>
               </td>
 
-              <!-- ACTIONS -->
+              <!-- =================================================
+                   ACTIONS
+              ================================================== -->
+
               <td>
                 <div class="row-actions">
+                  <!-- VIEW -->
+
+                  <button
+                    type="button"
+                    title="View Details"
+                    class="view"
+                    (click)="viewIngredient(item)"
+                  >
+                    <i class="bx bx-show"></i>
+                  </button>
+
+                  <!-- EDIT -->
+
                   <button
                     type="button"
                     title="Edit"
@@ -131,6 +194,8 @@
                   >
                     <i class="bx bx-edit-alt"></i>
                   </button>
+
+                  <!-- DELETE -->
 
                   <button
                     type="button"
@@ -145,12 +210,16 @@
             </tr>
           }
 
+          <!-- =================================================
+               EMPTY
+          ================================================== -->
+
           @if (filteredIngredients().length === 0) {
             <tr>
               <td colspan="7" class="empty-row">
                 <i class="bx bx-search-alt"></i>
 
-                <strong>No ingredients found</strong>
+                <strong> No ingredients found </strong>
 
                 <span> Try another search or category. </span>
               </td>

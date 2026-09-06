@@ -4,7 +4,9 @@
   margin: 0 auto;
 }
 
-/* HEADER */
+/* =========================================================
+   HEADER
+========================================================= */
 
 .page-header {
   display: flex;
@@ -17,7 +19,6 @@
 .eyebrow {
   display: block;
   margin-bottom: 7px;
-
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -26,16 +27,25 @@
 
 .page-header h1 {
   margin: 0;
-
   font-size: 30px;
+  line-height: 1.15;
   letter-spacing: -0.03em;
 }
 
 .page-header p {
   margin: 9px 0 0;
-
   font-size: 14px;
   color: #777;
+}
+.form-group > small {
+  display: block;
+  margin-top: 6px;
+
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  color: #aaa;
 }
 
 .history-link {
@@ -50,23 +60,39 @@
   border-radius: 9px;
 
   background: #fff;
-
   color: #555;
 
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-/* GRID */
+.history-link:hover {
+  background: #faf9f7;
+  border-color: #d8d5d0;
+  color: #222;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    minmax(280px, 0.8fr);
   gap: 18px;
 }
 
-/* PANEL */
+/* =========================================================
+   PANELS
+========================================================= */
 
 .form-panel,
 .summary-panel {
@@ -78,6 +104,15 @@
 .form-panel {
   overflow: hidden;
 }
+
+.summary-panel {
+  height: fit-content;
+  overflow: hidden;
+}
+
+/* =========================================================
+   PANEL HEADER
+========================================================= */
 
 .panel-header {
   padding: 20px;
@@ -99,9 +134,23 @@
   margin: 5px 0 0;
 
   font-size: 17px;
+  font-weight: 750;
+  line-height: 1.25;
 }
 
-/* FORM */
+.panel-header p,
+.summary-header p {
+  margin: 6px 0 0;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #999;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
 
 .stock-form {
   padding: 22px;
@@ -144,7 +193,12 @@
 
   font-family: inherit;
   font-size: 13px;
+
   color: #222;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .form-group input,
@@ -156,6 +210,7 @@
 .form-group textarea {
   padding: 12px 13px;
   resize: vertical;
+  min-height: 100px;
 }
 
 .form-group input:focus,
@@ -164,7 +219,9 @@
   border-color: #999;
 }
 
-/* CURRENT */
+/* =========================================================
+   CURRENT STOCK
+========================================================= */
 
 .current-stock {
   margin-bottom: 19px;
@@ -180,7 +237,7 @@
   background: #faf9f7;
 }
 
-.current-stock div {
+.current-stock-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -193,6 +250,19 @@
 
 .current-stock strong {
   font-size: 16px;
+  line-height: 1.2;
+  color: #222;
+}
+
+.current-stock small {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 10px;
+  line-height: 1.4;
+
+  color: #aaa;
 }
 
 .current-stock i {
@@ -200,10 +270,105 @@
   color: #888;
 }
 
-/* UNIT */
+/* =========================================================
+   RECIPE YIELD REFERENCE
+========================================================= */
+
+.recipe-yield-card {
+  margin-bottom: 19px;
+  padding: 15px;
+
+  border: 1px solid #e8e6e2;
+  border-radius: 9px;
+
+  background: #faf9f7;
+}
+
+.recipe-yield-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 14px;
+}
+
+.field-eyebrow {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+
+  color: #999;
+}
+
+.recipe-yield-header h3 {
+  margin: 0;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #333;
+}
+
+.recipe-yield-header i {
+  font-size: 20px;
+  color: #888;
+}
+
+/* =========================================================
+   YIELD INFO
+========================================================= */
+
+.recipe-yield-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.yield-reference {
+  padding: 11px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  border: 1px solid #e5e3df;
+  border-radius: 8px;
+
+  background: #fff;
+}
+
+.yield-reference span {
+  font-size: 10px;
+  color: #999;
+}
+
+.yield-reference strong {
+  font-size: 13px;
+  color: #333;
+}
+
+.reference-note {
+  margin: 10px 0 0;
+
+  font-size: 10px;
+  line-height: 1.45;
+
+  color: #aaa;
+}
+
+/* =========================================================
+   INPUT WITH UNIT
+========================================================= */
 
 .input-with-unit {
   position: relative;
+
   display: flex;
   align-items: center;
 }
@@ -218,15 +383,20 @@
 
   font-size: 12px;
   color: #999;
+
+  pointer-events: none;
 }
 
-/* ACTIONS */
+/* =========================================================
+   ACTIONS
+========================================================= */
 
 .form-actions {
   padding-top: 7px;
 
   display: flex;
   justify-content: flex-end;
+
   gap: 9px;
 }
 
@@ -237,15 +407,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 7px;
 
   border-radius: 9px;
 
   font-size: 12px;
   font-weight: 700;
+
   text-decoration: none;
 
   cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .btn-secondary {
@@ -254,18 +431,29 @@
   color: #555;
 }
 
+.btn-secondary:hover {
+  background: #faf9f7;
+  border-color: #d8d5d0;
+}
+
 .btn-danger {
   border: 0;
   background: #b63f3f;
   color: #fff;
 }
 
-/* SUMMARY */
-
-.summary-panel {
-  height: fit-content;
-  overflow: hidden;
+.btn-danger:hover {
+  background: #a63737;
 }
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
 
 .summary-header {
   padding: 20px;
@@ -277,6 +465,7 @@
 
   display: flex;
   justify-content: space-between;
+
   gap: 20px;
 
   border-bottom: 1px solid #f0efed;
@@ -289,23 +478,36 @@
 
 .preview-item strong {
   font-size: 12px;
+  font-weight: 700;
+
   text-align: right;
+
+  color: #333;
 }
 
 .preview-item strong.negative {
   color: #bd4141;
 }
 
+/* =========================================================
+   DIVIDER
+========================================================= */
+
 .preview-divider {
   height: 1px;
   background: #dedcd8;
 }
 
+/* =========================================================
+   REMAINING STOCK
+========================================================= */
+
 .preview-total {
-  padding: 20px;
+  padding: 19px 20px;
 
   display: flex;
   flex-direction: column;
+
   gap: 6px;
 }
 
@@ -316,10 +518,14 @@
 
 .preview-total strong {
   font-size: 23px;
+  line-height: 1.15;
+
   color: #191919;
 }
 
-/* WARNING */
+/* =========================================================
+   WARNING
+========================================================= */
 
 .warning-message {
   margin: 0 20px 20px;
@@ -327,9 +533,11 @@
 
   display: flex;
   align-items: flex-start;
+
   gap: 8px;
 
   border-radius: 8px;
+
   background: #fff5e6;
 
   color: #966200;
@@ -339,18 +547,26 @@
 }
 
 .warning-message i {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
   font-size: 16px;
 }
 
-/* EMPTY */
+/* =========================================================
+   EMPTY PREVIEW
+========================================================= */
 
 .preview-empty {
   min-height: 260px;
+
   padding: 30px 20px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
   flex-direction: column;
 
   text-align: center;
@@ -365,16 +581,23 @@
 
 .preview-empty strong {
   font-size: 13px;
+  color: #333;
 }
 
 .preview-empty span {
+  max-width: 220px;
+
   margin-top: 5px;
 
   font-size: 11px;
+  line-height: 1.5;
+
   color: #999;
 }
 
-/* RESPONSIVE */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 850px) {
   .content-grid {
@@ -396,11 +619,34 @@
     font-size: 25px;
   }
 
+  .stock-form {
+    padding: 18px;
+  }
+
   .form-actions {
     flex-direction: column-reverse;
   }
 
   .btn {
     width: 100%;
+  }
+
+  .recipe-yield-info {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-item {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .preview-total {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .warning-message {
+    margin-left: 18px;
+    margin-right: 18px;
   }
 }

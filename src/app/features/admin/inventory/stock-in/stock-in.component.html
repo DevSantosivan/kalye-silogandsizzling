@@ -1,35 +1,54 @@
 <section class="stock-in-page">
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
   <div class="page-header">
     <div>
-      <span class="eyebrow">INVENTORY</span>
+      <span class="eyebrow"> INVENTORY </span>
 
       <h1>Stock In</h1>
 
-      <p>Receive new stock from suppliers and update your inventory.</p>
+      <p>
+        Magdagdag ng bagong stock sa existing ingredient at itala ang detalye ng
+        delivery.
+      </p>
     </div>
 
     <a routerLink="/admin/inventory/history" class="history-link">
       <i class="bx bx-history"></i>
+
       View History
     </a>
   </div>
 
-  <!-- FORM -->
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
 
   <div class="content-grid">
+    <!-- ===================================================
+         FORM
+    ==================================================== -->
+
     <section class="form-panel">
       <div class="panel-header">
         <div>
           <span class="panel-eyebrow"> STOCK RECEIVING </span>
 
           <h2>Receive Inventory</h2>
+
+          <p>
+            Piliin ang ingredient na natanggap at ilagay ang actual quantity at
+            manual recipe yield.
+          </p>
         </div>
       </div>
 
       <form class="stock-form" (ngSubmit)="receiveStock()">
-        <!-- INGREDIENT -->
+        <!-- =================================================
+             INGREDIENT
+        ================================================== -->
 
         <div class="form-group">
           <label for="ingredient"> Ingredient </label>
@@ -48,26 +67,39 @@
               </option>
             }
           </select>
+
+          <small>
+            Piliin ang existing ingredient na papasukan ng bagong stock.
+          </small>
         </div>
 
-        <!-- CURRENT STOCK -->
+        <!-- =================================================
+             CURRENT STOCK
+        ================================================== -->
 
         @if (selectedIngredient(); as ingredient) {
           <div class="current-stock">
             <div>
-              <span>Current Stock</span>
+              <span> Current Stock </span>
 
               <strong>
                 {{ ingredient.stock }}
+
                 {{ ingredient.unit }}
               </strong>
+
+              <small>
+                Ito ang kasalukuyang stock bago idagdag ang bagong delivery.
+              </small>
             </div>
 
             <i class="bx bx-package"></i>
           </div>
         }
 
-        <!-- QUANTITY -->
+        <!-- =================================================
+             QUANTITY
+        ================================================== -->
 
         <div class="form-group">
           <label for="quantity"> Quantity Received </label>
@@ -80,7 +112,7 @@
               min="0"
               step="0.01"
               [(ngModel)]="quantity"
-              placeholder="0"
+              placeholder="e.g. 10"
             />
 
             @if (selectedIngredient(); as ingredient) {
@@ -88,12 +120,54 @@
                 {{ ingredient.unit }}
               </span>
             } @else {
-              <span>unit</span>
+              <span> unit </span>
             }
           </div>
+
+          <small>
+            Ilagay ang actual quantity na natanggap base sa inventory unit.
+          </small>
         </div>
 
-        <!-- SUPPLIER -->
+        <!-- =================================================
+             MANUAL RECIPE YIELD
+        ================================================== -->
+
+        @if (selectedIngredient(); as ingredient) {
+          <div class="form-group">
+            <label for="recipeYield">
+              Recipe Yield
+
+              <span> / {{ ingredient.recipeUnit }} </span>
+            </label>
+
+            <div class="input-with-unit">
+              <input
+                id="recipeYield"
+                name="recipeYield"
+                type="number"
+                min="0"
+                step="1"
+                [(ngModel)]="recipeYield"
+                placeholder="e.g. 30"
+              />
+
+              <span>
+                {{ ingredient.recipeUnit }}
+              </span>
+            </div>
+
+            <small>
+              Manual na ilagay kung ilang
+              {{ ingredient.recipeUnit }}
+              ang kaya o nire-represent ng stock. Walang automatic conversion.
+            </small>
+          </div>
+        }
+
+        <!-- =================================================
+             SUPPLIER
+        ================================================== -->
 
         <div class="form-group">
           <label for="supplier"> Supplier </label>
@@ -103,17 +177,21 @@
             name="supplier"
             type="text"
             [(ngModel)]="supplier"
-            placeholder="Enter supplier name"
+            placeholder="e.g. ABC Meat Supplier"
           />
+
+          <small> Ilagay kung kanino binili o saan galing ang stock. </small>
         </div>
 
-        <!-- COST -->
+        <!-- =================================================
+             COST
+        ================================================== -->
 
         <div class="form-group">
           <label for="cost"> Cost Per Unit </label>
 
           <div class="input-with-prefix">
-            <span>₱</span>
+            <span> ₱ </span>
 
             <input
               id="cost"
@@ -125,14 +203,21 @@
               placeholder="0.00"
             />
           </div>
+
+          <small>
+            Presyo ng isang inventory unit. Halimbawa: ₱180 bawat kg.
+          </small>
         </div>
 
-        <!-- NOTES -->
+        <!-- =================================================
+             NOTES
+        ================================================== -->
 
         <div class="form-group">
           <label for="notes">
             Notes
-            <small>Optional</small>
+
+            <small> Optional </small>
           </label>
 
           <textarea
@@ -140,74 +225,136 @@
             name="notes"
             [(ngModel)]="notes"
             rows="4"
-            placeholder="Add notes about this delivery..."
+            placeholder="Hal. New delivery, fresh stock, partial delivery..."
           ></textarea>
+
+          <small>
+            Maglagay ng karagdagang impormasyon tungkol sa delivery kung
+            kailangan.
+          </small>
         </div>
 
-        <!-- ACTIONS -->
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
 
         <div class="form-actions">
           <a routerLink="/admin/inventory" class="btn btn-secondary">
             Cancel
           </a>
 
-          <button type="submit" class="btn btn-primary">
-            <i class="bx bx-check"></i>
-            Receive Stock
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <i class="bx bx-loader-alt bx-spin"></i>
+
+              Saving...
+            } @else {
+              <i class="bx bx-check"></i>
+
+              Receive Stock
+            }
           </button>
         </div>
       </form>
     </section>
 
-    <!-- SUMMARY -->
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <aside class="summary-panel">
       <div class="summary-header">
         <span class="panel-eyebrow"> PREVIEW </span>
 
         <h2>Stock Update</h2>
+
+        <p>Preview ng inventory update bago ito i-save.</p>
       </div>
 
       @if (selectedIngredient(); as ingredient) {
-        <div class="preview-item">
-          <span>Ingredient</span>
+        <!-- INGREDIENT -->
 
-          <strong>{{ ingredient.name }}</strong>
+        <div class="preview-item">
+          <span> Ingredient </span>
+
+          <strong>
+            {{ ingredient.name }}
+          </strong>
         </div>
 
+        <!-- CURRENT STOCK -->
+
         <div class="preview-item">
-          <span>Current Stock</span>
+          <span> Current Stock </span>
 
           <strong>
             {{ ingredient.stock }}
+
             {{ ingredient.unit }}
           </strong>
         </div>
 
+        <!-- INCOMING -->
+
         <div class="preview-item">
-          <span>Incoming</span>
+          <span> Incoming Stock </span>
 
           <strong class="positive">
             +{{ quantity || 0 }}
+
             {{ ingredient.unit }}
+          </strong>
+        </div>
+
+        <!-- RECIPE YIELD -->
+
+        <div class="preview-item">
+          <span> Manual Recipe Yield </span>
+
+          <strong>
+            {{ recipeYield || 0 }}
+
+            {{ ingredient.recipeUnit }}
           </strong>
         </div>
 
         <div class="preview-divider"></div>
 
+        <!-- NEW STOCK -->
+
         <div class="preview-total">
-          <span>New Stock</span>
+          <span> New Stock </span>
 
           <strong>
             {{ ingredient.stock + (quantity || 0) }}
+
             {{ ingredient.unit }}
           </strong>
         </div>
 
-        <div class="preview-cost">
-          <span>Estimated Purchase Cost</span>
+        <!-- TOTAL COST -->
 
-          <strong> ₱{{ totalCost }} </strong>
+        <div class="preview-cost">
+          <span> Total Purchase Cost </span>
+
+          <strong> ₱{{ totalCost.toFixed(2) }} </strong>
+        </div>
+
+        <!-- NOTE -->
+
+        <div class="preview-note">
+          <i class="bx bx-info-circle"></i>
+
+          <p>
+            Ang stock ay ia-update base sa
+            <strong>Quantity Received</strong>.
+
+            <br /><br />
+
+            Ang
+            <strong>Recipe Yield</strong>
+            ay manual na value lamang. Walang automatic conversion.
+          </p>
         </div>
       } @else {
         <div class="preview-empty">
@@ -215,7 +362,9 @@
 
           <strong> Select an ingredient </strong>
 
-          <span> Stock information will appear here. </span>
+          <span>
+            Piliin muna ang ingredient para makita ang stock update.
+          </span>
         </div>
       }
     </aside>

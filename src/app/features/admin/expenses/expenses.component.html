@@ -1,0 +1,383 @@
+<section class="page">
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">BUSINESS MANAGEMENT</span>
+      <h1>Expenses</h1>
+      <p>Track business expenses and monitor where your money goes.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="openAddExpense()">
+      <i class="bx bx-plus"></i>
+      <span>Add Expense</span>
+    </button>
+  </div>
+
+  <!-- SUMMARY -->
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+        <span class="summary-label">TOTAL EXPENSES</span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(totalExpenses) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-calendar"></i>
+        <span>This month</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon expense-icon">
+          <i class="bx bx-receipt"></i>
+        </div>
+        <span class="summary-label">TRANSACTIONS</span>
+      </div>
+
+      <div class="summary-value">
+        {{ filteredExpenses.length }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-list-ul"></i>
+        <span>Recorded expenses</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon category-icon">
+          <i class="bx bx-category"></i>
+        </div>
+        <span class="summary-label">TOP CATEGORY</span>
+      </div>
+
+      <div class="summary-value category-value">
+        {{ topCategory }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-trending-up"></i>
+        <span>{{ formatCurrency(topCategoryAmount) }}</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon average-icon">
+          <i class="bx bx-money"></i>
+        </div>
+        <span class="summary-label">AVG. EXPENSE</span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(averageExpense) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-calculator"></i>
+        <span>Per transaction</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSE SECTION -->
+
+  <section class="expense-section">
+    <!-- TOOLBAR -->
+    <div class="expense-toolbar">
+      <div class="toolbar-left">
+        <div class="section-title">
+          <h2>Expense List</h2>
+          <span>{{ filteredExpenses.length }}</span>
+        </div>
+
+        <div class="filters">
+          @for (filter of expenseFilters; track filter) {
+            <button
+              type="button"
+              class="filter-btn"
+              [class.active]="activeFilter === filter"
+              (click)="setFilter(filter)"
+            >
+              {{ filter }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="toolbar-right">
+        <div class="search">
+          <i class="bx bx-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search expense"
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm) {
+            <button type="button" class="clear-search" (click)="clearSearch()">
+              <i class="bx bx-x"></i>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="expense-table-wrapper">
+      <div class="expense-table">
+        <div class="table-head">
+          <span>EXPENSE</span>
+          <span>CATEGORY</span>
+          <span>DATE</span>
+          <span>PAYMENT</span>
+          <span>AMOUNT</span>
+          <span></span>
+        </div>
+
+        @for (expense of paginatedExpenses; track expense.id) {
+          <div class="table-row">
+            <!-- EXPENSE -->
+            <div class="expense-cell">
+              <div class="expense-icon-small">
+                <i class="bx" [class]="getCategoryIcon(expense.category)"></i>
+              </div>
+
+              <div class="expense-info">
+                <strong>{{ expense.title }}</strong>
+                <small>{{ expense.description }}</small>
+              </div>
+            </div>
+
+            <!-- CATEGORY -->
+            <span class="category-badge">
+              {{ expense.category }}
+            </span>
+
+            <!-- DATE -->
+            <div class="date-cell">
+              <strong>{{ expense.date }}</strong>
+              <small>{{ expense.time }}</small>
+            </div>
+
+            <!-- PAYMENT -->
+            <div class="payment-cell">
+              <i class="bx" [class]="getPaymentIcon(expense.payment)"></i>
+              <span>{{ expense.payment }}</span>
+            </div>
+
+            <!-- AMOUNT -->
+            <strong class="amount-cell">
+              {{ formatCurrency(expense.amount) }}
+            </strong>
+
+            <!-- ACTIONS -->
+            <div class="action-wrapper">
+              <button
+                type="button"
+                class="more"
+                aria-label="Expense actions"
+                (click)="toggleActionMenu(expense.id)"
+              >
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+
+              @if (openMenuId === expense.id) {
+                <div class="action-menu">
+                  <button type="button" (click)="viewExpense(expense)">
+                    <i class="bx bx-show"></i>
+                    <span>View details</span>
+                  </button>
+
+                  <button type="button" (click)="editExpense(expense)">
+                    <i class="bx bx-edit-alt"></i>
+                    <span>Edit</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="danger"
+                    (click)="deleteExpense(expense)"
+                  >
+                    <i class="bx bx-trash"></i>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- EMPTY -->
+        @if (paginatedExpenses.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-receipt"></i>
+            </div>
+
+            <strong>No expenses found</strong>
+
+            <span> Try changing your search or filter. </span>
+
+            @if (searchTerm || activeFilter !== "All") {
+              <button type="button" class="reset-btn" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="table-footer">
+      <span class="results-count">
+        @if (filteredExpenses.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>{{ filteredExpenses.length }}</strong>
+          expenses
+        } @else {
+          No expenses found
+        }
+      </span>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            type="button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+          >
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              [class.current]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            type="button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+          >
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</section>
+
+<!-- ADD / EDIT MODAL -->
+
+@if (showModal) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="expense-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">EXPENSE MANAGEMENT</span>
+          <h2>{{ editingExpense ? "Edit Expense" : "Add Expense" }}</h2>
+        </div>
+
+        <button type="button" class="modal-close" (click)="closeModal()">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Expense Title</label>
+          <input
+            type="text"
+            [(ngModel)]="form.title"
+            placeholder="e.g. Electricity Bill"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+
+            <select [(ngModel)]="form.category">
+              @for (category of categories; track category) {
+                <option [value]="category">
+                  {{ category }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Amount</label>
+
+            <input type="number" [(ngModel)]="form.amount" placeholder="0.00" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+
+            <input type="date" [(ngModel)]="form.date" />
+          </div>
+
+          <div class="form-group">
+            <label>Payment Method</label>
+
+            <select [(ngModel)]="form.payment">
+              @for (payment of paymentMethods; track payment) {
+                <option [value]="payment">
+                  {{ payment }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+
+          <textarea
+            [(ngModel)]="form.description"
+            placeholder="Optional description..."
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="cancel-btn" (click)="closeModal()">
+          Cancel
+        </button>
+
+        <button type="button" class="save-btn" (click)="saveExpense()">
+          <i class="bx bx-check"></i>
+          {{ editingExpense ? "Save Changes" : "Add Expense" }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
