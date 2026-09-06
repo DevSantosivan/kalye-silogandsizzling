@@ -15,10 +15,6 @@ import {
 
 import { MenuService } from '../../../../core/services/admin/menu.service';
 
-// ==========================================================
-// UI RECIPE INGREDIENT
-// ==========================================================
-
 interface RecipeFormIngredient {
   ingredientId: number | null;
   quantity: number;
@@ -44,20 +40,12 @@ export class CreateMenuComponent implements OnInit {
   private ingredientService = inject(IngredientService);
   private menuService = inject(MenuService);
 
-  // ========================================================
-  // MENU INFORMATION
-  // ========================================================
-
   name = '';
   category = '';
   price = 0;
   image = '';
   description = '';
   available = true;
-
-  // ========================================================
-  // CATEGORIES
-  // ========================================================
 
   categories = [
     'Silog',
@@ -71,10 +59,6 @@ export class CreateMenuComponent implements OnInit {
     'Sides',
     'Others',
   ];
-
-  // ========================================================
-  // INGREDIENTS
-  // ========================================================
 
   ingredients = signal<Ingredient[]>([]);
   isLoadingIngredients = signal(false);
