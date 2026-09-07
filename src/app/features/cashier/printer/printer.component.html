@@ -1,0 +1,474 @@
+<section class="printer-page">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="page-header">
+    <div class="page-heading">
+      <span class="eyebrow"> HARDWARE </span>
+
+      <h1>Printer</h1>
+
+      <p>Manage the receipt printer used by the POS.</p>
+    </div>
+
+    @if (connectionType === "bluetooth") {
+      <div class="connection-status" [class.connected]="bluetoothConnected()">
+        <span class="status-dot"></span>
+
+        <div>
+          <strong>
+            @if (bluetoothConnected()) {
+              Connected
+            } @else {
+              Not connected
+            }
+          </strong>
+
+          <small>
+            @if (bluetoothConnected()) {
+              {{ printerName }}
+            } @else {
+              Bluetooth printer
+            }
+          </small>
+        </div>
+      </div>
+    }
+  </header>
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage()) {
+    <div class="alert alert-error">
+      <i class="bx bx-error-circle"></i>
+
+      <span>
+        {{ errorMessage() }}
+      </span>
+    </div>
+  }
+
+  <!-- =====================================================
+       CONNECTION
+  ====================================================== -->
+
+  <section class="settings-card">
+    <div class="card-header">
+      <div>
+        <span class="section-label"> CONNECTION </span>
+
+        <h2>Printer Connection</h2>
+
+        <p>Select how the POS should send print jobs.</p>
+      </div>
+    </div>
+
+    <div class="connection-options">
+      <!-- BROWSER -->
+
+      <button
+        type="button"
+        class="connection-option"
+        [class.active]="connectionType === 'browser'"
+        (click)="setConnectionType('browser')"
+      >
+        <span class="option-icon">
+          <i class="bx bx-printer"></i>
+        </span>
+
+        <span class="option-content">
+          <strong> Browser Print </strong>
+
+          <small> Uses the device print dialog. </small>
+        </span>
+
+        @if (connectionType === "browser") {
+          <i class="bx bx-check-circle option-check"></i>
+        }
+      </button>
+
+      <!-- BLUETOOTH -->
+
+      <button
+        type="button"
+        class="connection-option"
+        [class.active]="connectionType === 'bluetooth'"
+        (click)="setConnectionType('bluetooth')"
+      >
+        <span class="option-icon bluetooth-icon">
+          <i class="bx bx-bluetooth"></i>
+        </span>
+
+        <span class="option-content">
+          <strong> Bluetooth Printer </strong>
+
+          <small> Direct thermal printing on Android. </small>
+        </span>
+
+        @if (connectionType === "bluetooth") {
+          <i class="bx bx-check-circle option-check"></i>
+        }
+      </button>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       BLUETOOTH PANEL
+  ====================================================== -->
+
+  @if (connectionType === "bluetooth") {
+    <section class="settings-card bluetooth-card">
+      <div class="card-header">
+        <div>
+          <span class="section-label"> BLUETOOTH </span>
+
+          <h2>Thermal Printer</h2>
+
+          <p>Connect the POS tablet to a Bluetooth thermal printer.</p>
+        </div>
+      </div>
+
+      <!-- ANDROID NOT AVAILABLE -->
+
+      @if (!isAndroidApp()) {
+        <div class="android-notice">
+          <div class="notice-icon">
+            <i class="bx bx-mobile-alt"></i>
+          </div>
+
+          <div>
+            <strong> Android POS App Required </strong>
+
+            <p>
+              Bluetooth thermal printing will work automatically once this POS
+              is wrapped as an Android app.
+            </p>
+          </div>
+        </div>
+      }
+
+      <!-- ANDROID AVAILABLE -->
+
+      @if (isAndroidApp()) {
+        <!-- CONNECTED -->
+
+        @if (bluetoothConnected()) {
+          <div class="connected-printer">
+            <div class="printer-status-icon">
+              <i class="bx bx-printer"></i>
+            </div>
+
+            <div class="connected-details">
+              <span class="connected-label"> CONNECTED PRINTER </span>
+
+              <strong>
+                {{ printerName }}
+              </strong>
+
+              @if (printerAddress) {
+                <small>
+                  {{ printerAddress }}
+                </small>
+              }
+            </div>
+
+            <div class="connected-actions">
+              <span class="connected-badge">
+                <i class="bx bx-check"></i>
+                Connected
+              </span>
+
+              <button
+                type="button"
+                class="text-button danger"
+                [disabled]="disconnecting()"
+                (click)="disconnectPrinter()"
+              >
+                @if (disconnecting()) {
+                  <i class="bx bx-loader-alt bx-spin"></i>
+                } @else {
+                  <i class="bx bx-unlink"></i>
+                }
+
+                Disconnect
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- NOT CONNECTED -->
+
+        @else {
+          <div class="bluetooth-actions">
+            <div class="bluetooth-empty">
+              <div class="empty-icon">
+                <i class="bx bx-bluetooth"></i>
+              </div>
+
+              <div>
+                <strong> No printer connected </strong>
+
+                <p>Scan for nearby Bluetooth thermal printers.</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="scan-button"
+              [disabled]="scanning()"
+              (click)="scanPrinters()"
+            >
+              @if (scanning()) {
+                <i class="bx bx-loader-alt bx-spin"></i>
+
+                Scanning...
+              } @else {
+                <i class="bx bx-bluetooth"></i>
+
+                Scan for Printers
+              }
+            </button>
+          </div>
+        }
+
+        <!-- AVAILABLE PRINTERS -->
+
+        @if (availablePrinters().length > 0) {
+          <div class="available-printers">
+            <div class="available-header">
+              <div>
+                <span class="section-label"> AVAILABLE </span>
+
+                <h3>Bluetooth Printers</h3>
+              </div>
+
+              <span class="printer-count">
+                {{ availablePrinters().length }}
+              </span>
+            </div>
+
+            <div class="printer-list">
+              @for (printer of availablePrinters(); track printer.address) {
+                <div
+                  class="printer-item"
+                  [class.selected]="printer.address === printerAddress"
+                >
+                  <div class="printer-item-icon">
+                    <i class="bx bx-printer"></i>
+                  </div>
+
+                  <div class="printer-item-details">
+                    <strong>
+                      {{ printer.name || "Thermal Printer" }}
+                    </strong>
+
+                    <small>
+                      {{ printer.address }}
+                    </small>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="connect-button"
+                    [disabled]="connecting()"
+                    (click)="connectPrinter(printer)"
+                  >
+                    @if (connecting() && printer.address === printerAddress) {
+                      <i class="bx bx-loader-alt bx-spin"></i>
+
+                      Connecting...
+                    } @else {
+                      Connect
+                    }
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </section>
+  }
+
+  <!-- =====================================================
+       PRINTER DETAILS
+  ====================================================== -->
+
+  <section class="settings-card">
+    <div class="card-header">
+      <div>
+        <span class="section-label"> PRINTER </span>
+
+        <h2>Printer Details</h2>
+
+        <p>Information used by the POS printer.</p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label> Printer Name </label>
+
+        <input
+          type="text"
+          [(ngModel)]="printerName"
+          placeholder="Example: MTP-3"
+        />
+
+        <small class="field-help">
+          This name is saved for automatic reconnection.
+        </small>
+      </div>
+
+      @if (connectionType === "bluetooth" && printerAddress) {
+        <div class="form-group">
+          <label> Bluetooth Address </label>
+
+          <input type="text" [ngModel]="printerAddress" readonly />
+
+          <small class="field-help">
+            Automatically saved from the connected printer.
+          </small>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- =====================================================
+       PAPER SIZE
+  ====================================================== -->
+
+  <section class="settings-card">
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="section-label"> PAPER </span>
+
+        <h3>Paper Size</h3>
+
+        <p>Select the thermal paper width.</p>
+      </div>
+
+      <div class="segmented-control">
+        <button
+          type="button"
+          [class.active]="paperSize === '58mm'"
+          (click)="paperSize = '58mm'"
+        >
+          58mm
+        </button>
+
+        <button
+          type="button"
+          [class.active]="paperSize === '80mm'"
+          (click)="paperSize = '80mm'"
+        >
+          80mm
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       AUTO PRINT
+  ====================================================== -->
+
+  <section class="settings-card">
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="section-label"> WORKFLOW </span>
+
+        <h3>Automatic Printing</h3>
+
+        <p>Print automatically after an order is successfully created.</p>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="autoPrint" />
+
+        <span></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       COPIES
+  ====================================================== -->
+
+  <section class="settings-card">
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="section-label"> OUTPUT </span>
+
+        <h3>Copies</h3>
+
+        <p>Number of copies for each print job.</p>
+      </div>
+
+      <div class="quantity-control">
+        <button
+          type="button"
+          [disabled]="copies <= 1"
+          (click)="decreaseCopies()"
+        >
+          −
+        </button>
+
+        <strong>
+          {{ copies }}
+        </strong>
+
+        <button
+          type="button"
+          [disabled]="copies >= 3"
+          (click)="increaseCopies()"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       ACTIONS
+  ====================================================== -->
+
+  <section class="actions-card">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      [disabled]="testing()"
+      (click)="testPrint()"
+    >
+      @if (testing()) {
+        <i class="bx bx-loader-alt bx-spin"></i>
+
+        Printing...
+      } @else {
+        <i class="bx bx-printer"></i>
+
+        Test Print
+      }
+    </button>
+
+    <button type="button" class="btn btn-primary" (click)="saveSettings()">
+      <i class="bx bx-save"></i>
+
+      Save Settings
+    </button>
+  </section>
+
+  <!-- =====================================================
+       SAVED
+  ====================================================== -->
+
+  @if (saved()) {
+    <div class="saved-message">
+      <i class="bx bx-check-circle"></i>
+
+      Printer settings saved.
+    </div>
+  }
+</section>

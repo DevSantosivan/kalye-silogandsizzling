@@ -1,0 +1,941 @@
+.printer-page {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.page-heading {
+  min-width: 0;
+}
+
+.eyebrow,
+.section-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #8a8f98;
+}
+
+.page-heading h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #17191c;
+}
+
+.page-heading p {
+  margin: 8px 0 0;
+  color: #747a84;
+  font-size: 14px;
+}
+
+/* =========================================================
+   CONNECTION STATUS
+========================================================= */
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.connection-status > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.connection-status strong {
+  font-size: 12px;
+  font-weight: 800;
+  color: #8a9099;
+}
+
+.connection-status small {
+  margin-top: 2px;
+  color: #7a8089;
+  font-size: 11px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #c5c9cf;
+}
+
+.connection-status.connected .status-dot {
+  background: #21a366;
+}
+
+.connection-status.connected strong {
+  color: #16844d;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 15px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.alert i {
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 19px;
+}
+
+.alert-error {
+  color: #9d3030;
+  background: #fff5f5;
+  border: 1px solid #f3d7d7;
+}
+
+/* =========================================================
+   SETTINGS CARD
+========================================================= */
+
+.settings-card,
+.actions-card {
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e7e8eb;
+  border-radius: 16px;
+}
+
+.settings-card {
+  padding: 22px;
+}
+
+.card-header {
+  margin-bottom: 18px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #191b1f;
+}
+
+.card-header p {
+  margin: 5px 0 0;
+  color: #7a8089;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   CONNECTION OPTIONS
+========================================================= */
+
+.connection-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.connection-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 78px;
+  padding: 14px;
+  border: 1px solid #e4e6e9;
+  border-radius: 13px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.connection-option:hover {
+  border-color: #cfd3d8;
+}
+
+.connection-option.active {
+  border-color: #22262b;
+  background: #fafafa;
+}
+
+.option-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 11px;
+  background: #f1f2f4;
+  color: #262a2f;
+}
+
+.option-icon i {
+  font-size: 22px;
+}
+
+.bluetooth-icon {
+  color: #1967d2;
+}
+
+.option-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-right: 20px;
+}
+
+.option-content strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1b1e22;
+}
+
+.option-content small {
+  margin-top: 4px;
+  color: #81868f;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.option-check {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  font-size: 18px;
+  color: #202327;
+}
+
+/* =========================================================
+   BLUETOOTH
+========================================================= */
+
+.bluetooth-card {
+  background: #fcfcfc;
+}
+
+.android-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #e4e6e9;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.notice-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 10px;
+  background: #f1f2f4;
+  color: #555b64;
+}
+
+.notice-icon i {
+  font-size: 20px;
+}
+
+.android-notice strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #262a2f;
+}
+
+.android-notice p {
+  margin: 4px 0 0;
+  color: #7b818a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CONNECTED PRINTER
+========================================================= */
+
+.connected-printer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #dcefe5;
+  border-radius: 13px;
+  background: #f9fdfb;
+}
+
+.printer-status-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border-radius: 12px;
+  background: #e8f7ee;
+  color: #16844d;
+}
+
+.printer-status-icon i {
+  font-size: 23px;
+}
+
+.connected-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.connected-label {
+  margin-bottom: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #7a9183;
+}
+
+.connected-details strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1d2922;
+}
+
+.connected-details small {
+  margin-top: 3px;
+  color: #7d8981;
+  font-size: 11px;
+}
+
+.connected-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.connected-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #e8f7ee;
+  color: #16844d;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.text-button.danger {
+  color: #b33b3b;
+}
+
+.text-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   BLUETOOTH EMPTY
+========================================================= */
+
+.bluetooth-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid #e6e7e9;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.bluetooth-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 11px;
+  background: #f1f2f4;
+  color: #555b63;
+}
+
+.empty-icon i {
+  font-size: 22px;
+}
+
+.bluetooth-empty strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #25282c;
+}
+
+.bluetooth-empty p {
+  margin: 4px 0 0;
+  color: #80858d;
+  font-size: 11px;
+}
+
+.scan-button,
+.connect-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scan-button {
+  min-height: 42px;
+  padding: 0 15px;
+  background: #202327;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.scan-button:hover {
+  background: #111315;
+}
+
+.scan-button:disabled,
+.connect-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   AVAILABLE PRINTERS
+========================================================= */
+
+.available-printers {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e7e8ea;
+}
+
+.available-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.available-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #24272b;
+}
+
+.printer-count {
+  display: grid;
+  place-items: center;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #f0f1f3;
+  color: #616770;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.printer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.printer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e5e6e9;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.printer-item.selected {
+  border-color: #cbded2;
+  background: #f9fdfb;
+}
+
+.printer-item-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 9px;
+  background: #f2f3f5;
+  color: #555b63;
+}
+
+.printer-item-icon i {
+  font-size: 19px;
+}
+
+.printer-item-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.printer-item-details strong {
+  overflow: hidden;
+  color: #24272b;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.printer-item-details small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #858a92;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connect-button {
+  min-height: 34px;
+  padding: 0 12px;
+  background: #202327;
+  color: #fff;
+  font-size: 11px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.form-group {
+  min-width: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #393d43;
+}
+
+.form-group input {
+  width: 100%;
+  height: 43px;
+  padding: 0 12px;
+  border: 1px solid #dedfe2;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #23262a;
+  font: inherit;
+  font-size: 12px;
+}
+
+.form-group input:focus {
+  border-color: #9da2a9;
+}
+
+.form-group input[readonly] {
+  background: #f5f6f7;
+  color: #777d85;
+}
+
+.field-help {
+  display: block;
+  margin-top: 6px;
+  color: #8a8f97;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   SETTING ROW
+========================================================= */
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.setting-info {
+  min-width: 0;
+}
+
+.setting-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #22252a;
+}
+
+.setting-info p {
+  margin: 5px 0 0;
+  color: #7d828a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   SEGMENTED
+========================================================= */
+
+.segmented-control {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #e0e1e4;
+  border-radius: 10px;
+  background: #f5f6f7;
+  flex-shrink: 0;
+}
+
+.segmented-control button {
+  min-width: 70px;
+  height: 34px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #777d85;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.segmented-control button.active {
+  background: #fff;
+  color: #24272b;
+}
+
+/* =========================================================
+   SWITCH
+========================================================= */
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #d7d9dc;
+  transition: background 0.15s ease;
+}
+
+.switch span::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + span {
+  background: #25282c;
+}
+
+.switch input:checked + span::after {
+  transform: translateX(20px);
+}
+
+/* =========================================================
+   QUANTITY
+========================================================= */
+
+.quantity-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px;
+  border: 1px solid #e0e1e4;
+  border-radius: 10px;
+  background: #f5f6f7;
+  flex-shrink: 0;
+}
+
+.quantity-control button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 32px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #363a40;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.quantity-control button:hover:not(:disabled) {
+  background: #e8e9eb;
+}
+
+.quantity-control button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.quantity-control strong {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  color: #25282c;
+  font-size: 13px;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.actions-card {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  padding: 14px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #202327;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #111315;
+}
+
+.btn-secondary {
+  border: 1px solid #dedfe2;
+  background: #fff;
+  color: #292c31;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f7f7f8;
+}
+
+/* =========================================================
+   SAVED
+========================================================= */
+
+.saved-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 12px;
+  color: #16844d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.saved-message i {
+  font-size: 17px;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 800px) {
+  .printer-page {
+    padding: 4px 0 32px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .connection-status {
+    width: 100%;
+  }
+
+  .connection-options {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .connected-printer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .connected-actions {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .bluetooth-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scan-button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   SMALL TABLET / PHONE
+========================================================= */
+
+@media (max-width: 560px) {
+  .settings-card {
+    padding: 17px;
+    border-radius: 13px;
+  }
+
+  .page-heading h1 {
+    font-size: 26px;
+  }
+
+  .setting-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .segmented-control,
+  .quantity-control {
+    align-self: stretch;
+  }
+
+  .segmented-control button {
+    flex: 1;
+  }
+
+  .actions-card {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .printer-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .connect-button {
+    width: 100%;
+  }
+}

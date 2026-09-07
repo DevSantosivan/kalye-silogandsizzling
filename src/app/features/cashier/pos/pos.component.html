@@ -100,6 +100,7 @@
 
       <div class="product-grid" *ngIf="!loading() && !errorMessage()">
         <!-- PRODUCT CARD -->
+
         <button
           type="button"
           class="product-card"
@@ -110,12 +111,14 @@
           <!-- IMAGE -->
 
           <div class="product-image">
-            <!-- BEST SELLER CAPTION -->
+            <!-- BEST SELLER -->
 
             <span class="best-seller-badge" *ngIf="isBestSeller(menu)">
               <i class="bx bxs-star"></i>
+
               Best Seller
             </span>
+
             <img
               *ngIf="menu.image"
               [src]="menu.image"
@@ -150,6 +153,7 @@
             </div>
           </div>
         </button>
+
         <!-- EMPTY -->
 
         <div class="empty-products" *ngIf="filteredMenus().length === 0">
@@ -209,6 +213,7 @@
             *ngFor="let item of cart(); trackBy: trackByCartId"
           >
             <!-- ITEM IMAGE -->
+
             <div class="cart-item-image">
               <img
                 *ngIf="item.menu.image"
@@ -223,6 +228,7 @@
             </div>
 
             <!-- ITEM INFO -->
+
             <div class="cart-item-info">
               <div class="cart-item-main">
                 <div class="cart-item-details">
@@ -230,7 +236,10 @@
                     {{ item.menu.name }}
                   </strong>
 
-                  <span> ₱{{ item.menu.price | number: "1.2-2" }} each </span>
+                  <span>
+                    ₱{{ item.menu.price | number: "1.2-2" }}
+                    each
+                  </span>
                 </div>
 
                 <strong class="item-total">
@@ -239,6 +248,7 @@
               </div>
 
               <!-- QUANTITY -->
+
               <div class="cart-item-controls">
                 <div class="quantity-control">
                   <button type="button" (click)="decrease(item.menu.id)">
@@ -320,7 +330,7 @@
 </section>
 
 <!-- =======================================================
-     ORDER MODAL
+     CHECKOUT MODAL
 ======================================================== -->
 
 <div
@@ -584,6 +594,114 @@
       </section>
 
       <!-- =================================================
+           PRINT / ORDER DESTINATION
+      ================================================== -->
+
+      <section class="form-section">
+        <div class="form-section-title">
+          <div>
+            <strong> Order output </strong>
+
+            <span>
+              Choose what should be printed after the order is saved.
+            </span>
+          </div>
+        </div>
+
+        <div class="print-output-grid">
+          <!-- CUSTOMER RECEIPT -->
+
+          <button
+            type="button"
+            class="print-output-card"
+            [class.active]="printDestination() === 'customer'"
+            (click)="setPrintDestination('customer')"
+          >
+            <span class="print-output-icon">
+              <i class="bx bx-receipt"></i>
+            </span>
+
+            <span class="print-output-content">
+              <strong> Customer Receipt </strong>
+
+              <small> Print the receipt for the customer. </small>
+            </span>
+
+            <i
+              class="bx bx-check-circle print-output-check"
+              *ngIf="printDestination() === 'customer'"
+            ></i>
+          </button>
+
+          <!-- KITCHEN -->
+
+          <button
+            type="button"
+            class="print-output-card"
+            [class.active]="printDestination() === 'kitchen'"
+            (click)="setPrintDestination('kitchen')"
+          >
+            <span class="print-output-icon">
+              <i class="bx bx-restaurant"></i>
+            </span>
+
+            <span class="print-output-content">
+              <strong> Kitchen Order </strong>
+
+              <small>
+                Print only the items the kitchen needs to prepare.
+              </small>
+            </span>
+
+            <i
+              class="bx bx-check-circle print-output-check"
+              *ngIf="printDestination() === 'kitchen'"
+            ></i>
+          </button>
+
+          <!-- BOTH -->
+
+          <button
+            type="button"
+            class="print-output-card"
+            [class.active]="printDestination() === 'both'"
+            (click)="setPrintDestination('both')"
+          >
+            <span class="print-output-icon">
+              <i class="bx bx-printer"></i>
+            </span>
+
+            <span class="print-output-content">
+              <strong> Both </strong>
+
+              <small> Print customer receipt and kitchen order. </small>
+            </span>
+
+            <i
+              class="bx bx-check-circle print-output-check"
+              *ngIf="printDestination() === 'both'"
+            ></i>
+          </button>
+        </div>
+
+        <!-- PRINT EXPLANATION -->
+
+        <div class="print-output-note">
+          <i class="bx bx-info-circle"></i>
+
+          <span>
+            {{
+              printDestination() === "customer"
+                ? "Only the customer receipt will be printed."
+                : printDestination() === "kitchen"
+                  ? "Only the kitchen preparation ticket will be printed."
+                  : "Two prints will be generated: one customer receipt and one kitchen order."
+            }}
+          </span>
+        </div>
+      </section>
+
+      <!-- =================================================
            DISCOUNT
       ================================================== -->
 
@@ -659,6 +777,7 @@
         [disabled]="
           processingOrder() ||
           !cashIsEnough() ||
+          !printDestination() ||
           (orderType() === 'Dine-in' && !tableNumber().trim())
         "
         (click)="confirmOrder()"
@@ -666,7 +785,15 @@
         <i *ngIf="processingOrder()" class="bx bx-loader-alt bx-spin"></i>
 
         <span>
-          {{ processingOrder() ? "Processing..." : "Confirm & Charge" }}
+          {{
+            processingOrder()
+              ? "Processing..."
+              : printDestination() === "customer"
+                ? "Charge & Print Receipt"
+                : printDestination() === "kitchen"
+                  ? "Charge & Send to Kitchen"
+                  : "Charge & Print Both"
+          }}
         </span>
 
         <strong> ₱{{ total() | number: "1.2-2" }} </strong>

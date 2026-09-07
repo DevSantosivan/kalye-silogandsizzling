@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { MenuItem } from '../../../core/models/menu.model';
+
 import { MenuService } from '../../../core/services/admin/menu.service';
 
 import { OrderType, PaymentMethod } from '../../../core/models/order.model';
@@ -23,54 +24,75 @@ import {
 
 import Swal from 'sweetalert2';
 
+/* =========================================================
+   CART ITEM
+========================================================= */
+
 interface CartItem {
   menu: MenuItem;
   quantity: number;
 }
 
+/* =========================================================
+   PRINT DESTINATION
+========================================================= */
+
+type PrintDestination = 'customer' | 'kitchen' | 'both';
+
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 @Component({
   selector: 'app-pos',
+
   standalone: true,
+
   imports: [CommonModule],
+
   templateUrl: './pos.component.html',
+
   styleUrl: './pos.component.scss',
 })
 export class PosComponent implements OnInit {
   private menuService = inject(MenuService);
-  private orderService = inject(OrderService);
 
-  // =========================================================
-  // PRINTER
-  // =========================================================
+  private orderService = inject(OrderService);
 
   private printerService = inject(PrinterService);
 
-  // =========================================================
-  // STATE
-  // =========================================================
+  /* =======================================================
+     STATE
+  ======================================================= */
 
   menus = signal<MenuItem[]>([]);
+
   cart = signal<CartItem[]>([]);
 
   selectedCategory = signal<string>('All');
+
   searchTerm = signal<string>('');
 
   loading = signal<boolean>(true);
+
   errorMessage = signal<string>('');
 
   isFullscreen = false;
+
   bestSellerIds = signal<Set<number>>(new Set());
 
-  // =========================================================
-  // ORDER MODAL
-  // =========================================================
+  /* =======================================================
+     ORDER MODAL
+  ======================================================= */
 
   showOrderModal = signal<boolean>(false);
 
   orderType = signal<OrderType>('Dine-in');
 
   customerName = signal<string>('');
+
   customerContact = signal<string>('');
+
   tableNumber = signal<string>('');
 
   paymentMethod = signal<PaymentMethod>('Cash');
@@ -79,19 +101,21 @@ export class PosComponent implements OnInit {
 
   processingOrder = signal<boolean>(false);
 
-  // =========================================================
-  // DISCOUNT
-  // =========================================================
+  /* =======================================================
+     PRINT
+  ======================================================= */
+
+  printDestination = signal<PrintDestination>('kitchen');
+
+  /* =======================================================
+     DISCOUNT
+  ======================================================= */
 
   discount = signal<number>(0);
 
-  isBestSeller(menu: MenuItem): boolean {
-    return this.bestSellerIds().has(menu.id);
-  }
-
-  // =========================================================
-  // CATEGORIES
-  // =========================================================
+  /* =======================================================
+     CATEGORIES
+  ======================================================= */
 
   categories = computed(() => {
     const categories = this.menus()
@@ -101,9 +125,15 @@ export class PosComponent implements OnInit {
     return ['All', ...new Set(categories)];
   });
 
+  /* =======================================================
+     FILTERED MENUS
+  ======================================================= */
+
   filteredMenus = computed(() => {
     const category = this.selectedCategory();
+
     const search = this.searchTerm().trim().toLowerCase();
+
     const bestSellerIds = this.bestSellerIds();
 
     return this.menus()
@@ -119,9 +149,9 @@ export class PosComponent implements OnInit {
       })
       .sort((a, b) => {
         const aBestSeller = bestSellerIds.has(a.id);
+
         const bBestSeller = bestSellerIds.has(b.id);
 
-        // Best sellers first
         if (aBestSeller && !bBestSeller) {
           return -1;
         }
@@ -130,7 +160,6 @@ export class PosComponent implements OnInit {
           return 1;
         }
 
-        // Within best sellers, highest sold first
         if (aBestSeller && bBestSeller) {
           return Number(b.sold) - Number(a.sold);
         }
@@ -138,24 +167,23 @@ export class PosComponent implements OnInit {
         return 0;
       });
   });
-  // =========================================================
-  // CART TOTALS
-  // =========================================================
 
-  itemCount = computed(() => {
-    return this.cart().reduce((total, item) => total + item.quantity, 0);
-  });
+  /* =======================================================
+     CART TOTALS
+  ======================================================= */
 
-  subtotal = computed(() => {
-    return this.cart().reduce(
+  itemCount = computed(() =>
+    this.cart().reduce((total, item) => total + item.quantity, 0),
+  );
+
+  subtotal = computed(() =>
+    this.cart().reduce(
       (total, item) => total + Number(item.menu.price) * item.quantity,
       0,
-    );
-  });
+    ),
+  );
 
-  total = computed(() => {
-    return Math.max(0, this.subtotal() - this.discount());
-  });
+  total = computed(() => Math.max(0, this.subtotal() - this.discount()));
 
   change = computed(() => {
     if (this.paymentMethod() !== 'Cash') {
@@ -173,43 +201,46 @@ export class PosComponent implements OnInit {
     return this.cashReceived() >= this.total();
   });
 
-  // =========================================================
-  // INIT
-  // =========================================================
+  /* =======================================================
+     INIT
+  ======================================================= */
 
   async ngOnInit(): Promise<void> {
     await this.loadMenus();
   }
 
-  // =========================================================
-  // FULL VIEW
-  // =========================================================
-
-  // =========================================================
-  // FULLSCREEN
-  // =========================================================
+  /* =======================================================
+     FULLSCREEN
+  ======================================================= */
 
   async toggleFullscreen(): Promise<void> {
     try {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen();
+
         this.isFullscreen = true;
       } else {
         await document.exitFullscreen();
+
         this.isFullscreen = false;
       }
     } catch (error) {
-      console.error('Fullscreen error:', error);
+      console.error('FULLSCREEN ERROR:', error);
     }
   }
 
+  /* =======================================================
+     FULLSCREEN CHANGE
+  ======================================================= */
+
+  @HostListener('document:fullscreenchange')
   onFullscreenChange(): void {
     this.isFullscreen = !!document.fullscreenElement;
   }
 
-  // =========================================================
-  // ESCAPE
-  // =========================================================
+  /* =======================================================
+     ESCAPE
+  ======================================================= */
 
   @HostListener('document:keydown.escape')
   handleEscape(): void {
@@ -219,43 +250,30 @@ export class PosComponent implements OnInit {
 
     if (this.showOrderModal()) {
       this.closeOrderModal();
-      return;
     }
   }
-  // =========================================================
-  // LOAD MENU
-  // =========================================================
+
+  /* =======================================================
+     LOAD MENUS
+  ======================================================= */
 
   async loadMenus(): Promise<void> {
     try {
       this.loading.set(true);
+
       this.errorMessage.set('');
 
       const menus = await this.menuService.getMenus();
 
-      // =====================================================
-      // SAVE MENUS
-      // =====================================================
-
       this.menus.set(menus);
-
-      // =====================================================
-      // BEST SELLERS
-      // Based on `sold`
-      // TOP 4 ONLY
-      // =====================================================
 
       const bestSellerIds = [...menus]
         .filter((menu) => Number(menu.sold) > 0)
-        .sort((a, b) => {
-          return Number(b.sold) - Number(a.sold);
-        })
+        .sort((a, b) => Number(b.sold) - Number(a.sold))
         .slice(0, 4)
         .map((menu) => menu.id);
 
       this.bestSellerIds.set(new Set(bestSellerIds));
-
-      console.log('BEST SELLERS:', bestSellerIds);
     } catch (error) {
       console.error('POS MENU ERROR:', error);
 
@@ -267,25 +285,33 @@ export class PosComponent implements OnInit {
     }
   }
 
-  // =========================================================
-  // CATEGORY
-  // =========================================================
+  /* =======================================================
+     BEST SELLER
+  ======================================================= */
+
+  isBestSeller(menu: MenuItem): boolean {
+    return this.bestSellerIds().has(menu.id);
+  }
+
+  /* =======================================================
+     CATEGORY
+  ======================================================= */
 
   selectCategory(category: string): void {
     this.selectedCategory.set(category);
   }
 
-  // =========================================================
-  // SEARCH
-  // =========================================================
+  /* =======================================================
+     SEARCH
+  ======================================================= */
 
   search(value: string): void {
     this.searchTerm.set(value);
   }
 
-  // =========================================================
-  // ADD TO CART
-  // =========================================================
+  /* =======================================================
+     ADD TO CART
+  ======================================================= */
 
   addToCart(menu: MenuItem): void {
     if (!menu.available) {
@@ -303,6 +329,7 @@ export class PosComponent implements OnInit {
     } else {
       items.push({
         menu,
+
         quantity: 1,
       });
     }
@@ -310,9 +337,9 @@ export class PosComponent implements OnInit {
     this.cart.set(items);
   }
 
-  // =========================================================
-  // INCREASE
-  // =========================================================
+  /* =======================================================
+     INCREASE
+  ======================================================= */
 
   increase(menuId: number): void {
     const items = this.cart().map((item) => ({
@@ -330,9 +357,9 @@ export class PosComponent implements OnInit {
     this.cart.set(items);
   }
 
-  // =========================================================
-  // DECREASE
-  // =========================================================
+  /* =======================================================
+     DECREASE
+  ======================================================= */
 
   decrease(menuId: number): void {
     const items = this.cart().map((item) => ({
@@ -354,9 +381,9 @@ export class PosComponent implements OnInit {
     this.cart.set(items);
   }
 
-  // =========================================================
-  // REMOVE
-  // =========================================================
+  /* =======================================================
+     REMOVE
+  ======================================================= */
 
   removeItem(menuId: number): void {
     this.cart.update((items) =>
@@ -364,9 +391,9 @@ export class PosComponent implements OnInit {
     );
   }
 
-  // =========================================================
-  // CLEAR
-  // =========================================================
+  /* =======================================================
+     CLEAR
+  ======================================================= */
 
   clearCart(): void {
     if (this.processingOrder()) {
@@ -374,24 +401,29 @@ export class PosComponent implements OnInit {
     }
 
     this.cart.set([]);
-    this.discount.set(0);
 
     this.resetOrderDetails();
   }
 
-  // =========================================================
-  // ORDER MODAL
-  // =========================================================
+  /* =======================================================
+     OPEN MODAL
+  ======================================================= */
 
   openOrderModal(): void {
     if (this.cart().length === 0) {
       return;
     }
 
+    this.printDestination.set('kitchen');
+
     this.showOrderModal.set(true);
 
     document.body.classList.add('pos-modal-open');
   }
+
+  /* =======================================================
+     CLOSE MODAL
+  ======================================================= */
 
   closeOrderModal(): void {
     if (this.processingOrder()) {
@@ -403,9 +435,17 @@ export class PosComponent implements OnInit {
     document.body.classList.remove('pos-modal-open');
   }
 
-  // =========================================================
-  // ORDER TYPE
-  // =========================================================
+  /* =======================================================
+     PRINT DESTINATION
+  ======================================================= */
+
+  setPrintDestination(destination: PrintDestination): void {
+    this.printDestination.set(destination);
+  }
+
+  /* =======================================================
+     ORDER TYPE
+  ======================================================= */
 
   setOrderType(type: OrderType): void {
     this.orderType.set(type);
@@ -415,9 +455,9 @@ export class PosComponent implements OnInit {
     }
   }
 
-  // =========================================================
-  // CUSTOMER
-  // =========================================================
+  /* =======================================================
+     CUSTOMER
+  ======================================================= */
 
   setCustomerName(value: string): void {
     this.customerName.set(value);
@@ -431,9 +471,9 @@ export class PosComponent implements OnInit {
     this.tableNumber.set(value);
   }
 
-  // =========================================================
-  // PAYMENT
-  // =========================================================
+  /* =======================================================
+     PAYMENT
+  ======================================================= */
 
   setPaymentMethod(method: PaymentMethod): void {
     this.paymentMethod.set(method);
@@ -443,15 +483,19 @@ export class PosComponent implements OnInit {
     }
   }
 
+  /* =======================================================
+     CASH
+  ======================================================= */
+
   setCashReceived(value: string): void {
     const amount = Number(value);
 
     this.cashReceived.set(Number.isFinite(amount) && amount >= 0 ? amount : 0);
   }
 
-  // =========================================================
-  // DISCOUNT
-  // =========================================================
+  /* =======================================================
+     DISCOUNT
+  ======================================================= */
 
   setDiscount(value: string): void {
     const amount = Number(value);
@@ -463,60 +507,49 @@ export class PosComponent implements OnInit {
     );
   }
 
-  // =========================================================
-  // CONFIRM / CREATE ORDER
-  // =========================================================
+  /* =======================================================
+     PRINTER SETTINGS
+  ======================================================= */
+
+  getPrinterSettings() {
+    return this.printerService.getSettings();
+  }
+
+  /* =======================================================
+     CONFIRM ORDER
+  ======================================================= */
 
   async confirmOrder(): Promise<void> {
-    // -------------------------------------------------------
-    // EMPTY CART
-    // -------------------------------------------------------
-
     if (this.cart().length === 0) {
-      await Swal.fire({
-        icon: 'warning',
-        title: 'Empty Order',
-        text: 'Please add at least one menu item.',
-        confirmButtonText: 'Okay',
-
-        customClass: {
-          confirmButton: 'pos-swal-confirm',
-        },
-
-        buttonsStyling: false,
-      });
+      await this.showWarning(
+        'Empty Order',
+        'Please add at least one menu item.',
+      );
 
       return;
     }
 
-    // -------------------------------------------------------
-    // TABLE VALIDATION
-    // -------------------------------------------------------
+    /* -----------------------------------------------------
+       TABLE
+    ----------------------------------------------------- */
 
     if (this.orderType() === 'Dine-in' && !this.tableNumber().trim()) {
-      await Swal.fire({
-        icon: 'warning',
-        title: 'Table Number Required',
-        text: 'Please enter the table number for dine-in orders.',
-        confirmButtonText: 'Okay',
-
-        customClass: {
-          confirmButton: 'pos-swal-confirm',
-        },
-
-        buttonsStyling: false,
-      });
+      await this.showWarning(
+        'Table Number Required',
+        'Please enter the table number for dine-in orders.',
+      );
 
       return;
     }
 
-    // -------------------------------------------------------
-    // CASH VALIDATION
-    // -------------------------------------------------------
+    /* -----------------------------------------------------
+       CASH
+    ----------------------------------------------------- */
 
     if (!this.cashIsEnough()) {
       await Swal.fire({
         icon: 'error',
+
         title: 'Insufficient Cash',
 
         html: `
@@ -547,6 +580,8 @@ export class PosComponent implements OnInit {
 
         confirmButtonText: 'Okay',
 
+        buttonsStyling: false,
+
         customClass: {
           popup: 'pos-swal-popup',
 
@@ -556,21 +591,14 @@ export class PosComponent implements OnInit {
 
           confirmButton: 'pos-swal-confirm',
         },
-
-        buttonsStyling: false,
       });
 
       return;
     }
 
-    // =======================================================
-    // SNAPSHOT RECEIPT DATA
-    // =======================================================
-    //
-    // IMPORTANT:
-    // We create this BEFORE resetting the POS.
-    //
-    // =======================================================
+    /* =====================================================
+       RECEIPT
+    ===================================================== */
 
     const receiptData: ReceiptData = {
       orderId: 'PENDING',
@@ -607,14 +635,14 @@ export class PosComponent implements OnInit {
 
       storeName: 'KALYE SILOG & SIZZLING',
 
-      storeAddress: '',
+      storeAddress: 'San Jose, Occidental Mindoro',
 
       storeContact: '',
     };
 
-    // =======================================================
-    // PREPARE ORDER DATA
-    // =======================================================
+    /* =====================================================
+       ORDER DATA
+    ===================================================== */
 
     const orderData = {
       orderType: this.orderType(),
@@ -646,29 +674,19 @@ export class PosComponent implements OnInit {
       })),
     };
 
-    // =======================================================
-    // CLOSE CHECKOUT MODAL
-    // =======================================================
+    /* =====================================================
+       CLOSE MODAL
+    ===================================================== */
 
     this.showOrderModal.set(false);
 
     document.body.classList.remove('pos-modal-open');
 
-    // =======================================================
-    // WAIT FOR MODAL TO DISAPPEAR
-    // =======================================================
+    await this.waitForModalClose();
 
-    await new Promise<void>((resolve) => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          resolve();
-        });
-      });
-    });
-
-    // =======================================================
-    // PROCESSING
-    // =======================================================
+    /* =====================================================
+       PROCESSING
+    ===================================================== */
 
     this.processingOrder.set(true);
 
@@ -678,6 +696,7 @@ export class PosComponent implements OnInit {
       text: 'Saving order and updating inventory...',
 
       allowOutsideClick: false,
+
       allowEscapeKey: false,
 
       showConfirmButton: false,
@@ -693,66 +712,41 @@ export class PosComponent implements OnInit {
       },
     });
 
-    // =======================================================
-    // CREATE ORDER
-    // =======================================================
+    /* =====================================================
+       CREATE ORDER
+    ===================================================== */
 
     try {
       const order = await this.orderService.createOrder(orderData);
 
-      // =====================================================
-      // CLOSE PROCESSING
-      // =====================================================
-
       Swal.close();
 
-      // =====================================================
-      // UPDATE RECEIPT ORDER ID
-      // =====================================================
+      receiptData.orderId = String(order.id);
 
-      receiptData.orderId = order.id;
+      /* ===================================================
+         PRINT
+      =================================================== */
 
-      // =====================================================
-      // PRINT RECEIPT
-      // =====================================================
-      //
-      // THIS IS THE IMPORTANT PART:
-      //
-      // Order saved successfully
-      //          ↓
-      // Print receipt immediately
-      //
-      // =====================================================
+      const printerSettings = this.printerService.getSettings();
 
-      try {
-        await this.printerService.printReceipt(receiptData);
-      } catch (printError) {
-        console.error('PRINT RECEIPT ERROR:', printError);
+      console.log('ACTIVE PRINTER SETTINGS:', printerSettings);
 
-        await Swal.fire({
-          icon: 'warning',
+      if (printerSettings.autoPrint) {
+        try {
+          await this.printByDestination(receiptData);
+        } catch (printError) {
+          console.error('PRINT ERROR:', printError);
 
-          title: 'Order Saved, But Print Failed',
-
-          text: 'The order was saved successfully, but the receipt could not be printed.',
-
-          confirmButtonText: 'Okay',
-
-          customClass: {
-            popup: 'pos-swal-popup',
-
-            title: 'pos-swal-title',
-
-            confirmButton: 'pos-swal-confirm',
-          },
-
-          buttonsStyling: false,
-        });
+          await this.showWarning(
+            'Order Saved',
+            'The order was saved successfully, but the printer is currently unavailable. Please check the printer connection in Printer Settings.',
+          );
+        }
       }
 
-      // =====================================================
-      // SUCCESS
-      // =====================================================
+      /* ===================================================
+         SUCCESS
+      =================================================== */
 
       await Swal.fire({
         icon: 'success',
@@ -844,39 +838,21 @@ export class PosComponent implements OnInit {
 
           htmlContainer: 'pos-swal-html',
         },
-
-        buttonsStyling: false,
       });
 
-      // =====================================================
-      // RESET POS
-      // =====================================================
+      /* ===================================================
+         RESET
+      =================================================== */
 
       this.cart.set([]);
 
-      this.showOrderModal.set(false);
-
-      document.body.classList.remove('pos-modal-open');
-
       this.resetOrderDetails();
-
-      // =====================================================
-      // REFRESH MENU / INVENTORY
-      // =====================================================
 
       await this.loadMenus();
     } catch (error: any) {
       console.error('CREATE ORDER ERROR:', error);
 
-      // =====================================================
-      // CLOSE PROCESSING
-      // =====================================================
-
       Swal.close();
-
-      // =====================================================
-      // ERROR
-      // =====================================================
 
       await Swal.fire({
         icon: 'error',
@@ -890,6 +866,8 @@ export class PosComponent implements OnInit {
 
         confirmButtonText: 'Okay',
 
+        buttonsStyling: false,
+
         customClass: {
           popup: 'pos-swal-popup',
 
@@ -897,63 +875,58 @@ export class PosComponent implements OnInit {
 
           confirmButton: 'pos-swal-confirm',
         },
-
-        buttonsStyling: false,
       });
     } finally {
-      // =====================================================
-      // PROCESSING COMPLETE
-      // =====================================================
-
       this.processingOrder.set(false);
 
       document.body.classList.remove('pos-modal-open');
     }
   }
 
-  // =========================================================
-  // MANUAL PRINT
-  // =========================================================
-  //
-  // Reusable method if later you want:
-  //
-  // Print Again
-  // Reprint from Orders
-  // Reprint from Sales
-  //
-  // =========================================================
+  /* =======================================================
+     PRINT BY DESTINATION
+  ======================================================= */
+
+  private async printByDestination(receipt: ReceiptData): Promise<void> {
+    const destination = this.printDestination();
+
+    if (destination === 'customer') {
+      await this.printerService.printCustomerOrder(receipt);
+
+      return;
+    }
+
+    if (destination === 'kitchen') {
+      await this.printerService.printKitchenOrder(receipt);
+
+      return;
+    }
+
+    await this.printerService.printCustomerOrder(receipt);
+
+    await this.printerService.printKitchenOrder(receipt);
+  }
+
+  /* =======================================================
+     MANUAL PRINT
+  ======================================================= */
 
   async printReceipt(receipt: ReceiptData): Promise<void> {
     try {
-      await this.printerService.printReceipt(receipt);
+      await this.printByDestination(receipt);
     } catch (error) {
       console.error('MANUAL PRINT ERROR:', error);
 
-      await Swal.fire({
-        icon: 'error',
-
-        title: 'Unable to Print',
-
-        text: 'The receipt could not be printed.',
-
-        confirmButtonText: 'Okay',
-
-        customClass: {
-          popup: 'pos-swal-popup',
-
-          title: 'pos-swal-title',
-
-          confirmButton: 'pos-swal-confirm',
-        },
-
-        buttonsStyling: false,
-      });
+      await this.showWarning(
+        'Unable to Print',
+        'The selected printer could not print the order.',
+      );
     }
   }
 
-  // =========================================================
-  // RESET ORDER DETAILS
-  // =========================================================
+  /* =======================================================
+     RESET ORDER DETAILS
+  ======================================================= */
 
   resetOrderDetails(): void {
     this.orderType.set('Dine-in');
@@ -969,11 +942,13 @@ export class PosComponent implements OnInit {
     this.cashReceived.set(0);
 
     this.discount.set(0);
+
+    this.printDestination.set('kitchen');
   }
 
-  // =========================================================
-  // FORMAT CATEGORY
-  // =========================================================
+  /* =======================================================
+     FORMAT CATEGORY
+  ======================================================= */
 
   formatCategory(category: string): string {
     if (!category) {
@@ -985,9 +960,9 @@ export class PosComponent implements OnInit {
       .replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
-  // =========================================================
-  // TRACK BY
-  // =========================================================
+  /* =======================================================
+     TRACK BY
+  ======================================================= */
 
   trackByMenuId(_index: number, menu: MenuItem): number {
     return menu.id;
@@ -995,5 +970,41 @@ export class PosComponent implements OnInit {
 
   trackByCartId(_index: number, item: CartItem): number {
     return item.menu.id;
+  }
+
+  /* =======================================================
+     HELPERS
+  ======================================================= */
+
+  private async waitForModalClose(): Promise<void> {
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          resolve();
+        });
+      });
+    });
+  }
+
+  private async showWarning(title: string, text: string): Promise<void> {
+    await Swal.fire({
+      icon: 'warning',
+
+      title,
+
+      text,
+
+      confirmButtonText: 'Okay',
+
+      buttonsStyling: false,
+
+      customClass: {
+        popup: 'pos-swal-popup',
+
+        title: 'pos-swal-title',
+
+        confirmButton: 'pos-swal-confirm',
+      },
+    });
   }
 }

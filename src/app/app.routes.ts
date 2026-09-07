@@ -343,6 +343,22 @@ export const routes: Routes = [
             (m) => m.ActiveOrdersComponent,
           ),
       },
+
+      {
+        path: 'inventory',
+        loadComponent: () =>
+          import('./features/admin/inventory/inventory.component').then(
+            (m) => m.InventoryComponent,
+          ),
+      },
+
+      {
+        path: 'printers',
+        loadComponent: () =>
+          import('./features/cashier/printer/printer.component').then(
+            (m) => m.PrinterComponent,
+          ),
+      },
     ],
   },
 

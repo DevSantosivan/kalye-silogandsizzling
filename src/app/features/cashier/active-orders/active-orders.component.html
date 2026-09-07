@@ -4,19 +4,120 @@
   ====================================================== -->
 
   <header class="page-header">
-    <div>
-      <span class="eyebrow">ORDER MANAGEMENT</span>
+    <div class="page-heading">
+      <span class="eyebrow">ORDERS</span>
 
-      <h1>Orders</h1>
+      <h1>Customer Orders</h1>
 
-      <p>View customer orders and their menu items.</p>
+      <p>View and check customer orders.</p>
     </div>
 
     <div class="header-summary">
-      <strong>{{ orders().length }}</strong>
       <span>Total Orders</span>
+      <strong>{{ orders().length }}</strong>
     </div>
   </header>
+
+  <!-- =====================================================
+       FILTERS
+  ====================================================== -->
+
+  <div class="filters-panel">
+    <!-- SEARCH -->
+
+    <div class="search-field">
+      <i class="bx bx-search"></i>
+
+      <input
+        type="text"
+        placeholder="Search order or customer..."
+        [value]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    </div>
+
+    <!-- ORDER TYPE -->
+
+    <div class="filter-field">
+      <label for="orderTypeFilter"> Order Type </label>
+
+      <select
+        id="orderTypeFilter"
+        [value]="selectedOrderType()"
+        (change)="onOrderTypeChange($any($event.target).value)"
+      >
+        <option value="All">All Types</option>
+        <option value="Dine-in">Dine-in</option>
+        <option value="Takeout">Takeout</option>
+        <option value="Delivery">Delivery</option>
+      </select>
+    </div>
+
+    <!-- PAYMENT -->
+
+    <div class="filter-field">
+      <label for="paymentFilter"> Payment </label>
+
+      <select
+        id="paymentFilter"
+        [value]="selectedPayment()"
+        (change)="onPaymentChange($any($event.target).value)"
+      >
+        <option value="All">All Payments</option>
+        <option value="Cash">Cash</option>
+        <option value="GCash">GCash</option>
+        <option value="Card">Card</option>
+        <option value="Online">Online</option>
+      </select>
+    </div>
+
+    <!-- DATE -->
+
+    <div class="filter-field">
+      <label for="dateFilter"> Date </label>
+
+      <select
+        id="dateFilter"
+        [value]="selectedDate()"
+        (change)="onDateChange($any($event.target).value)"
+      >
+        <option value="All">All Dates</option>
+        <option value="Today">Today</option>
+        <option value="Yesterday">Yesterday</option>
+        <option value="This Week">This Week</option>
+        <option value="This Month">This Month</option>
+      </select>
+    </div>
+
+    <!-- CLEAR -->
+
+    <button
+      type="button"
+      class="clear-filters"
+      *ngIf="hasActiveFilters"
+      (click)="clearFilters()"
+    >
+      <i class="bx bx-x"></i>
+      <span>Clear</span>
+    </button>
+  </div>
+
+  <!-- =====================================================
+       FILTER RESULT
+  ====================================================== -->
+
+  <div
+    class="filter-result"
+    *ngIf="!loading() && !errorMessage() && orders().length > 0"
+  >
+    <span>
+      Showing
+      <strong>{{ filteredOrders().length }}</strong>
+      of
+      <strong>{{ orders().length }}</strong>
+      orders
+    </span>
+  </div>
 
   <!-- =====================================================
        ERROR
@@ -28,14 +129,14 @@
     </div>
 
     <div class="state-copy">
-      <strong>Something went wrong</strong>
+      <strong>Unable to load orders</strong>
 
       <span>
         {{ errorMessage() }}
       </span>
     </div>
 
-    <button type="button" (click)="loadOrders()">Retry</button>
+    <button type="button" (click)="loadOrders()">Try Again</button>
   </div>
 
   <!-- =====================================================
@@ -50,12 +151,12 @@
     <div class="state-copy">
       <strong>Loading orders</strong>
 
-      <span> Fetching orders and menu items... </span>
+      <span> Please wait while we get the latest orders. </span>
     </div>
   </div>
 
   <!-- =====================================================
-       EMPTY
+       EMPTY - NO ORDERS
   ====================================================== -->
 
   <div
@@ -72,83 +173,127 @@
   </div>
 
   <!-- =====================================================
+       EMPTY - FILTER RESULT
+  ====================================================== -->
+
+  <div
+    class="empty-state filtered-empty"
+    *ngIf="
+      !loading() &&
+      !errorMessage() &&
+      orders().length > 0 &&
+      filteredOrders().length === 0
+    "
+  >
+    <div class="empty-icon">
+      <i class="bx bx-search-alt"></i>
+    </div>
+
+    <strong>No matching orders</strong>
+
+    <span> Try changing your search or filters. </span>
+
+    <button type="button" class="empty-clear-button" (click)="clearFilters()">
+      Clear Filters
+    </button>
+  </div>
+
+  <!-- =====================================================
        ORDERS
   ====================================================== -->
 
   <div
     class="orders-list"
-    *ngIf="!loading() && !errorMessage() && orders().length > 0"
+    *ngIf="!loading() && !errorMessage() && filteredOrders().length > 0"
   >
     <article
       class="order-card"
-      *ngFor="let order of orders(); trackBy: trackByOrderId"
+      *ngFor="let order of filteredOrders(); trackBy: trackByOrderId"
     >
       <!-- =================================================
-           ORDER TOP
+           ORDER HEADER
       ================================================== -->
 
       <div class="order-card-header">
-        <div class="order-number">
-          <span class="order-label"> ORDER </span>
+        <div class="order-main-info">
+          <div class="order-number">
+            <span>ORDER</span>
 
-          <strong> #{{ order.id }} </strong>
-        </div>
+            <strong> #{{ order.id }} </strong>
+          </div>
 
-        <div class="order-date">
-          {{ formatDate(order.createdAt) }}
+          <span class="order-date">
+            {{ formatDate(order.createdAt) }}
+          </span>
         </div>
       </div>
 
       <!-- =================================================
-           ORDER CUSTOMER
+           QUICK INFO
       ================================================== -->
 
-      <div class="order-meta">
-        <div class="meta-item">
-          <span class="meta-label"> Customer </span>
+      <div class="order-info">
+        <!-- CUSTOMER -->
 
-          <strong>
-            {{ order.customerName || "Walk-in Customer" }}
-          </strong>
+        <div class="info-item customer-info">
+          <div class="info-icon">
+            <i class="bx bx-user"></i>
+          </div>
+
+          <div>
+            <span>Customer</span>
+
+            <strong>
+              {{ order.customerName || "Walk-in Customer" }}
+            </strong>
+          </div>
         </div>
 
-        <div class="meta-item">
-          <span class="meta-label"> Order Type </span>
+        <!-- ORDER TYPE -->
 
-          <strong>
+        <div class="info-item">
+          <span>Order Type</span>
+
+          <strong class="info-value">
             {{ formatOrderType(order.orderType) }}
           </strong>
         </div>
 
-        <div class="meta-item" *ngIf="order.tableNumber">
-          <span class="meta-label"> Table </span>
+        <!-- TABLE -->
 
-          <strong>
+        <div class="info-item" *ngIf="order.tableNumber">
+          <span>Table</span>
+
+          <strong class="info-value">
             {{ order.tableNumber }}
           </strong>
         </div>
 
-        <div class="meta-item">
-          <span class="meta-label"> Payment </span>
+        <!-- PAYMENT -->
 
-          <strong>
+        <div class="info-item">
+          <span>Payment</span>
+
+          <strong class="info-value">
             {{ formatPaymentMethod(order.paymentMethod) }}
           </strong>
         </div>
       </div>
 
       <!-- =================================================
-           MENU ITEMS
+           ITEMS
       ================================================== -->
 
       <div class="order-items">
         <div class="items-header">
-          <span> Menu Items </span>
+          <div>
+            <strong>Order Items</strong>
 
-          <strong>
-            {{ getItemCount(order) }}
-            {{ getItemCount(order) === 1 ? "item" : "items" }}
-          </strong>
+            <span>
+              {{ getItemCount(order) }}
+              {{ getItemCount(order) === 1 ? "item" : "items" }}
+            </span>
+          </div>
         </div>
 
         <!-- ITEMS -->
@@ -157,14 +302,11 @@
           class="item-row"
           *ngFor="let item of order.items; trackBy: trackByItemId"
         >
-          <!-- IMAGE PLACEHOLDER -->
           <div class="item-image">
             <div class="item-image-placeholder">
               <i class="bx bx-bowl-hot"></i>
             </div>
           </div>
-
-          <!-- ITEM INFO -->
 
           <div class="item-info">
             <strong>
@@ -172,11 +314,10 @@
             </strong>
 
             <span>
-              {{ item.quantity }} × ₱{{ item.price | number: "1.2-2" }}
+              {{ item.quantity }}
+              × ₱{{ item.price | number: "1.2-2" }}
             </span>
           </div>
-
-          <!-- ITEM TOTAL -->
 
           <strong class="item-total">
             ₱{{ item.total | number: "1.2-2" }}
@@ -188,7 +329,7 @@
         <div class="items-loading" *ngIf="order.loadingItems">
           <i class="bx bx-loader-alt bx-spin"></i>
 
-          <span> Loading menu items... </span>
+          <span> Loading items... </span>
         </div>
 
         <!-- NO ITEMS -->
@@ -199,32 +340,17 @@
         >
           <i class="bx bx-info-circle"></i>
 
-          <span> No menu items found for this order. </span>
+          <span> No items found for this order. </span>
         </div>
       </div>
 
       <!-- =================================================
-           ORDER FOOTER
+           FOOTER
       ================================================== -->
 
       <div class="order-card-footer">
-        <div class="status">
-          <span
-            class="status-dot"
-            [class.pending]="order.status === 'Pending'"
-            [class.preparing]="order.status === 'Preparing'"
-            [class.ready]="order.status === 'Ready'"
-            [class.completed]="order.status === 'Completed'"
-            [class.cancelled]="order.status === 'Cancelled'"
-          ></span>
-
-          <span>
-            {{ order.status }}
-          </span>
-        </div>
-
-        <div class="order-total">
-          <span>Total</span>
+        <div class="total-wrapper">
+          <span>Total Amount</span>
 
           <strong> ₱{{ order.total | number: "1.2-2" }} </strong>
         </div>
@@ -232,16 +358,16 @@
         <button type="button" class="view-button" (click)="viewOrder(order)">
           <i class="bx bx-show"></i>
 
-          <span>View</span>
+          <span>View Order</span>
         </button>
       </div>
     </article>
   </div>
 </section>
 
-<!-- =======================================================
+<!-- =====================================================
      VIEW ORDER MODAL
-======================================================== -->
+====================================================== -->
 
 <div class="modal-backdrop" *ngIf="showViewModal()" (click)="closeViewModal()">
   <section
@@ -250,10 +376,12 @@
     aria-modal="true"
     (click)="$event.stopPropagation()"
   >
-    <!-- HEADER -->
+    <!-- =================================================
+         MODAL HEADER
+    ================================================== -->
 
     <div class="modal-header">
-      <div>
+      <div class="modal-heading">
         <span class="eyebrow"> ORDER DETAILS </span>
 
         <h2>Order #{{ selectedOrder()?.id }}</h2>
@@ -263,22 +391,29 @@
         </p>
       </div>
 
-      <button type="button" class="modal-close" (click)="closeViewModal()">
+      <button
+        type="button"
+        class="modal-close"
+        (click)="closeViewModal()"
+        aria-label="Close"
+      >
         <i class="bx bx-x"></i>
       </button>
     </div>
 
-    <!-- BODY -->
+    <!-- =================================================
+         MODAL BODY
+    ================================================== -->
 
     <div class="modal-body" *ngIf="selectedOrder() as order">
       <!-- CUSTOMER -->
 
       <section class="detail-section">
-        <div class="detail-title">Customer</div>
+        <div class="detail-title">Customer Information</div>
 
         <div class="detail-grid">
           <div>
-            <span>Name</span>
+            <span>Customer</span>
 
             <strong>
               {{ order.customerName || "Walk-in Customer" }}
@@ -313,24 +448,16 @@
             <span>Payment</span>
 
             <strong>
-              {{ order.paymentMethod }}
-            </strong>
-          </div>
-
-          <div>
-            <span>Status</span>
-
-            <strong>
-              {{ order.status }}
+              {{ formatPaymentMethod(order.paymentMethod) }}
             </strong>
           </div>
         </div>
       </section>
 
-      <!-- MENU -->
+      <!-- ITEMS -->
 
       <section class="detail-section">
-        <div class="detail-title">Menu Items</div>
+        <div class="detail-title">Order Items</div>
 
         <div class="modal-items">
           <div
@@ -354,7 +481,9 @@
               </span>
             </div>
 
-            <strong> ₱{{ item.total | number: "1.2-2" }} </strong>
+            <strong class="modal-item-total">
+              ₱{{ item.total | number: "1.2-2" }}
+            </strong>
           </div>
         </div>
       </section>
@@ -375,14 +504,16 @@
         </div>
 
         <div class="grand-total">
-          <span>Total</span>
+          <span>Total Amount</span>
 
           <strong> ₱{{ order.total | number: "1.2-2" }} </strong>
         </div>
       </section>
     </div>
 
-    <!-- FOOTER -->
+    <!-- =================================================
+         MODAL FOOTER
+    ================================================== -->
 
     <div class="modal-footer">
       <button type="button" class="modal-cancel" (click)="closeViewModal()">
