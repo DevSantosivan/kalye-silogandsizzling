@@ -1,21 +1,26 @@
-<section class="page">
+<div class="staff-page">
   <!-- =====================================================
        PAGE HEADER
   ====================================================== -->
 
   <div class="page-header">
-    <div>
-      <span class="eyebrow">TEAM MANAGEMENT</span>
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow"> TEAM MANAGEMENT </span>
 
-      <h1>Staff</h1>
+        <h1>Staff</h1>
 
-      <p>Manage your Kalye Silog team and access.</p>
+        <p>Manage your Kalye Silog team and access.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="new-staff-btn" (click)="addStaff()">
+          <i class="bx bx-plus"></i>
+
+          <span> Add Staff </span>
+        </button>
+      </div>
     </div>
-
-    <button type="button" class="primary-btn" (click)="addStaff()">
-      <i class="bx bx-plus"></i>
-      <span>Add staff</span>
-    </button>
   </div>
 
   <!-- =====================================================
@@ -23,6 +28,8 @@
   ====================================================== -->
 
   <div class="summary-grid">
+    <!-- TOTAL -->
+
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
@@ -38,13 +45,16 @@
 
       <div class="summary-meta">
         <i class="bx bx-id-card"></i>
-        <span>Registered team members</span>
+
+        <span> Registered team members </span>
       </div>
     </div>
 
+    <!-- ACTIVE -->
+
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon active-icon">
+        <div class="summary-icon">
           <i class="bx bx-check-circle"></i>
         </div>
 
@@ -57,13 +67,16 @@
 
       <div class="summary-meta">
         <span class="summary-dot active"></span>
-        <span>Currently active</span>
+
+        <span> Currently active </span>
       </div>
     </div>
 
+    <!-- KITCHEN -->
+
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon kitchen-icon">
+        <div class="summary-icon">
           <i class="bx bx-bowl-hot"></i>
         </div>
 
@@ -76,13 +89,16 @@
 
       <div class="summary-meta">
         <i class="bx bx-restaurant"></i>
-        <span>Kitchen staff members</span>
+
+        <span> Kitchen staff members </span>
       </div>
     </div>
 
+    <!-- CASHIERS -->
+
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon cashier-icon">
+        <div class="summary-icon">
           <i class="bx bx-wallet"></i>
         </div>
 
@@ -95,17 +111,20 @@
 
       <div class="summary-meta">
         <i class="bx bx-credit-card"></i>
-        <span>Cashier accounts</span>
+
+        <span> Cashier accounts </span>
       </div>
     </div>
   </div>
 
   <!-- =====================================================
-       STAFF PANEL
+       STAFF CARD
   ====================================================== -->
 
-  <section class="staff-section">
-    <!-- TOOLBAR -->
+  <section class="staff-card">
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
 
     <div class="staff-toolbar">
       <div class="toolbar-left">
@@ -133,15 +152,17 @@
         </div>
       </div>
 
-      <div class="toolbar-right">
-        <!-- SEARCH -->
+      <!-- =================================================
+           SEARCH + STATUS
+      ================================================== -->
 
+      <div class="toolbar-right">
         <div class="search">
           <i class="bx bx-search"></i>
 
           <input
             type="text"
-            placeholder="Search staff"
+            placeholder="Search users"
             [value]="searchTerm"
             (input)="onSearch($event)"
           />
@@ -158,8 +179,6 @@
           }
         </div>
 
-        <!-- STATUS -->
-
         <select
           class="status-select"
           [value]="activeStatus"
@@ -174,38 +193,78 @@
       </div>
     </div>
 
-    <!-- =================================================
-         TABLE
-    ================================================== -->
+    <!-- ===================================================
+         LOADING
+    ==================================================== -->
 
-    <div class="staff-table-wrapper">
-      <div class="staff-table">
-        <!-- HEADER -->
-
-        <div class="list-head">
-          <span>STAFF</span>
-
-          <span>ROLE</span>
-
-          <span>EMAIL</span>
-
-          <span>JOINED</span>
-
-          <span>STATUS</span>
-
-          <span></span>
+    @if (isLoading) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="bx bx-loader-alt bx-spin"></i>
         </div>
 
-        <!-- ROWS -->
+        <strong> Loading users... </strong>
+
+        <span> Please wait while the team members are loaded. </span>
+      </div>
+    }
+
+    <!-- ===================================================
+         ERROR
+    ==================================================== -->
+
+    @if (!isLoading && errorMessage) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="bx bx-error-circle"></i>
+        </div>
+
+        <strong> Unable to load users </strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+        <button type="button" class="reset-search" (click)="loadUsers()">
+          Try again
+        </button>
+      </div>
+    }
+
+    <!-- ===================================================
+         TABLE
+    ==================================================== -->
+
+    @if (!isLoading && !errorMessage) {
+      <div class="staff-table">
+        <!-- TABLE HEADER -->
+
+        <div class="table-head">
+          <span> STAFF </span>
+
+          <span> ROLE </span>
+
+          <span> EMAIL </span>
+
+          <span> JOINED </span>
+
+          <span> STATUS </span>
+
+          <span> ACTIONS </span>
+        </div>
+
+        <!-- =================================================
+             ROWS
+        ================================================== -->
 
         @for (member of paginatedStaff; track member.id) {
           <div
-            class="staff-row"
+            class="table-row"
             [class.inactive-row]="member.status === 'Inactive'"
           >
             <!-- STAFF -->
 
-            <div class="staff-name">
+            <div class="staff-cell">
               <div class="avatar">
                 {{ getInitials(member.name) }}
               </div>
@@ -215,7 +274,7 @@
                   {{ member.name }}
                 </strong>
 
-                <small> ID #{{ member.id.toString().padStart(3, "0") }} </small>
+                <small> ID #{{ member.id.slice(0, 8) }} </small>
               </div>
             </div>
 
@@ -233,15 +292,15 @@
 
             <!-- EMAIL -->
 
-            <span class="email-cell">
+            <div class="email-cell">
               {{ member.email }}
-            </span>
+            </div>
 
             <!-- JOINED -->
 
-            <span class="joined-cell">
-              {{ member.joined }}
-            </span>
+            <div class="joined-cell">
+              {{ formatJoinedDate(member.created_at) }}
+            </div>
 
             <!-- STATUS -->
 
@@ -249,7 +308,7 @@
               class="status"
               [class.inactive]="member.status === 'Inactive'"
             >
-              <span class="status-dot"></span>
+              <span class="badge-dot"></span>
 
               {{ member.status }}
             </span>
@@ -260,7 +319,7 @@
               <button
                 type="button"
                 class="more"
-                aria-label="Staff actions"
+                aria-label="User actions"
                 (click)="toggleActionMenu(member.id)"
               >
                 <i class="bx bx-dots-vertical-rounded"></i>
@@ -268,20 +327,29 @@
 
               @if (openMenuId === member.id) {
                 <div class="action-menu">
+                  <!-- EDIT -->
+
                   <button type="button" (click)="editStaff(member)">
                     <i class="bx bx-edit-alt"></i>
-                    <span>Edit</span>
+
+                    <span> Edit </span>
                   </button>
+
+                  <!-- STATUS -->
 
                   <button type="button" (click)="toggleStatus(member)">
                     @if (member.status === "Active") {
                       <i class="bx bx-user-x"></i>
-                      <span>Set inactive</span>
+
+                      <span> Set inactive </span>
                     } @else {
                       <i class="bx bx-user-check"></i>
-                      <span>Set active</span>
+
+                      <span> Set active </span>
                     }
                   </button>
+
+                  <!-- DELETE -->
 
                   <button
                     type="button"
@@ -289,7 +357,8 @@
                     (click)="deleteStaff(member)"
                   >
                     <i class="bx bx-trash"></i>
-                    <span>Delete</span>
+
+                    <span> Delete </span>
                   </button>
                 </div>
               }
@@ -297,78 +366,293 @@
           </div>
         }
 
-        <!-- EMPTY -->
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
 
         @if (paginatedStaff.length === 0) {
           <div class="empty-state">
             <div class="empty-icon">
-              <i class="bx bx-group"></i>
+              <i class="bx bx-search-alt"></i>
             </div>
 
-            <strong> No staff found </strong>
+            <strong> No users found </strong>
 
             <span> Try changing your search or filters. </span>
 
             @if (searchTerm || activeRole !== "All" || activeStatus !== "All") {
-              <button type="button" class="reset-btn" (click)="clearFilters()">
+              <button
+                type="button"
+                class="reset-search"
+                (click)="clearFilters()"
+              >
                 Clear filters
               </button>
             }
           </div>
         }
       </div>
-    </div>
 
-    <!-- =================================================
-         FOOTER / PAGINATION
-    ================================================== -->
+      <!-- ===================================================
+           FOOTER
+      ==================================================== -->
 
-    <div class="table-footer">
-      <span class="results-count">
-        @if (filteredStaff.length > 0) {
-          Showing
-          <strong>{{ startItem }}</strong>
-          -
-          <strong>{{ endItem }}</strong>
-          of
-          <strong>{{ filteredStaff.length }}</strong>
-          staff members
-        } @else {
-          No staff found
-        }
-      </span>
+      <div class="table-footer">
+        <span class="results-count">
+          @if (filteredStaff.length > 0) {
+            Showing
 
-      @if (totalPages > 1) {
-        <div class="pagination">
-          <button
-            type="button"
-            [disabled]="currentPage === 1"
-            (click)="previousPage()"
-            aria-label="Previous page"
-          >
-            <i class="bx bx-chevron-left"></i>
-          </button>
+            <strong>
+              {{ startItem }}
+            </strong>
 
-          @for (page of pageNumbers; track page) {
+            -
+
+            <strong>
+              {{ endItem }}
+            </strong>
+
+            of
+
+            <strong>
+              {{ filteredStaff.length }}
+            </strong>
+
+            staff members
+          } @else {
+            No users found
+          }
+        </span>
+
+        @if (totalPages > 1) {
+          <div class="pagination">
             <button
               type="button"
-              [class.current]="currentPage === page"
-              (click)="goToPage(page)"
+              [disabled]="currentPage === 1"
+              (click)="previousPage()"
+              aria-label="Previous page"
             >
-              {{ page }}
+              <i class="bx bx-chevron-left"></i>
             </button>
-          }
+
+            @for (page of pageNumbers; track page) {
+              <button
+                type="button"
+                [class.current]="currentPage === page"
+                (click)="goToPage(page)"
+              >
+                {{ page }}
+              </button>
+            }
+
+            <button
+              type="button"
+              [disabled]="currentPage === totalPages"
+              (click)="nextPage()"
+              aria-label="Next page"
+            >
+              <i class="bx bx-chevron-right"></i>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- =====================================================
+       CREATE / EDIT USER MODAL
+  ====================================================== -->
+
+  @if (showUserModal) {
+    <div class="modal-backdrop" (click)="closeUserModal()">
+      <div class="user-modal" (click)="$event.stopPropagation()">
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+          <div>
+            <span class="modal-eyebrow"> TEAM MANAGEMENT </span>
+
+            <h2>
+              {{ editingUserId ? "Edit User" : "Create User" }}
+            </h2>
+
+            <p>
+              {{
+                editingUserId
+                  ? "Update this user account and access."
+                  : "Create a new user account for your team."
+              }}
+            </p>
+          </div>
 
           <button
             type="button"
-            [disabled]="currentPage === totalPages"
-            (click)="nextPage()"
-            aria-label="Next page"
+            class="modal-close"
+            [disabled]="isSaving"
+            (click)="closeUserModal()"
+            aria-label="Close modal"
           >
-            <i class="bx bx-chevron-right"></i>
+            <i class="bx bx-x"></i>
           </button>
         </div>
-      }
+
+        <!-- MODAL BODY -->
+
+        <div class="modal-body">
+          <!-- NAME -->
+
+          <div class="form-group">
+            <label for="userName"> Full Name </label>
+
+            <div class="input-wrapper">
+              <i class="bx bx-user"></i>
+
+              <input
+                id="userName"
+                type="text"
+                placeholder="Enter full name"
+                [(ngModel)]="userForm.name"
+                [disabled]="isSaving"
+              />
+            </div>
+          </div>
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+            <label for="userEmail"> Email Address </label>
+
+            <div class="input-wrapper">
+              <i class="bx bx-envelope"></i>
+
+              <input
+                id="userEmail"
+                type="email"
+                placeholder="Enter email address"
+                [(ngModel)]="userForm.email"
+                [disabled]="isSaving"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password"> Password </label>
+
+            <div class="password-input">
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="userForm.password"
+                placeholder="Enter password"
+                autocomplete="new-password"
+                [disabled]="isSaving"
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePassword()"
+                [disabled]="isSaving"
+                aria-label="Toggle password visibility"
+              >
+                <i
+                  class="bx"
+                  [class.bx-show]="!showPassword"
+                  [class.bx-hide]="showPassword"
+                ></i>
+              </button>
+            </div>
+
+            @if (!editingUserId) {
+              <small> Password must be at least 6 characters. </small>
+            }
+          </div>
+
+          <!-- ROLE -->
+
+          <div class="form-group">
+            <label for="userRole"> Role </label>
+
+            <div class="select-wrapper">
+              <i class="bx bx-shield"></i>
+
+              <select
+                id="userRole"
+                [(ngModel)]="userForm.role"
+                [disabled]="isSaving"
+              >
+                <option value="Cashier">Cashier</option>
+
+                <option value="Kitchen Staff">Kitchen Staff</option>
+
+                <option value="User">User</option>
+              </select>
+
+              <i class="bx bx-chevron-down select-arrow"></i>
+            </div>
+          </div>
+
+          <!-- STATUS -->
+
+          <div class="form-group">
+            <label for="userStatus"> Status </label>
+
+            <div class="select-wrapper">
+              <i class="bx bx-check-circle"></i>
+
+              <select
+                id="userStatus"
+                [(ngModel)]="userForm.status"
+                [disabled]="isSaving"
+              >
+                <option value="Active">Active</option>
+
+                <option value="Inactive">Inactive</option>
+              </select>
+
+              <i class="bx bx-chevron-down select-arrow"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL FOOTER -->
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="cancel-btn"
+            [disabled]="isSaving"
+            (click)="closeUserModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="
+              isSaving || !userForm.name.trim() || !userForm.email.trim()
+            "
+            (click)="saveUser()"
+          >
+            @if (isSaving) {
+              <i class="bx bx-loader-alt bx-spin"></i>
+
+              <span> Saving... </span>
+            } @else {
+              <i
+                class="bx"
+                [class.bx-plus]="!editingUserId"
+                [class.bx-save]="editingUserId"
+              ></i>
+
+              <span>
+                {{ editingUserId ? "Save Changes" : "Create User" }}
+              </span>
+            }
+          </button>
+        </div>
+      </div>
     </div>
-  </section>
-</section>
+  }
+</div>

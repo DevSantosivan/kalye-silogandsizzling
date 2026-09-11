@@ -1,1 +1,365 @@
-<p>settings works!</p>
+<section class="settings-page">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow">SYSTEM MANAGEMENT</span>
+
+        <h1>Settings</h1>
+
+        <p>
+          Manage notifications and security preferences for your Kalye Silog
+          admin account.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       SETTINGS LAYOUT
+  ====================================================== -->
+
+  <div class="settings-layout">
+    <!-- ===================================================
+         NOTIFICATIONS
+    ==================================================== -->
+
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <div class="settings-heading">
+          <div class="settings-icon">
+            <i class="bx bx-bell"></i>
+          </div>
+
+          <div>
+            <span class="card-eyebrow">NOTIFICATIONS</span>
+
+            <h2>Notification preferences</h2>
+
+            <p>
+              Choose which alerts you want to receive while managing the system.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-list">
+        <!-- ORDER NOTIFICATIONS -->
+
+        <div class="setting-item">
+          <div class="setting-copy">
+            <div class="setting-icon">
+              <i class="bx bx-receipt"></i>
+            </div>
+
+            <div>
+              <strong>New order notifications</strong>
+
+              <span> Get notified when a new order is created. </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="toggle"
+            [class.active]="orderNotifications()"
+            [attr.aria-checked]="orderNotifications()"
+            role="switch"
+            (click)="toggleOrderNotifications()"
+          >
+            <span></span>
+          </button>
+        </div>
+
+        <!-- LOW STOCK -->
+
+        <div class="setting-item">
+          <div class="setting-copy">
+            <div class="setting-icon">
+              <i class="bx bx-package"></i>
+            </div>
+
+            <div>
+              <strong>Low stock alerts</strong>
+
+              <span>
+                Get notified when ingredients reach their reorder level.
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="toggle"
+            [class.active]="lowStockNotifications()"
+            [attr.aria-checked]="lowStockNotifications()"
+            role="switch"
+            (click)="toggleLowStockNotifications()"
+          >
+            <span></span>
+          </button>
+        </div>
+
+        <!-- SYSTEM -->
+
+        <div class="setting-item">
+          <div class="setting-copy">
+            <div class="setting-icon">
+              <i class="bx bx-info-circle"></i>
+            </div>
+
+            <div>
+              <strong>System notifications</strong>
+
+              <span> Receive important system and account notifications. </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="toggle"
+            [class.active]="systemNotifications()"
+            [attr.aria-checked]="systemNotifications()"
+            role="switch"
+            (click)="toggleSystemNotifications()"
+          >
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NOTIFICATION FOOTER -->
+
+      <div class="settings-footer">
+        <span>
+          <i class="bx bx-check-circle"></i>
+          Changes are applied to this admin account.
+        </span>
+
+        <button type="button" class="save-btn" (click)="saveNotifications()">
+          <i class="bx bx-save"></i>
+          Save changes
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================
+         SECURITY
+    ==================================================== -->
+
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <div class="settings-heading">
+          <div class="settings-icon">
+            <i class="bx bx-shield-quarter"></i>
+          </div>
+
+          <div>
+            <span class="card-eyebrow">SECURITY</span>
+
+            <h2>Account security</h2>
+
+            <p>
+              Keep your administrator account protected with a strong password.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECURITY STATUS -->
+
+      <div class="security-status">
+        <div class="security-status-icon">
+          <i class="bx bx-lock-alt"></i>
+        </div>
+
+        <div class="security-status-copy">
+          <strong>Password protection</strong>
+
+          <span> Your account is protected by password authentication. </span>
+        </div>
+
+        <div class="security-badge">
+          <span></span>
+          Protected
+        </div>
+      </div>
+
+      <!-- CHANGE PASSWORD -->
+
+      <div class="password-section">
+        <div class="section-title">
+          <div>
+            <h3>Change password</h3>
+
+            <p>Use a strong password that you don't use anywhere else.</p>
+          </div>
+        </div>
+
+        <!-- CURRENT PASSWORD -->
+
+        <div class="form-group">
+          <label for="currentPassword"> Current password </label>
+
+          <div class="input-wrapper">
+            <i class="bx bx-lock"></i>
+
+            <input
+              id="currentPassword"
+              [type]="showCurrentPassword() ? 'text' : 'password'"
+              [(value)]="currentPassword"
+              (input)="currentPassword = $any($event.target).value"
+              placeholder="Enter current password"
+              autocomplete="current-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleCurrentPassword()"
+              aria-label="Toggle password visibility"
+            >
+              <i
+                [class]="showCurrentPassword() ? 'bx bx-hide' : 'bx bx-show'"
+              ></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- NEW PASSWORD -->
+
+        <div class="form-group">
+          <label for="newPassword"> New password </label>
+
+          <div class="input-wrapper">
+            <i class="bx bx-key"></i>
+
+            <input
+              id="newPassword"
+              [type]="showNewPassword() ? 'text' : 'password'"
+              [(value)]="newPassword"
+              (input)="newPassword = $any($event.target).value"
+              placeholder="Enter new password"
+              autocomplete="new-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleNewPassword()"
+              aria-label="Toggle password visibility"
+            >
+              <i [class]="showNewPassword() ? 'bx bx-hide' : 'bx bx-show'"></i>
+            </button>
+          </div>
+
+          <span class="field-hint">
+            <i class="bx bx-info-circle"></i>
+            Password must contain at least 8 characters.
+          </span>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+
+        <div class="form-group">
+          <label for="confirmPassword"> Confirm new password </label>
+
+          <div class="input-wrapper">
+            <i class="bx bx-check-shield"></i>
+
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              [(value)]="confirmPassword"
+              (input)="confirmPassword = $any($event.target).value"
+              placeholder="Confirm new password"
+              autocomplete="new-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleConfirmPassword()"
+              aria-label="Toggle password visibility"
+            >
+              <i
+                [class]="showConfirmPassword() ? 'bx bx-hide' : 'bx bx-show'"
+              ></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- PASSWORD ACTION -->
+
+        <div class="password-actions">
+          <span>
+            <i class="bx bx-shield"></i>
+            Your password should be kept private.
+          </span>
+
+          <button type="button" class="save-btn" (click)="changePassword()">
+            <i class="bx bx-lock-open-alt"></i>
+            Update password
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================
+         ACCOUNT INFORMATION
+    ==================================================== -->
+
+    <section class="settings-card account-card">
+      <div class="settings-card-header">
+        <div class="settings-heading">
+          <div class="settings-icon">
+            <i class="bx bx-user"></i>
+          </div>
+
+          <div>
+            <span class="card-eyebrow">ACCOUNT</span>
+
+            <h2>Account information</h2>
+
+            <p>
+              Basic information about the account currently using this admin
+              panel.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-info-grid">
+        <div class="info-item">
+          <span>Account type</span>
+
+          <strong> Administrator </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Access level</span>
+
+          <strong> Admin Panel </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Authentication</span>
+
+          <strong>
+            <span class="online-dot"></span>
+            Active
+          </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Security status</span>
+
+          <strong> Protected </strong>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

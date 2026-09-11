@@ -33,7 +33,9 @@
 
   @if (errorMessage) {
     <div class="error-state">
-      <div class="error-icon"><i class="bx bx-error-circle"></i></div>
+      <div class="error-icon">
+        <i class="bx bx-error-circle"></i>
+      </div>
 
       <span>{{ errorMessage }}</span>
 
@@ -46,6 +48,7 @@
   ====================================================== -->
 
   <div class="summary-grid">
+    <!-- TODAY -->
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
@@ -65,6 +68,7 @@
       </div>
     </div>
 
+    <!-- PENDING -->
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon pending-icon">
@@ -84,6 +88,7 @@
       </div>
     </div>
 
+    <!-- PREPARING -->
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon preparing-icon">
@@ -103,6 +108,7 @@
       </div>
     </div>
 
+    <!-- COMPLETED -->
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon completed-icon">
@@ -129,8 +135,9 @@
 
   <section class="orders-card">
     <!-- ===================================================
-     TOOLBAR
-==================================================== -->
+         TOOLBAR
+    ==================================================== -->
+
     <div class="orders-toolbar">
       <div class="toolbar-left">
         <div class="section-title">
@@ -185,8 +192,9 @@
     </div>
 
     <!-- ===================================================
-     LOADING
-==================================================== -->
+         LOADING
+    ==================================================== -->
+
     @if (loading) {
       <div class="loading-state">
         <div class="loading-spinner"></div>
@@ -195,11 +203,13 @@
     }
 
     <!-- ===================================================
-     TABLE
-==================================================== -->
+         TABLE
+    ==================================================== -->
+
     @if (!loading) {
       <div class="orders-table">
         <!-- TABLE HEADER -->
+
         <div class="table-head">
           <span>ORDER</span>
           <span>CUSTOMER</span>
@@ -214,14 +224,17 @@
         </div>
 
         <!-- TABLE ROWS -->
+
         @for (order of paginatedOrders; track order.numericId) {
           <div class="table-row" [class.order-new]="order.status === 'Pending'">
             <!-- ORDER -->
+
             <div class="order-cell">
               <strong>{{ order.id }}</strong>
             </div>
 
             <!-- CUSTOMER -->
+
             <div class="customer">
               <div class="avatar">
                 {{ order.customer.charAt(0).toUpperCase() }}
@@ -239,6 +252,7 @@
             </div>
 
             <!-- DATE -->
+
             <div class="date-cell">
               <strong>
                 {{ formatDate(order.createdAt) }}
@@ -250,6 +264,7 @@
             </div>
 
             <!-- TYPE -->
+
             <div class="type-cell">
               @if (order.type === "Dine In") {
                 <i class="bx bx-restaurant"></i>
@@ -263,17 +278,20 @@
             </div>
 
             <!-- ITEMS -->
+
             <span class="items-count">
               {{ order.items }}
               {{ order.items === 1 ? "item" : "items" }}
             </span>
 
             <!-- TOTAL -->
+
             <strong class="order-total">
               {{ formatCurrency(order.total) }}
             </strong>
 
             <!-- RECEIVED -->
+
             <div class="received-cell">
               @if (order.paymentMethod === "Cash") {
                 <strong>
@@ -291,12 +309,15 @@
             </div>
 
             <!-- PAYMENT -->
+
             <span class="payment" [class.pending]="order.payment === 'Pending'">
               <span class="badge-dot"></span>
+
               {{ order.payment }}
             </span>
 
             <!-- STATUS -->
+
             <span
               class="status"
               [class.new]="order.status === 'Pending'"
@@ -306,10 +327,12 @@
               [class.cancelled]="order.status === 'Cancelled'"
             >
               <span class="badge-dot"></span>
+
               {{ order.status }}
             </span>
 
             <!-- ACTIONS -->
+
             <button class="more" type="button" aria-label="Order actions">
               <i class="bx bx-dots-vertical-rounded"></i>
             </button>
@@ -317,6 +340,7 @@
         }
 
         <!-- EMPTY -->
+
         @if (paginatedOrders.length === 0) {
           <div class="empty-state">
             <div class="empty-icon">
@@ -342,8 +366,9 @@
     }
 
     <!-- ===================================================
-     FOOTER
-==================================================== -->
+         FOOTER
+    ==================================================== -->
+
     <div class="table-footer">
       <span class="results-count">
         @if (filteredOrders.length > 0) {

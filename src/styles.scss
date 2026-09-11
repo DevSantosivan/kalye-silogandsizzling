@@ -6,28 +6,48 @@
    GLOBAL THEME
 ========================================= */
 
+// GLOBAL DESIGN TOKENS
+
 :root {
-  --bg: #f7f5f1;
-  --surface: #ffffff;
+  --color-primary: #191919;
+  --color-primary-hover: #303030;
 
-  --ink: #171716;
-  --text: #514d48;
-  --muted: #77716b;
+  --color-text: #191919;
+  --color-text-dark: #292724;
+  --color-text-muted: #777;
+  --color-text-soft: #999;
+  --color-text-light: #aaa39b;
 
-  --gold: #bf8113;
-  --gold-dark: #9b680d;
-  --gold-soft: #fff4e7;
+  --color-bg: #faf9f7;
+  --color-surface: #ffffff;
+  --color-surface-hover: #fcfbf9;
 
-  --line: #e3ded6;
-  --line-dark: #dfdad3;
+  --color-border: #e9e7e3;
+  --color-border-soft: #efeeeb;
 
-  --available: #5d9969;
-  --available-soft: #edf6ef;
+  --color-success: #39834d;
+  --color-success-bg: #eef7f0;
 
-  --unavailable: #918b84;
-  --unavailable-soft: #f1efec;
+  --color-warning: #a16b00;
+  --color-warning-bg: #fff7e7;
+
+  --color-danger: #bd4141;
+  --color-danger-bg: #fff0f0;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --page-gap: 18px;
+  --card-padding: 20px;
+
+  --font-xs: 10px;
+  --font-sm: 11px;
+  --font-md: 12px;
+  --font-base: 13px;
+  --font-lg: 17px;
+  --font-xl: 30px;
 }
-
 /* =========================================
    RESET
 ========================================= */

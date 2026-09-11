@@ -1,11 +1,11 @@
 <section class="page">
-  <!-- ==========================================
+  <!-- =====================================================
        PAGE HEADER
-  =========================================== -->
+  ====================================================== -->
 
-  <div class="page-header">
-    <div>
-      <span class="eyebrow"> MENU ORGANIZATION </span>
+  <header class="page-header">
+    <div class="header-copy">
+      <span class="eyebrow">MENU ORGANIZATION</span>
 
       <h1>Categories</h1>
 
@@ -16,14 +16,16 @@
       <i class="bx bx-plus"></i>
       <span>Add category</span>
     </button>
-  </div>
+  </header>
 
-  <!-- ==========================================
-       SUMMARY
-  =========================================== -->
+  <!-- =====================================================
+       SUMMARY CARDS
+  ====================================================== -->
 
-  <div class="summary-grid">
-    <div class="summary-card">
+  <section class="summary-grid">
+    <!-- TOTAL -->
+
+    <article class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
           <i class="bx bx-category"></i>
@@ -40,9 +42,11 @@
         <i class="bx bx-layer"></i>
         <span>Menu categories</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- ACTIVE -->
+
+    <article class="summary-card">
       <div class="summary-top">
         <div class="summary-icon active-icon">
           <i class="bx bx-check-circle"></i>
@@ -59,12 +63,14 @@
         <span class="summary-dot active"></span>
         <span>Visible categories</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- INACTIVE -->
+
+    <article class="summary-card">
       <div class="summary-top">
         <div class="summary-icon inactive-icon">
-          <i class="bx bx-hide"></i>
+          <i class="bx bx-x-circle"></i>
         </div>
 
         <span class="summary-label"> INACTIVE </span>
@@ -78,9 +84,11 @@
         <span class="summary-dot inactive"></span>
         <span>Hidden categories</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- MENU ITEMS -->
+
+    <article class="summary-card">
       <div class="summary-top">
         <div class="summary-icon items-icon">
           <i class="bx bx-food-menu"></i>
@@ -97,27 +105,35 @@
         <i class="bx bx-restaurant"></i>
         <span>Across all categories</span>
       </div>
-    </div>
-  </div>
+    </article>
+  </section>
 
-  <!-- ==========================================
+  <!-- =====================================================
        CATEGORY SECTION
-  =========================================== -->
+  ====================================================== -->
 
   <section class="category-section">
-    <!-- TOOLBAR -->
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
 
     <div class="category-toolbar">
-      <div class="toolbar-left">
-        <div class="section-title">
-          <h2>All Categories</h2>
+      <div class="toolbar-main">
+        <div class="section-heading">
+          <div>
+            <span class="section-eyebrow"> CATALOG </span>
 
-          <span>
-            {{ filteredCategories.length }}
-          </span>
+            <div class="section-title">
+              <h2>Categories</h2>
+
+              <span class="item-count">
+                {{ filteredCategories.length }}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <!-- STATUS FILTER -->
+        <!-- STATUS FILTERS -->
 
         <div class="filters">
           @for (filter of statusFilters; track filter) {
@@ -133,15 +149,17 @@
         </div>
       </div>
 
-      <div class="toolbar-right">
-        <!-- SEARCH -->
+      <!-- =================================================
+           SEARCH
+      ================================================== -->
 
+      <div class="toolbar-actions">
         <div class="search">
           <i class="bx bx-search"></i>
 
           <input
             type="text"
-            placeholder="Search category"
+            placeholder="Search category..."
             [value]="searchTerm"
             (input)="onSearch($event)"
           />
@@ -160,9 +178,9 @@
       </div>
     </div>
 
-    <!-- ========================================
+    <!-- ===================================================
          CATEGORY GRID
-    ========================================= -->
+    ==================================================== -->
 
     <div class="category-grid">
       @for (category of paginatedCategories; track category.id) {
@@ -201,18 +219,16 @@
               <div class="action-menu">
                 <button type="button" (click)="editCategory(category)">
                   <i class="bx bx-edit-alt"></i>
-                  <span>Edit</span>
+                  <span>Edit category</span>
                 </button>
 
                 <button type="button" (click)="toggleStatus(category)">
                   @if (category.status) {
                     <i class="bx bx-hide"></i>
-
-                    <span> Set inactive </span>
+                    <span>Set inactive</span>
                   } @else {
                     <i class="bx bx-show"></i>
-
-                    <span> Set active </span>
+                    <span>Set active</span>
                   }
                 </button>
 
@@ -222,7 +238,7 @@
                   (click)="deleteCategory(category)"
                 >
                   <i class="bx bx-trash"></i>
-                  <span>Delete</span>
+                  <span>Delete category</span>
                 </button>
               </div>
             }
@@ -230,7 +246,7 @@
 
           <!-- CONTENT -->
 
-          <div class="category-info">
+          <div class="category-content">
             <span class="category-label"> MENU CATEGORY </span>
 
             <h2>
@@ -244,8 +260,8 @@
 
           <!-- FOOTER -->
 
-          <div class="category-footer">
-            <div>
+          <div class="category-bottom">
+            <div class="item-summary">
               <strong>
                 {{ category.items }}
               </strong>
@@ -258,19 +274,19 @@
         </article>
       }
 
-      <!-- ========================================
+      <!-- =================================================
            EMPTY STATE
-      ========================================= -->
+      ================================================== -->
 
       @if (paginatedCategories.length === 0) {
         <div class="empty-category">
-          <div class="empty-icon">
+          <div class="empty-category-icon">
             <i class="bx bx-category"></i>
           </div>
 
           <strong> No categories found </strong>
 
-          <span> Try changing your search or filter. </span>
+          <span> Try changing your search or filters. </span>
 
           @if (searchTerm || activeStatus !== "All") {
             <button
@@ -285,21 +301,19 @@
       }
     </div>
 
-    <!-- ==========================================
+    <!-- ===================================================
          FOOTER
-    =========================================== -->
+    ==================================================== -->
 
-    <div class="table-footer">
+    <footer class="table-footer">
       <span class="results-count">
         @if (filteredCategories.length > 0) {
           Showing
           <strong>{{ startItem }}</strong>
-          -
+          –
           <strong>{{ endItem }}</strong>
           of
-          <strong>
-            {{ filteredCategories.length }}
-          </strong>
+          <strong>{{ filteredCategories.length }}</strong>
           categories
         } @else {
           No categories found
@@ -337,6 +351,6 @@
           </button>
         </div>
       }
-    </div>
+    </footer>
   </section>
 </section>

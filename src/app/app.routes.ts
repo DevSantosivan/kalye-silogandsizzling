@@ -1,6 +1,41 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { loginGuard } from './core/guards/login.guard';
+
 export const routes: Routes = [
+  // ==========================================
+  // AUTH
+  // ==========================================
+
+  {
+  path: '',
+
+  canActivate: [loginGuard],
+
+  loadComponent: () =>
+    import('./features/auth/login/login.component').then(
+      (m) => m.LoginComponent,
+    ),
+},
+
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
+  },
+
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
+
   // ==========================================
   // PUBLIC
   // ==========================================
@@ -14,6 +49,11 @@ export const routes: Routes = [
       ),
 
     children: [
+      // ========================================
+      // HOME
+      // /
+      // ========================================
+
       {
         path: '',
         loadComponent: () =>
@@ -21,6 +61,11 @@ export const routes: Routes = [
             (m) => m.HomeComponent,
           ),
       },
+
+      // ========================================
+      // MENU
+      // /menu
+      // ========================================
 
       {
         path: 'menu',
@@ -30,6 +75,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // CART
+      // /cart
+      // ========================================
+
       {
         path: 'cart',
         loadComponent: () =>
@@ -37,6 +87,11 @@ export const routes: Routes = [
             (m) => m.CartComponent,
           ),
       },
+
+      // ========================================
+      // CHECKOUT
+      // /checkout
+      // ========================================
 
       {
         path: 'checkout',
@@ -46,6 +101,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // PAYMENT
+      // /payment
+      // ========================================
+
       {
         path: 'payment',
         loadComponent: () =>
@@ -54,6 +114,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // ORDER STATUS
+      // /order-status
+      // ========================================
+
       {
         path: 'order-status',
         loadComponent: () =>
@@ -61,6 +126,11 @@ export const routes: Routes = [
             (m) => m.OrderStatusComponent,
           ),
       },
+
+      // ========================================
+      // ORDER STATUS WITH ID
+      // /order/:id
+      // ========================================
 
       {
         path: 'order/:id',
@@ -74,10 +144,17 @@ export const routes: Routes = [
 
   // ==========================================
   // ADMIN
+  // OWNER + ADMIN ONLY
   // ==========================================
 
   {
     path: 'admin',
+
+    canActivate: [authGuard, roleGuard],
+
+    data: {
+      roles: ['Owner', 'Admin'],
+    },
 
     loadComponent: () =>
       import('./layout/admin-layout/admin-layout.component').then(
@@ -135,6 +212,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // CREATE MENU
+      // /admin/menu/create
+      // ========================================
+
       {
         path: 'menu/create',
         loadComponent: () =>
@@ -142,14 +224,6 @@ export const routes: Routes = [
             (m) => m.CreateMenuComponent,
           ),
       },
-
-      // {
-      //   path: 'menu/:id',
-      //   loadComponent: () =>
-      //     import('./features/admin/menu/view-menu-item/view-menu-item.component').then(
-      //       (m) => m.ViewMenuItemComponent,
-      //     ),
-      // },
 
       // ========================================
       // CATEGORIES
@@ -166,14 +240,18 @@ export const routes: Routes = [
 
       // ========================================
       // INVENTORY
+      // /admin/inventory
       // ========================================
 
       {
         path: 'inventory',
 
         children: [
+          // ======================================
+          // INVENTORY OVERVIEW
           // /admin/inventory
-          // Inventory Overview
+          // ======================================
+
           {
             path: '',
             loadComponent: () =>
@@ -182,9 +260,14 @@ export const routes: Routes = [
               ),
           },
 
+          // ======================================
+          // INGREDIENTS
           // /admin/inventory/ingredients
+          // ======================================
+
           {
             path: 'ingredients',
+
             children: [
               {
                 path: '',
@@ -193,6 +276,11 @@ export const routes: Routes = [
                     (m) => m.IngredientsComponent,
                   ),
               },
+
+              // ==================================
+              // ADD INGREDIENT
+              // /admin/inventory/ingredients/add
+              // ==================================
 
               {
                 path: 'add',
@@ -204,7 +292,11 @@ export const routes: Routes = [
             ],
           },
 
+          // ======================================
+          // STOCK IN
           // /admin/inventory/stock-in
+          // ======================================
+
           {
             path: 'stock-in',
             loadComponent: () =>
@@ -213,7 +305,11 @@ export const routes: Routes = [
               ),
           },
 
+          // ======================================
+          // STOCK OUT
           // /admin/inventory/stock-out
+          // ======================================
+
           {
             path: 'stock-out',
             loadComponent: () =>
@@ -222,7 +318,11 @@ export const routes: Routes = [
               ),
           },
 
+          // ======================================
+          // HISTORY
           // /admin/inventory/history
+          // ======================================
+
           {
             path: 'history',
             loadComponent: () =>
@@ -272,6 +372,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // EXPENSES
+      // /admin/expenses
+      // ========================================
+
       {
         path: 'expenses',
         loadComponent: () =>
@@ -297,7 +402,13 @@ export const routes: Routes = [
       // SETTINGS
       // /admin/settings
       // ========================================
-
+ {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./features/admin/notification/notification.component').then(
+            (m) => m.NotificationComponent,
+          ),
+      },
       {
         path: 'settings',
         loadComponent: () =>
@@ -310,10 +421,17 @@ export const routes: Routes = [
 
   // ==========================================
   // CASHIER
+  // CASHIER ONLY
   // ==========================================
 
   {
     path: 'cashier',
+
+    canActivate: [authGuard, roleGuard],
+
+    data: {
+      roles: ['Cashier'],
+    },
 
     loadComponent: () =>
       import('./layout/cashier-layout/cashier-layout.component').then(
@@ -321,14 +439,22 @@ export const routes: Routes = [
       ),
 
     children: [
-      // /cashier
+      // ========================================
+      // CASHIER DEFAULT
+      // /cashier → /cashier/pos
+      // ========================================
+
       {
         path: '',
         redirectTo: 'pos',
         pathMatch: 'full',
       },
 
+      // ========================================
+      // POS
       // /cashier/pos
+      // ========================================
+
       {
         path: 'pos',
         loadComponent: () =>
@@ -336,6 +462,12 @@ export const routes: Routes = [
             (m) => m.PosComponent,
           ),
       },
+
+      // ========================================
+      // ACTIVE ORDERS
+      // /cashier/active-orders
+      // ========================================
+
       {
         path: 'active-orders',
         loadComponent: () =>
@@ -344,6 +476,11 @@ export const routes: Routes = [
           ),
       },
 
+      // ========================================
+      // INVENTORY
+      // /cashier/inventory
+      // ========================================
+
       {
         path: 'inventory',
         loadComponent: () =>
@@ -351,6 +488,11 @@ export const routes: Routes = [
             (m) => m.InventoryComponent,
           ),
       },
+
+      // ========================================
+      // PRINTERS
+      // /cashier/printers
+      // ========================================
 
       {
         path: 'printers',
@@ -364,10 +506,17 @@ export const routes: Routes = [
 
   // ==========================================
   // KITCHEN
+  // KITCHEN STAFF ONLY
   // ==========================================
 
   {
     path: 'kitchen',
+
+    canActivate: [authGuard, roleGuard],
+
+    data: {
+      roles: ['Kitchen Staff'],
+    },
 
     loadComponent: () =>
       import('./layout/kitchen-layout/kitchen-layout.component').then(
@@ -375,14 +524,22 @@ export const routes: Routes = [
       ),
 
     children: [
-      // /kitchen
+      // ========================================
+      // KITCHEN DEFAULT
+      // /kitchen → /kitchen/orders
+      // ========================================
+
       {
         path: '',
         redirectTo: 'orders',
         pathMatch: 'full',
       },
 
+      // ========================================
+      // ORDERS
       // /kitchen/orders
+      // ========================================
+
       {
         path: 'orders',
         loadComponent: () =>
@@ -390,6 +547,12 @@ export const routes: Routes = [
             (m) => m.KitchenOrdersComponent,
           ),
       },
+
+      // ========================================
+      // COMPLETED
+      // /kitchen/completed
+      // ========================================
+
       {
         path: 'completed',
         loadComponent: () =>

@@ -1,24 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
-interface Staff {
-  id: number;
-  name: string;
-  role: 'Admin' | 'Cashier' | 'Kitchen Staff' | 'Staff';
-  email: string;
-  status: 'Active' | 'Inactive';
-  joined: string;
-}
+import {
+  User,
+  UserRole,
+  UserStatus,
+  UserService,
+} from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-staff',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './staff.component.html',
   styleUrl: './staff.component.scss',
 })
-export class StaffComponent {
-  roleFilters = ['All', 'Admin', 'Cashier', 'Kitchen Staff', 'Staff'];
+export class StaffComponent implements OnInit {
+  private readonly userService = inject(UserService);
+
+  // =========================================================
+  // FILTERS
+  // =========================================================
+
+  roleFilters = ['All', 'Cashier', 'Kitchen Staff', 'User'];
 
   statusFilters = ['All', 'Active', 'Inactive'];
 
@@ -26,118 +31,86 @@ export class StaffComponent {
   activeStatus = 'All';
   searchTerm = '';
 
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
   currentPage = 1;
   pageSize = 6;
 
-  openMenuId: number | null = null;
-
-  staff: Staff[] = [
-    {
-      id: 1,
-      name: 'Anna Reyes',
-      role: 'Cashier',
-      email: 'anna@kalyesilog.com',
-      status: 'Active',
-      joined: 'Aug 12, 2026',
-    },
-    {
-      id: 2,
-      name: 'Mark Santos',
-      role: 'Kitchen Staff',
-      email: 'mark@kalyesilog.com',
-      status: 'Active',
-      joined: 'Aug 18, 2026',
-    },
-    {
-      id: 3,
-      name: 'James Cruz',
-      role: 'Staff',
-      email: 'james@kalyesilog.com',
-      status: 'Inactive',
-      joined: 'Jul 21, 2026',
-    },
-    {
-      id: 4,
-      name: 'Maria Lopez',
-      role: 'Kitchen Staff',
-      email: 'maria@kalyesilog.com',
-      status: 'Active',
-      joined: 'Jul 15, 2026',
-    },
-    {
-      id: 5,
-      name: 'Kevin Garcia',
-      role: 'Cashier',
-      email: 'kevin@kalyesilog.com',
-      status: 'Active',
-      joined: 'Jun 30, 2026',
-    },
-    {
-      id: 6,
-      name: 'Sofia Mendoza',
-      role: 'Admin',
-      email: 'sofia@kalyesilog.com',
-      status: 'Active',
-      joined: 'Jun 20, 2026',
-    },
-    {
-      id: 7,
-      name: 'Daniel Flores',
-      role: 'Kitchen Staff',
-      email: 'daniel@kalyesilog.com',
-      status: 'Active',
-      joined: 'Jun 14, 2026',
-    },
-    {
-      id: 8,
-      name: 'Nicole Ramos',
-      role: 'Staff',
-      email: 'nicole@kalyesilog.com',
-      status: 'Inactive',
-      joined: 'May 28, 2026',
-    },
-    {
-      id: 9,
-      name: 'Carlo Aquino',
-      role: 'Cashier',
-      email: 'carlo@kalyesilog.com',
-      status: 'Active',
-      joined: 'May 17, 2026',
-    },
-    {
-      id: 10,
-      name: 'Jenny Torres',
-      role: 'Kitchen Staff',
-      email: 'jenny@kalyesilog.com',
-      status: 'Active',
-      joined: 'May 10, 2026',
-    },
-    {
-      id: 11,
-      name: 'Paolo Diaz',
-      role: 'Staff',
-      email: 'paolo@kalyesilog.com',
-      status: 'Active',
-      joined: 'Apr 25, 2026',
-    },
-    {
-      id: 12,
-      name: 'Claire Navarro',
-      role: 'Cashier',
-      email: 'claire@kalyesilog.com',
-      status: 'Inactive',
-      joined: 'Apr 18, 2026',
-    },
-  ];
-
   // =========================================================
-  // FILTERING
+  // ACTION MENU
   // =========================================================
 
-  get filteredStaff(): Staff[] {
-    const search = this.searchTerm.trim().toLowerCase();
+  openMenuId: string | null = null;
 
-    return this.staff.filter((member) => {
+  // =========================================================
+  // USERS
+  // =========================================================
+
+  staff: User[] = [];
+
+  isLoading = false;
+  errorMessage = '';
+
+  // =========================================================
+  // MODAL
+  // =========================================================
+
+  showUserModal = false;
+  isSaving = false;
+
+  editingUserId: string | null = null;
+
+  showPassword = false;
+
+  userForm = {
+    name: '',
+    email: '',
+    password: '',
+    role: 'Cashier' as UserRole,
+    status: 'Active' as UserStatus,
+  };
+
+  // =========================================================
+  // INIT
+  // =========================================================
+
+  async ngOnInit(): Promise<void> {
+    await this.loadUsers();
+  }
+
+  // =========================================================
+  // LOAD USERS
+  // =========================================================
+
+  async loadUsers(): Promise<void> {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      this.staff = await this.userService.getUsers();
+    } catch (error) {
+      console.error('Failed to load users:', error);
+
+      this.errorMessage = 'Failed to load users.';
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  get filteredStaff(): User[] {
+  const search = this.searchTerm.trim().toLowerCase();
+
+  return this.staff
+    .filter((member) => {
+      return (
+        member.role === 'Cashier' ||
+        member.role === 'Kitchen Staff' ||
+        member.role === 'User'
+      );
+    })
+    .filter((member) => {
       const matchesSearch =
         !search ||
         member.name.toLowerCase().includes(search) ||
@@ -145,20 +118,26 @@ export class StaffComponent {
         member.role.toLowerCase().includes(search);
 
       const matchesRole =
-        this.activeRole === 'All' || member.role === this.activeRole;
+        this.activeRole === 'All' ||
+        member.role === this.activeRole;
 
       const matchesStatus =
-        this.activeStatus === 'All' || member.status === this.activeStatus;
+        this.activeStatus === 'All' ||
+        member.status === this.activeStatus;
 
-      return matchesSearch && matchesRole && matchesStatus;
+      return (
+        matchesSearch &&
+        matchesRole &&
+        matchesStatus
+      );
     });
-  }
+}
 
   // =========================================================
   // PAGINATION
   // =========================================================
 
-  get paginatedStaff(): Staff[] {
+  get paginatedStaff(): User[] {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
 
@@ -170,7 +149,12 @@ export class StaffComponent {
   }
 
   get pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+    return Array.from(
+      {
+        length: this.totalPages,
+      },
+      (_, index) => index + 1,
+    );
   }
 
   get startItem(): number {
@@ -196,11 +180,13 @@ export class StaffComponent {
     const input = event.target as HTMLInputElement;
 
     this.searchTerm = input.value;
+
     this.currentPage = 1;
   }
 
   clearSearch(): void {
     this.searchTerm = '';
+
     this.currentPage = 1;
   }
 
@@ -210,13 +196,17 @@ export class StaffComponent {
 
   setRole(role: string): void {
     this.activeRole = role;
+
     this.currentPage = 1;
+
     this.closeActionMenu();
   }
 
   setStatus(status: string): void {
     this.activeStatus = status;
+
     this.currentPage = 1;
+
     this.closeActionMenu();
   }
 
@@ -255,7 +245,7 @@ export class StaffComponent {
   // ACTION MENU
   // =========================================================
 
-  toggleActionMenu(id: number): void {
+  toggleActionMenu(id: string): void {
     this.openMenuId = this.openMenuId === id ? null : id;
   }
 
@@ -264,44 +254,203 @@ export class StaffComponent {
   }
 
   // =========================================================
-  // STAFF ACTIONS
+  // CREATE USER
   // =========================================================
 
   addStaff(): void {
-    console.log('Open add staff modal');
+    this.editingUserId = null;
 
-    // Later:
-    // this.staffService.create(...)
-  }
+    this.showPassword = false;
 
-  editStaff(member: Staff): void {
-    this.closeActionMenu();
+    this.userForm = {
+      name: '',
+      email: '',
+      password: '',
+      role: 'Cashier',
+      status: 'Active',
+    };
 
-    console.log('Edit staff:', member);
-
-    // Later:
-    // Open edit modal
-  }
-
-  toggleStatus(member: Staff): void {
-    member.status = member.status === 'Active' ? 'Inactive' : 'Active';
+    this.showUserModal = true;
 
     this.closeActionMenu();
   }
 
-  deleteStaff(member: Staff): void {
-    const confirmed = window.confirm(
-      `Delete "${member.name}" from the staff list?`,
-    );
+  // =========================================================
+  // EDIT USER
+  // =========================================================
+
+  editStaff(member: User): void {
+    this.closeActionMenu();
+
+    this.editingUserId = member.id;
+
+    this.showPassword = false;
+
+    this.userForm = {
+      name: member.name,
+      email: member.email,
+      password: '',
+      role: this.toStaffRole(member.role),
+      status: member.status,
+    };
+
+    this.showUserModal = true;
+  }
+
+  // =========================================================
+  // CLOSE MODAL
+  // =========================================================
+
+  closeUserModal(): void {
+    if (this.isSaving) {
+      return;
+    }
+
+    this.showUserModal = false;
+
+    this.editingUserId = null;
+
+    this.showPassword = false;
+  }
+
+  // =========================================================
+  // PASSWORD
+  // =========================================================
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  // =========================================================
+  // SAVE USER
+  // =========================================================
+
+  async saveUser(): Promise<void> {
+    const name = this.userForm.name.trim();
+
+    const email = this.userForm.email.trim().toLowerCase();
+
+    const password = this.userForm.password.trim();
+
+    if (!name || !email) {
+      return;
+    }
+
+    // =======================================================
+    // PASSWORD REQUIRED ONLY WHEN CREATING
+    // =======================================================
+
+    if (!this.editingUserId && password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters.';
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+
+    try {
+      // =====================================================
+      // EDIT USER
+      // =====================================================
+
+      if (this.editingUserId) {
+        const updatedUser = await this.userService.updateUser(
+          this.editingUserId,
+          {
+            name,
+            email,
+            role: this.toStaffRole(this.userForm.role),
+            status: this.userForm.status,
+          },
+        );
+
+        this.staff = this.staff.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user,
+        );
+      }
+
+      // =====================================================
+      // CREATE USER
+      // =====================================================
+      else {
+        const newUser = await this.userService.createUser({
+          name,
+          email,
+          password,
+          role: this.toStaffRole(this.userForm.role),
+          status: this.userForm.status,
+        });
+
+        this.staff = [newUser, ...this.staff];
+
+        this.currentPage = 1;
+      }
+
+      // =====================================================
+      // CLOSE
+      // =====================================================
+
+      this.showUserModal = false;
+
+      this.editingUserId = null;
+
+      this.showPassword = false;
+
+      this.userForm.password = '';
+    } catch (error: any) {
+      console.error('Save user failed:', error);
+
+      this.errorMessage = error?.message || 'Unable to save user account.';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  // =========================================================
+  // TOGGLE STATUS
+  // =========================================================
+
+  async toggleStatus(member: User): Promise<void> {
+    const newStatus: UserStatus =
+      member.status === 'Active' ? 'Inactive' : 'Active';
+
+    try {
+      const updatedUser = await this.userService.updateStatus(
+        member.id,
+        newStatus,
+      );
+
+      this.staff = this.staff.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user,
+      );
+    } catch (error) {
+      console.error('Update status failed:', error);
+    }
+
+    this.closeActionMenu();
+  }
+
+  // =========================================================
+  // DELETE USER
+  // =========================================================
+
+  async deleteStaff(member: User): Promise<void> {
+    const confirmed = window.confirm(`Delete "${member.name}" from the users?`);
 
     if (!confirmed) {
       return;
     }
 
-    this.staff = this.staff.filter((item) => item.id !== member.id);
+    try {
+      await this.userService.deleteUser(member.id);
 
-    if (this.currentPage > this.totalPages && this.totalPages > 0) {
-      this.currentPage = this.totalPages;
+      this.staff = this.staff.filter((user) => user.id !== member.id);
+
+      if (this.currentPage > this.totalPages && this.totalPages > 0) {
+        this.currentPage = this.totalPages;
+      }
+    } catch (error) {
+      console.error('Delete user failed:', error);
     }
 
     this.closeActionMenu();
@@ -332,13 +481,25 @@ export class StaffComponent {
     return this.staff.filter((member) => member.role === 'Cashier').length;
   }
 
-  get adminStaff(): number {
-    return this.staff.filter((member) => member.role === 'Admin').length;
+  get userStaff(): number {
+    return this.staff.filter((member) => member.role === 'User').length;
   }
 
   // =========================================================
   // HELPERS
   // =========================================================
+
+  private toStaffRole(role: UserRole): 'Cashier' | 'Kitchen Staff' | 'User' {
+    if (role === 'Kitchen Staff') {
+      return 'Kitchen Staff';
+    }
+
+    if (role === 'User') {
+      return 'User';
+    }
+
+    return 'Cashier';
+  }
 
   getInitials(name: string): string {
     return name
@@ -351,12 +512,27 @@ export class StaffComponent {
 
   getRoleIcon(role: string): string {
     const icons: Record<string, string> = {
-      Admin: 'bx-shield',
       Cashier: 'bx-wallet',
       'Kitchen Staff': 'bx-bowl-hot',
-      Staff: 'bx-user',
+      User: 'bx-user',
+      Admin: 'bx-shield',
+      Owner: 'bx-crown',
     };
 
     return icons[role] || 'bx-user';
+  }
+
+  formatJoinedDate(createdAt: string): string {
+    const date = new Date(createdAt);
+
+    if (Number.isNaN(date.getTime())) {
+      return '-';
+    }
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
   }
 }

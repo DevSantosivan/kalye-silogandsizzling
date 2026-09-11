@@ -1,0 +1,159 @@
+<section class="login-page">
+  <!-- =====================================================
+       LEFT / BRAND AREA
+  ====================================================== -->
+
+  <div class="login-brand">
+    <div class="brand-content">
+      <div class="brand-mark">KS</div>
+
+      <span class="brand-eyebrow"> RESTAURANT MANAGEMENT </span>
+
+      <h1>
+        Kalye Silog
+        <span>&amp; Sizzling</span>
+      </h1>
+
+      <p>
+        Manage your restaurant, orders, sales, and inventory from one simple
+        workspace.
+      </p>
+    </div>
+
+    <div class="brand-footer">
+      <span>© 2026 Kalye Silog &amp; Sizzling</span>
+      <span>Management System</span>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       RIGHT / LOGIN
+  ====================================================== -->
+
+  <div class="login-area">
+    <div class="login-container">
+      <!-- HEADER -->
+
+      <div class="login-header">
+        <div class="mobile-brand">
+          <div class="mobile-brand-mark">KS</div>
+        </div>
+
+        <span class="eyebrow"> WELCOME BACK </span>
+
+        <h2>Sign in to your account</h2>
+
+        <p>Enter your credentials to continue to the dashboard.</p>
+      </div>
+
+      <!-- FORM -->
+
+      <form class="login-form" (ngSubmit)="login()">
+        <!-- EMAIL -->
+
+        <div class="form-group">
+          <label for="email"> Email address </label>
+
+          <div class="input-wrapper">
+            <i class="bx bx-envelope"></i>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password"> Password </label>
+          </div>
+
+          <div class="input-wrapper">
+            <i class="bx bx-lock-alt"></i>
+
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePassword()"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
+            >
+              <i
+                class="bx"
+                [class.bx-show]="!showPassword"
+                [class.bx-hide]="showPassword"
+              ></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- REMEMBER + FORGOT PASSWORD -->
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" name="remember" [(ngModel)]="rememberMe" />
+
+            <span class="custom-checkbox"></span>
+
+            <span> Remember me </span>
+          </label>
+
+          <a routerLink="/forgot-password" class="forgot-password">
+            Forgot password?
+          </a>
+        </div>
+
+        <!-- ERROR -->
+
+        @if (errorMessage) {
+          <div class="login-error">
+            <i class="bx bx-error-circle"></i>
+
+            <span>
+              {{ errorMessage }}
+            </span>
+          </div>
+        }
+
+        <!-- SUBMIT -->
+
+        <button type="submit" class="login-button" [disabled]="loading">
+          @if (loading) {
+            <span class="button-spinner"></span>
+            <span>Signing in...</span>
+          } @else {
+            <span>Sign in</span>
+            <i class="bx bx-right-arrow-alt"></i>
+          }
+        </button>
+      </form>
+
+      <!-- SECURITY NOTE -->
+
+      <div class="login-note">
+        <i class="bx bx-shield-quarter"></i>
+
+        <span> Your account information is securely protected. </span>
+      </div>
+    </div>
+  </div>
+</section>

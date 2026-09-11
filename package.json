@@ -21,6 +21,7 @@
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",
     "@supabase/supabase-js": "^2.113.0",
+    "chart.js": "^4.5.1",
     "ngx-editor": "^19.0.0-beta.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.25",

@@ -1025,3 +1025,942 @@
     padding-right: 10px;
   }
 }
+// =========================================================
+// PROFILE WRAPPER
+// =========================================================
+
+.profile-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+// =========================================================
+// PROFILE BUTTON
+// =========================================================
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  min-width: 0;
+
+  padding: 5px 7px 5px 5px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+
+  &:hover,
+  &.open {
+    background: #f6f6f6;
+    border-color: #e8e8e8;
+  }
+}
+
+// =========================================================
+// PROFILE AVATAR
+// =========================================================
+
+.profile-avatar {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+// =========================================================
+// PROFILE INFO
+// =========================================================
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-width: 0;
+
+  line-height: 1.2;
+
+  strong {
+    max-width: 170px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #171717;
+
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  span {
+    margin-top: 3px;
+
+    color: #888;
+
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+// =========================================================
+// PROFILE ARROW
+// =========================================================
+
+.profile-arrow {
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #777;
+
+  font-size: 18px;
+
+  transition: transform 0.18s ease;
+}
+
+// =========================================================
+// PROFILE DROPDOWN
+// =========================================================
+
+.profile-dropdown {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 310px;
+
+  padding: 8px;
+
+  background: #fff;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+
+  z-index: 1000;
+
+  animation: profileDropdownIn 0.16s ease-out;
+}
+
+@keyframes profileDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =========================================================
+// DROPDOWN USER
+// =========================================================
+
+.dropdown-user {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 10px;
+}
+
+// =========================================================
+// DROPDOWN AVATAR
+// =========================================================
+
+.dropdown-avatar {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+// =========================================================
+// DROPDOWN USER INFO
+// =========================================================
+
+.dropdown-user-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #171717;
+
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  span {
+    margin-top: 4px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #8a8a8a;
+
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+// =========================================================
+// DIVIDER
+// =========================================================
+
+.dropdown-divider {
+  height: 1px;
+
+  margin: 7px 4px;
+
+  background: #ededed;
+}
+
+// =========================================================
+// DROPDOWN ITEM
+// =========================================================
+
+.dropdown-item {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 10px;
+
+  border: 0;
+  border-radius: 11px;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.16s ease,
+    transform 0.16s ease;
+
+  &:hover {
+    background: #f6f6f6;
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+// =========================================================
+// DROPDOWN ITEM ICON
+// =========================================================
+
+.dropdown-item-icon {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #f4f4f4;
+
+  color: #222;
+
+  font-size: 18px;
+}
+
+// =========================================================
+// DROPDOWN ITEM CONTENT
+// =========================================================
+
+.dropdown-item-content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    color: #202020;
+
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  small {
+    margin-top: 3px;
+
+    color: #999;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.3;
+  }
+}
+
+// =========================================================
+// DROPDOWN ARROW
+// =========================================================
+
+.dropdown-arrow {
+  flex-shrink: 0;
+
+  color: #aaa;
+
+  font-size: 16px;
+}
+
+// =========================================================
+// LOGOUT ITEM
+// =========================================================
+
+.logout-item {
+  .dropdown-item-icon {
+    background: #f7f7f7;
+    color: #222;
+  }
+
+  &:hover {
+    background: #f5f5f5;
+  }
+}
+
+// =========================================================
+// RESPONSIVE
+// =========================================================
+
+@media (max-width: 700px) {
+  .profile-info {
+    display: none;
+  }
+
+  .profile-arrow {
+    display: none;
+  }
+
+  .admin-profile {
+    padding-right: 4px;
+  }
+
+  .profile-dropdown {
+    position: fixed;
+
+    top: 68px;
+    right: 14px;
+
+    width: min(calc(100vw - 28px), 310px);
+  }
+}
+// =========================================================
+// NOTIFICATION WRAPPER
+// =========================================================
+
+.notification-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+// =========================================================
+// NOTIFICATION BUTTON
+// =========================================================
+
+.notification-button {
+  position: relative;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  color: #777;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.notification-button:hover,
+.notification-button.open {
+  background: #f5f4f1;
+  border-color: #e9e7e3;
+  color: #191919;
+}
+
+.notification-button i {
+  font-size: 20px;
+}
+
+// =========================================================
+// RED NOTIFICATION DOT
+// =========================================================
+
+.notification-dot {
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 7px;
+  height: 7px;
+
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+
+  background: #bd4141;
+}
+
+// =========================================================
+// NOTIFICATION COUNT
+// =========================================================
+
+.notification-count {
+  position: absolute;
+
+  top: -4px;
+  right: -5px;
+
+  min-width: 17px;
+  height: 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 4px;
+
+  background: #191919;
+
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+
+  color: #ffffff;
+
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+// =========================================================
+// DROPDOWN
+// =========================================================
+
+.notification-dropdown {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  z-index: 5000;
+
+  width: 370px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e2dd;
+  border-radius: 13px;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.1);
+
+  animation: notificationDropdownIn 0.16s ease-out;
+}
+
+@keyframes notificationDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =========================================================
+// DROPDOWN HEADER
+// =========================================================
+
+.notification-header {
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px 17px;
+
+  border-bottom: 1px solid #efeeeb;
+}
+
+.notification-eyebrow {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #999;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.notification-header h3 {
+  margin: 0;
+
+  color: #191919;
+
+  font-size: 16px;
+  font-weight: 750;
+
+  line-height: 1.2;
+}
+
+// =========================================================
+// MARK ALL READ
+// =========================================================
+
+.mark-read-btn {
+  flex-shrink: 0;
+
+  padding: 6px 8px;
+
+  background: transparent;
+
+  border: 0;
+  border-radius: 6px;
+
+  color: #777;
+
+  font-family: inherit;
+
+  font-size: 9px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.mark-read-btn:hover {
+  background: #f3f2ef;
+  color: #191919;
+}
+
+// =========================================================
+// NOTIFICATION LIST
+// =========================================================
+
+.notification-list {
+  max-height: 365px;
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d8d6d1 transparent;
+}
+
+// =========================================================
+// NOTIFICATION ITEM
+// =========================================================
+
+.notification-item {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 82px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  padding: 13px 17px;
+
+  background: #ffffff;
+
+  border: 0;
+  border-bottom: 1px solid #f0efec;
+
+  color: inherit;
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.notification-item:last-child {
+  border-bottom: 0;
+}
+
+.notification-item:hover {
+  background: #faf9f7;
+}
+
+.notification-item.unread {
+  background: #fcfbf9;
+}
+
+.notification-item.unread:hover {
+  background: #f8f7f4;
+}
+
+// =========================================================
+// NOTIFICATION ICON
+// =========================================================
+
+.notification-icon {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1px;
+
+  border-radius: 9px;
+
+  background: #f1f1ef;
+
+  color: #555;
+}
+
+.notification-icon i {
+  font-size: 16px;
+}
+
+// ORDER
+
+.notification-icon.order {
+  background: #f1f1ef;
+  color: #333;
+}
+
+// STOCK
+
+.notification-icon.stock {
+  background: #f3f0e9;
+  color: #6d6049;
+}
+
+// SYSTEM
+
+.notification-icon.system {
+  background: #f1f1ef;
+  color: #666;
+}
+
+// =========================================================
+// CONTENT
+// =========================================================
+
+.notification-content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-title {
+  overflow: hidden;
+
+  color: #333;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1.35;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-item.unread .notification-title {
+  color: #191919;
+}
+
+.notification-message {
+  display: -webkit-box;
+
+  margin-top: 3px;
+
+  overflow: hidden;
+
+  color: #888;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.notification-time {
+  margin-top: 5px;
+
+  color: #aaa;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+// =========================================================
+// UNREAD DOT
+// =========================================================
+
+.notification-unread-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  margin-top: 6px;
+
+  border-radius: 50%;
+
+  background: #191919;
+}
+
+// =========================================================
+// EMPTY STATE
+// =========================================================
+
+.notification-empty {
+  min-height: 190px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+
+  text-align: center;
+}
+
+.notification-empty-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 9px;
+
+  background: #f1f1ef;
+
+  border-radius: 10px;
+
+  color: #999;
+}
+
+.notification-empty-icon i {
+  font-size: 19px;
+}
+
+.notification-empty strong {
+  color: #333;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.notification-empty span {
+  margin-top: 4px;
+
+  color: #999;
+
+  font-size: 9px;
+}
+
+// =========================================================
+// FOOTER
+// =========================================================
+
+.notification-footer {
+  padding: 9px;
+
+  border-top: 1px solid #efeeeb;
+
+  background: #faf9f7;
+}
+
+.notification-footer button {
+  width: 100%;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  background: transparent;
+
+  border: 0;
+  border-radius: 7px;
+
+  color: #666;
+
+  font-family: inherit;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.notification-footer button:hover {
+  background: #efeeeb;
+  color: #191919;
+}
+
+.notification-footer button i {
+  font-size: 14px;
+}
+
+// =========================================================
+// FOCUS
+// =========================================================
+
+.notification-button:focus-visible,
+.notification-item:focus-visible,
+.mark-read-btn:focus-visible,
+.notification-footer button:focus-visible {
+  outline: 2px solid #777;
+  outline-offset: 2px;
+}
+
+// =========================================================
+// TABLET
+// =========================================================
+
+@media (max-width: 700px) {
+  .notification-dropdown {
+    position: fixed;
+
+    top: 70px;
+    right: 14px;
+    left: 14px;
+
+    width: auto;
+
+    max-width: none;
+  }
+}
+
+// =========================================================
+// SMALL MOBILE
+// =========================================================
+
+@media (max-width: 420px) {
+  .notification-dropdown {
+    top: 64px;
+
+    right: 10px;
+    left: 10px;
+
+    border-radius: 11px;
+  }
+
+  .notification-header {
+    padding: 14px;
+  }
+
+  .notification-item {
+    padding: 12px 14px;
+  }
+}

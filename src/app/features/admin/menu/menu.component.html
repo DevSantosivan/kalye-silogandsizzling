@@ -1,35 +1,40 @@
-<section class="page">
-  <!-- ==========================================
+<section class="menu-page">
+  <!-- =====================================================
        PAGE HEADER
-  =========================================== -->
+  ====================================================== -->
 
-  <div class="page-header">
-    <div>
-      <span class="eyebrow"> PRODUCT MANAGEMENT </span>
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow">PRODUCT MANAGEMENT</span>
 
-      <h1>Menu</h1>
+        <h1>Menu</h1>
 
-      <p>Manage meals, prices and availability.</p>
+        <p>Manage meals, prices and availability.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="new-item-btn" (click)="addMenuItem()">
+          <i class="bx bx-plus"></i>
+          <span>Add menu item</span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <button type="button" class="primary-btn" (click)="addMenuItem()">
-      <i class="bx bx-plus"></i>
-      <span>Add menu item</span>
-    </button>
-  </div>
-
-  <!-- ==========================================
+  <!-- =====================================================
        SUMMARY
-  =========================================== -->
+  ====================================================== -->
 
-  <div class="summary-grid">
-    <div class="summary-card">
+  <section class="summary-grid">
+    <!-- TOTAL ITEMS -->
+    <article class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
           <i class="bx bx-food-menu"></i>
         </div>
 
-        <span class="summary-label"> TOTAL ITEMS </span>
+        <span class="summary-label">TOTAL ITEMS</span>
       </div>
 
       <div class="summary-value">
@@ -40,15 +45,16 @@
         <i class="bx bx-layer"></i>
         <span>Items in your menu</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- AVAILABLE -->
+    <article class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon available-icon">
+        <div class="summary-icon">
           <i class="bx bx-check-circle"></i>
         </div>
 
-        <span class="summary-label"> AVAILABLE </span>
+        <span class="summary-label">AVAILABLE</span>
       </div>
 
       <div class="summary-value">
@@ -59,15 +65,16 @@
         <span class="summary-dot available"></span>
         <span>Currently available</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- UNAVAILABLE -->
+    <article class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon unavailable-icon">
+        <div class="summary-icon">
           <i class="bx bx-x-circle"></i>
         </div>
 
-        <span class="summary-label"> UNAVAILABLE </span>
+        <span class="summary-label">UNAVAILABLE</span>
       </div>
 
       <div class="summary-value">
@@ -78,15 +85,16 @@
         <span class="summary-dot unavailable"></span>
         <span>Currently unavailable</span>
       </div>
-    </div>
+    </article>
 
-    <div class="summary-card">
+    <!-- TOTAL SOLD -->
+    <article class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon sold-icon">
+        <div class="summary-icon">
           <i class="bx bx-trending-up"></i>
         </div>
 
-        <span class="summary-label"> TOTAL SOLD </span>
+        <span class="summary-label">TOTAL SOLD</span>
       </div>
 
       <div class="summary-value">
@@ -97,15 +105,17 @@
         <i class="bx bx-bar-chart-alt-2"></i>
         <span>Total items sold</span>
       </div>
-    </div>
-  </div>
+    </article>
+  </section>
 
-  <!-- ==========================================
+  <!-- =====================================================
        MENU CARD
-  =========================================== -->
+  ====================================================== -->
 
-  <section class="menu-section">
-    <!-- TOOLBAR -->
+  <section class="menu-card-wrapper">
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
 
     <div class="menu-toolbar">
       <div class="toolbar-left">
@@ -117,7 +127,7 @@
           </span>
         </div>
 
-        <!-- CATEGORY FILTER -->
+        <!-- CATEGORY FILTERS -->
 
         <div class="filters">
           @for (category of categories; track category) {
@@ -133,9 +143,9 @@
         </div>
       </div>
 
-      <div class="toolbar-right">
-        <!-- SEARCH -->
+      <!-- SEARCH / AVAILABILITY -->
 
+      <div class="toolbar-right">
         <div class="search">
           <i class="bx bx-search"></i>
 
@@ -158,8 +168,6 @@
           }
         </div>
 
-        <!-- AVAILABILITY -->
-
         <select
           class="availability-select"
           [value]="activeAvailability"
@@ -174,25 +182,25 @@
       </div>
     </div>
 
-    <!-- ========================================
+    <!-- ===================================================
          MENU GRID
-    ========================================= -->
+    ==================================================== -->
 
     <div class="menu-grid">
       @for (item of paginatedItems; track item.id) {
-        <article class="menu-card">
+        <article class="menu-item-card">
           <!-- IMAGE -->
 
           <div class="food-image">
             <img [src]="item.image" [alt]="item.name" />
 
             @if (!item.available) {
-              <span class="unavailable">
+              <span class="availability-badge unavailable">
                 <i class="bx bx-x-circle"></i>
                 Unavailable
               </span>
             } @else {
-              <span class="available-badge">
+              <span class="availability-badge available-badge">
                 <i class="bx bx-check"></i>
                 Available
               </span>
@@ -207,7 +215,7 @@
                 {{ item.category }}
               </span>
 
-              <!-- ACTION -->
+              <!-- ACTIONS -->
 
               <div class="action-wrapper">
                 <button
@@ -223,16 +231,16 @@
                   <div class="action-menu">
                     <button type="button" (click)="editItem(item)">
                       <i class="bx bx-edit-alt"></i>
-                      <span>Edit</span>
+                      <span>Edit item</span>
                     </button>
 
                     <button type="button" (click)="toggleAvailability(item)">
                       @if (item.available) {
                         <i class="bx bx-hide"></i>
-                        <span> Set unavailable </span>
+                        <span>Set unavailable</span>
                       } @else {
                         <i class="bx bx-show"></i>
-                        <span> Set available </span>
+                        <span>Set available</span>
                       }
                     </button>
 
@@ -242,21 +250,27 @@
                       (click)="deleteItem(item)"
                     >
                       <i class="bx bx-trash"></i>
-                      <span>Delete</span>
+                      <span>Delete item</span>
                     </button>
                   </div>
                 }
               </div>
             </div>
 
+            <!-- NAME -->
+
             <h2>
               {{ item.name }}
             </h2>
 
+            <!-- DESCRIPTION -->
+
             <p [innerHTML]="item.description"></p>
 
+            <!-- BOTTOM -->
+
             <div class="menu-bottom">
-              <strong>
+              <strong class="price">
                 {{ formatCurrency(item.price) }}
               </strong>
 
@@ -266,13 +280,13 @@
         </article>
       }
 
-      <!-- ========================================
-           EMPTY STATE
-      ========================================= -->
+      <!-- =================================================
+           EMPTY
+      ================================================== -->
 
       @if (paginatedItems.length === 0) {
-        <div class="empty-menu">
-          <div class="empty-menu-icon">
+        <div class="empty-state">
+          <div class="empty-icon">
             <i class="bx bx-food-menu"></i>
           </div>
 
@@ -287,7 +301,7 @@
           ) {
             <button
               type="button"
-              class="reset-btn"
+              class="reset-search"
               (click)="
                 searchTerm = '';
                 activeCategory = 'All';
@@ -302,11 +316,11 @@
       }
     </div>
 
-    <!-- ==========================================
-         FOOTER / PAGINATION
-    =========================================== -->
+    <!-- ===================================================
+         FOOTER
+    ==================================================== -->
 
-    <div class="table-footer">
+    <footer class="table-footer">
       <span class="results-count">
         @if (filteredItems.length > 0) {
           Showing
@@ -314,9 +328,7 @@
           -
           <strong>{{ endItem }}</strong>
           of
-          <strong>
-            {{ filteredItems.length }}
-          </strong>
+          <strong>{{ filteredItems.length }}</strong>
           items
         } @else {
           No menu items found
@@ -354,6 +366,6 @@
           </button>
         </div>
       }
-    </div>
+    </footer>
   </section>
 </section>

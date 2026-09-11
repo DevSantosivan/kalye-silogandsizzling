@@ -1,21 +1,25 @@
-<section class="page">
+<div class="sales-page">
   <!-- =====================================================
-       HEADER
+       PAGE HEADER
   ====================================================== -->
 
   <div class="page-header">
-    <div>
-      <span class="eyebrow"> FINANCIAL OVERVIEW </span>
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow">FINANCIAL OVERVIEW</span>
 
-      <h1>Sales</h1>
+        <h1>Sales</h1>
 
-      <p>Track your restaurant revenue and sales performance.</p>
+        <p>Track your restaurant revenue and sales performance.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="export-btn" (click)="exportReport()">
+          <i class="bx bx-export"></i>
+          <span>Export report</span>
+        </button>
+      </div>
     </div>
-
-    <button type="button" class="export-btn" (click)="exportReport()">
-      <i class="bx bx-export"></i>
-      <span>Export report</span>
-    </button>
   </div>
 
   <!-- =====================================================
@@ -23,77 +27,81 @@
   ====================================================== -->
 
   <div class="summary-grid">
+    <!-- TODAY -->
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
           <i class="bx bx-wallet"></i>
         </div>
 
-        <span class="summary-label"> TODAY </span>
+        <span class="summary-label">TODAY</span>
       </div>
 
       <div class="summary-value">
         {{ formatCurrency(stats.today) }}
       </div>
 
-      <div class="summary-meta positive">
+      <div class="summary-meta">
         <i class="bx bx-trending-up"></i>
         <span>12.5% from yesterday</span>
       </div>
     </div>
 
+    <!-- WEEK -->
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon week-icon">
+        <div class="summary-icon">
           <i class="bx bx-calendar-week"></i>
         </div>
 
-        <span class="summary-label"> THIS WEEK </span>
+        <span class="summary-label">THIS WEEK</span>
       </div>
 
       <div class="summary-value">
         {{ formatCurrency(stats.week) }}
       </div>
 
-      <div class="summary-meta positive">
+      <div class="summary-meta">
         <i class="bx bx-trending-up"></i>
         <span>8.2% from last week</span>
       </div>
     </div>
 
+    <!-- MONTH -->
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon month-icon">
+        <div class="summary-icon">
           <i class="bx bx-calendar"></i>
         </div>
 
-        <span class="summary-label"> THIS MONTH </span>
+        <span class="summary-label">THIS MONTH</span>
       </div>
 
       <div class="summary-value">
         {{ formatCurrency(stats.month) }}
       </div>
 
-      <div class="summary-meta positive">
+      <div class="summary-meta">
         <i class="bx bx-trending-up"></i>
         <span>14.8% from last month</span>
       </div>
     </div>
 
+    <!-- YEAR -->
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon year-icon">
+        <div class="summary-icon">
           <i class="bx bx-bar-chart-alt-2"></i>
         </div>
 
-        <span class="summary-label"> THIS YEAR </span>
+        <span class="summary-label">THIS YEAR</span>
       </div>
 
       <div class="summary-value">
         {{ formatCurrency(stats.year) }}
       </div>
 
-      <div class="summary-meta positive">
+      <div class="summary-meta">
         <i class="bx bx-trending-up"></i>
         <span>18.4% from last year</span>
       </div>
@@ -101,16 +109,18 @@
   </div>
 
   <!-- =====================================================
-       CHART + ORDER TYPE
+       SALES PERFORMANCE + ORDER TYPE
   ====================================================== -->
 
   <div class="main-grid">
-    <!-- SALES CHART -->
+    <!-- ===================================================
+         SALES PERFORMANCE
+    ==================================================== -->
 
     <article class="panel chart-panel">
       <div class="panel-header">
         <div>
-          <span class="panel-eyebrow"> REVENUE </span>
+          <span class="panel-eyebrow">REVENUE</span>
 
           <h2>Sales performance</h2>
         </div>
@@ -133,7 +143,7 @@
             {{ formatCurrency(stats.month) }}
           </strong>
 
-          <span> Total revenue </span>
+          <span>Total revenue</span>
         </div>
 
         <div class="chart-growth">
@@ -169,12 +179,14 @@
       </div>
     </article>
 
-    <!-- ORDER TYPE -->
+    <!-- ===================================================
+         ORDER TYPE
+    ==================================================== -->
 
     <article class="panel breakdown-panel">
       <div class="panel-header">
         <div>
-          <span class="panel-eyebrow"> BREAKDOWN </span>
+          <span class="panel-eyebrow">BREAKDOWN</span>
 
           <h2>Sales by order type</h2>
         </div>
@@ -184,9 +196,9 @@
         <div
           class="donut"
           [style.background]="
-            'conic-gradient(#c48616 0% ' +
+            'conic-gradient(#191919 0% ' +
             orderTypeData.dineIn +
-            '%, #e5e1da ' +
+            '%, #e9e7e3 ' +
             orderTypeData.dineIn +
             '% 100%)'
           "
@@ -194,7 +206,7 @@
           <div class="donut-center">
             <strong> {{ orderTypeData.dineIn }}% </strong>
 
-            <span> Dine In </span>
+            <span>Dine In</span>
           </div>
         </div>
       </div>
@@ -234,12 +246,14 @@
   ====================================================== -->
 
   <div class="secondary-grid">
-    <!-- PAYMENT -->
+    <!-- ===================================================
+         PAYMENT METHODS
+    ==================================================== -->
 
     <article class="panel payment-panel">
       <div class="panel-header">
         <div>
-          <span class="panel-eyebrow"> PAYMENT </span>
+          <span class="panel-eyebrow">PAYMENT</span>
 
           <h2>Payment methods</h2>
         </div>
@@ -248,7 +262,7 @@
       <div class="payment-list">
         <div class="payment-row">
           <div class="payment-name">
-            <span class="payment-icon cash">
+            <span class="payment-icon">
               <i class="bx bx-money"></i>
             </span>
 
@@ -263,7 +277,7 @@
 
         <div class="payment-row">
           <div class="payment-name">
-            <span class="payment-icon gcash">
+            <span class="payment-icon">
               <i class="bx bx-mobile"></i>
             </span>
 
@@ -278,7 +292,7 @@
 
         <div class="payment-row">
           <div class="payment-name">
-            <span class="payment-icon card">
+            <span class="payment-icon">
               <i class="bx bx-credit-card"></i>
             </span>
 
@@ -293,12 +307,14 @@
       </div>
     </article>
 
-    <!-- TOP ITEMS -->
+    <!-- ===================================================
+         TOP ITEMS
+    ==================================================== -->
 
     <article class="panel top-items-panel">
       <div class="panel-header">
         <div>
-          <span class="panel-eyebrow"> PERFORMANCE </span>
+          <span class="panel-eyebrow">PERFORMANCE</span>
 
           <h2>Top selling items</h2>
         </div>
@@ -326,7 +342,7 @@
                 {{ item.sold }}
               </strong>
 
-              <small> sold </small>
+              <small>sold</small>
             </div>
 
             <strong class="item-revenue">
@@ -339,10 +355,14 @@
   </div>
 
   <!-- =====================================================
-       TRANSACTIONS
+       RECENT TRANSACTIONS
   ====================================================== -->
 
   <section class="transactions-panel">
+    <!-- ===================================================
+         TRANSACTIONS HEADER
+    ==================================================== -->
+
     <div class="transactions-header">
       <div>
         <span class="panel-eyebrow"> SALES ACTIVITY </span>
@@ -373,8 +393,14 @@
       </div>
     </div>
 
+    <!-- ===================================================
+         TRANSACTION TABLE
+    ==================================================== -->
+
     <div class="transaction-table-wrapper">
       <div class="transaction-table">
+        <!-- TABLE HEAD -->
+
         <div class="table-head">
           <span>TRANSACTION</span>
           <span>CUSTOMER</span>
@@ -384,8 +410,12 @@
           <span>STATUS</span>
         </div>
 
+        <!-- TABLE ROWS -->
+
         @for (transaction of paginatedTransactions; track transaction.id) {
           <div class="table-row">
+            <!-- TRANSACTION -->
+
             <div class="transaction-id">
               <strong>
                 {{ transaction.id }}
@@ -395,6 +425,8 @@
                 {{ transaction.time }}
               </small>
             </div>
+
+            <!-- CUSTOMER -->
 
             <div class="customer-cell">
               <div class="avatar">
@@ -406,6 +438,8 @@
               </strong>
             </div>
 
+            <!-- TYPE -->
+
             <span class="type-cell">
               <i
                 class="bx"
@@ -416,15 +450,21 @@
               {{ transaction.type }}
             </span>
 
+            <!-- PAYMENT -->
+
             <span class="payment-cell">
               <i class="bx" [class]="getPaymentIcon(transaction.payment)"></i>
 
               {{ transaction.payment }}
             </span>
 
+            <!-- AMOUNT -->
+
             <strong class="amount-cell">
               {{ formatCurrency(transaction.amount) }}
             </strong>
+
+            <!-- STATUS -->
 
             <span
               class="status"
@@ -436,20 +476,40 @@
             </span>
           </div>
         }
+
+        <!-- EMPTY -->
+
+        @if (paginatedTransactions.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-receipt"></i>
+            </div>
+
+            <strong>No transactions found</strong>
+
+            <span> There are no sales transactions to display. </span>
+          </div>
+        }
       </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- ===================================================
+         FOOTER
+    ==================================================== -->
 
     <div class="table-footer">
       <span class="results-count">
-        Showing
-        <strong>{{ startItem }}</strong>
-        -
-        <strong>{{ endItem }}</strong>
-        of
-        <strong>{{ transactions.length }}</strong>
-        transactions
+        @if (transactions.length > 0) {
+          Showing
+          <strong>{{ startItem }}</strong>
+          -
+          <strong>{{ endItem }}</strong>
+          of
+          <strong>{{ transactions.length }}</strong>
+          transactions
+        } @else {
+          No transactions found
+        }
       </span>
 
       @if (totalPages > 1) {
@@ -458,6 +518,7 @@
             type="button"
             [disabled]="currentPage === 1"
             (click)="previousPage()"
+            aria-label="Previous page"
           >
             <i class="bx bx-chevron-left"></i>
           </button>
@@ -476,6 +537,7 @@
             type="button"
             [disabled]="currentPage === totalPages"
             (click)="nextPage()"
+            aria-label="Next page"
           >
             <i class="bx bx-chevron-right"></i>
           </button>
@@ -483,4 +545,4 @@
       }
     </div>
   </section>
-</section>
+</div>

@@ -1,0 +1,279 @@
+<section class="notifications-page">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+    <div class="header-copy">
+      <span class="eyebrow"> SYSTEM ACTIVITY </span>
+
+      <div class="title-row">
+        <div>
+          <h1>Notifications</h1>
+
+          <p>View important order, inventory, account, and system activity.</p>
+        </div>
+      </div>
+    </div>
+
+    @if (unreadCount() > 0) {
+      <button type="button" class="primary-btn" (click)="markAllAsRead()">
+        <i class="bx bx-check-double"></i>
+
+        Mark all as read
+      </button>
+    }
+  </div>
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      <i class="bx bx-error-circle"></i>
+
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="summary-grid">
+    <!-- TOTAL -->
+
+    <article class="summary-card">
+      <div class="summary-icon">
+        <i class="bx bx-bell"></i>
+      </div>
+
+      <div class="summary-content">
+        <span> Total notifications </span>
+
+        <strong>
+          {{ totalCount() }}
+        </strong>
+      </div>
+    </article>
+
+    <!-- UNREAD -->
+
+    <article class="summary-card">
+      <div class="summary-icon unread-icon">
+        <i class="bx bx-envelope"></i>
+      </div>
+
+      <div class="summary-content">
+        <span> Unread notifications </span>
+
+        <strong>
+          {{ unreadCount() }}
+        </strong>
+      </div>
+    </article>
+
+    <!-- READ -->
+
+    <article class="summary-card">
+      <div class="summary-icon">
+        <i class="bx bx-check-circle"></i>
+      </div>
+
+      <div class="summary-content">
+        <span> Read notifications </span>
+
+        <strong>
+          {{ readCount() }}
+        </strong>
+      </div>
+    </article>
+  </div>
+
+  <!-- =====================================================
+       NOTIFICATION PANEL
+  ====================================================== -->
+
+  <section class="notification-panel">
+    <!-- PANEL HEADER -->
+
+    <div class="panel-header">
+      <div>
+        <span class="panel-eyebrow"> ACTIVITY </span>
+
+        <h2>Recent notifications</h2>
+
+        <p>Stay updated with what's happening in your system.</p>
+      </div>
+
+      <div class="panel-actions">
+        <div class="filter-tabs">
+          <button
+            type="button"
+            [class.active]="activeFilter() === 'all'"
+            (click)="setFilter('all')"
+          >
+            All
+
+            <span>
+              {{ totalCount() }}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            [class.active]="activeFilter() === 'unread'"
+            (click)="setFilter('unread')"
+          >
+            Unread
+
+            <span>
+              {{ unreadCount() }}
+            </span>
+          </button>
+        </div>
+
+        @if (readCount() > 0) {
+          <button
+            type="button"
+            class="clear-btn"
+            (click)="clearReadNotifications()"
+          >
+            <i class="bx bx-trash"></i>
+
+            Clear read
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    @if (isLoading()) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="bx bx-loader-alt bx-spin"></i>
+        </div>
+
+        <h3>Loading notifications</h3>
+
+        <p>Getting the latest system activity.</p>
+      </div>
+    }
+
+    <!-- =====================================================
+         LIST
+    ====================================================== -->
+
+    @else {
+      <div class="notification-list">
+        @if (filteredNotifications().length > 0) {
+          @for (
+            notification of filteredNotifications();
+            track notification.id
+          ) {
+            <button
+              type="button"
+              class="notification-item"
+              [class.unread]="!notification.read"
+              (click)="readNotification(notification.id)"
+            >
+              <!-- =================================================
+                   ICON
+              ================================================== -->
+
+              <span
+                class="notification-icon"
+                [class.order]="notification.type === 'order'"
+                [class.stock]="notification.type === 'stock'"
+                [class.system]="notification.type === 'system'"
+                [class.user]="notification.type === 'user'"
+              >
+                @if (notification.type === "order") {
+                  <i class="bx bx-receipt"></i>
+                }
+
+                @if (notification.type === "stock") {
+                  <i class="bx bx-package"></i>
+                }
+
+                @if (notification.type === "system") {
+                  <i class="bx bx-info-circle"></i>
+                }
+
+                @if (notification.type === "user") {
+                  <i class="bx bx-user"></i>
+                }
+              </span>
+
+              <!-- =================================================
+                   CONTENT
+              ================================================== -->
+
+              <span class="notification-content">
+                <span class="notification-top">
+                  <span class="notification-title">
+                    {{ notification.title }}
+                  </span>
+
+                  @if (!notification.read) {
+                    <span class="unread-label"> NEW </span>
+                  }
+                </span>
+
+                <span class="notification-message">
+                  {{ notification.message }}
+                </span>
+
+                <span class="notification-time">
+                  <i class="bx bx-time-five"></i>
+
+                  {{ notification.time }}
+                </span>
+              </span>
+
+              <!-- =================================================
+                   STATUS
+              ================================================== -->
+
+              <span class="notification-status">
+                @if (!notification.read) {
+                  <span class="unread-dot"></span>
+                } @else {
+                  <i class="bx bx-check"></i>
+                }
+              </span>
+            </button>
+          }
+        } @else {
+          <!-- =================================================
+               EMPTY
+          ================================================== -->
+
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-bell-off"></i>
+            </div>
+
+            <h3>No notifications</h3>
+
+            <p>You're all caught up. There are no notifications to display.</p>
+
+            @if (activeFilter() === "unread") {
+              <button
+                type="button"
+                class="empty-btn"
+                (click)="setFilter('all')"
+              >
+                View all notifications
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </section>
+</section>

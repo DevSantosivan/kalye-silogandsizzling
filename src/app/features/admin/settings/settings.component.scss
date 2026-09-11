@@ -1,0 +1,793 @@
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// =========================================================
+// SETTINGS PAGE
+// =========================================================
+
+.settings-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+// =========================================================
+// PAGE HEADER
+// =========================================================
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.header-content {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.header-copy {
+  min-width: 0;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #8a8a8a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.header-copy h1 {
+  margin: 0;
+  color: #191919;
+  font-size: 30px;
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.header-copy p {
+  max-width: 650px;
+  margin: 9px 0 0;
+  color: #777;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+// =========================================================
+// SETTINGS LAYOUT
+// =========================================================
+
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+// =========================================================
+// SETTINGS CARD
+// =========================================================
+
+.settings-card {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e9e7e3;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+// =========================================================
+// CARD HEADER
+// =========================================================
+
+.settings-card-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid #efeeeb;
+}
+
+.settings-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.settings-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1ef;
+  border-radius: 10px;
+  color: #292929;
+  font-size: 20px;
+}
+
+.card-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #999;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.settings-heading h2 {
+  margin: 0;
+  color: #191919;
+  font-size: 17px;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.settings-heading p {
+  max-width: 650px;
+  margin: 5px 0 0;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+// =========================================================
+// SETTINGS LIST
+// =========================================================
+
+.settings-list {
+  padding: 0 24px;
+}
+
+.setting-item {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #efeeeb;
+}
+
+.setting-item:last-child {
+  border-bottom: 0;
+}
+
+.setting-copy {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setting-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #faf9f7;
+  border: 1px solid #e9e7e3;
+  border-radius: 8px;
+  color: #777;
+}
+
+.setting-icon i {
+  font-size: 17px;
+}
+
+.setting-copy > div:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-copy strong {
+  color: #444;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.setting-copy span {
+  margin-top: 3px;
+  color: #999;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+// =========================================================
+// TOGGLE
+// =========================================================
+
+.toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 42px;
+  padding: 0;
+  background: #deddda;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.18s ease;
+}
+
+.toggle.active {
+  background: #191919;
+}
+
+.toggle.active span {
+  transform: translateX(18px);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid #777;
+  outline-offset: 3px;
+}
+
+// =========================================================
+// SETTINGS FOOTER
+// =========================================================
+
+.settings-footer {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  background: #faf9f7;
+  border-top: 1px solid #efeeeb;
+}
+
+.settings-footer > span,
+.password-actions > span {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #999;
+  font-size: 10px;
+}
+
+.settings-footer > span i {
+  color: #39834d;
+  font-size: 14px;
+}
+
+// =========================================================
+// SAVE BUTTON
+// =========================================================
+
+.save-btn {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  background: #191919;
+  border: 1px solid #191919;
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.save-btn:hover {
+  background: #333;
+  border-color: #333;
+}
+
+.save-btn i {
+  font-size: 15px;
+}
+
+// =========================================================
+// SECURITY STATUS
+// =========================================================
+
+.security-status {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 24px 0;
+  padding: 13px 14px;
+  background: #faf9f7;
+  border: 1px solid #e9e7e3;
+  border-radius: 10px;
+}
+
+.security-status-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1ef;
+  border-radius: 9px;
+  color: #555;
+}
+
+.security-status-icon i {
+  font-size: 17px;
+}
+
+.security-status-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.security-status-copy strong {
+  color: #444;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.security-status-copy span {
+  margin-top: 3px;
+  color: #999;
+  font-size: 9px;
+}
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #eef7f0;
+  border-radius: 6px;
+  color: #39834d;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.security-badge span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #39834d;
+}
+
+// =========================================================
+// PASSWORD SECTION
+// =========================================================
+
+.password-section {
+  margin-top: 20px;
+  padding: 22px 24px 24px;
+  border-top: 1px solid #efeeeb;
+}
+
+.section-title {
+  margin-bottom: 20px;
+}
+
+.section-title h3 {
+  margin: 0;
+  color: #222;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.section-title p {
+  margin: 5px 0 0;
+  color: #999;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+// =========================================================
+// FORM
+// =========================================================
+
+.form-group {
+  max-width: 620px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #444;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper > i {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  color: #999;
+  font-size: 17px;
+  pointer-events: none;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 42px;
+  padding: 0 42px 0 38px;
+  background: #ffffff;
+  border: 1px solid #deddda;
+  border-radius: 8px;
+  outline: none;
+  color: #333;
+  font-family: inherit;
+  font-size: 11px;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.input-wrapper input::placeholder {
+  color: #aaa;
+}
+
+.input-wrapper input:focus {
+  border-color: #222;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+// =========================================================
+// PASSWORD TOGGLE
+// =========================================================
+
+.password-toggle {
+  position: absolute;
+  right: 7px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #999;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: #f1f1ef;
+  color: #333;
+}
+
+.password-toggle i {
+  font-size: 16px;
+}
+
+// =========================================================
+// FIELD HINT
+// =========================================================
+
+.field-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  color: #999;
+  font-size: 9px;
+}
+
+.field-hint i {
+  font-size: 13px;
+}
+
+// =========================================================
+// PASSWORD ACTIONS
+// =========================================================
+
+.password-actions {
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #efeeeb;
+}
+
+// =========================================================
+// ACCOUNT CARD
+// =========================================================
+
+.account-card {
+  margin-bottom: 10px;
+}
+
+.account-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  padding: 0 24px;
+}
+
+.info-item {
+  min-height: 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px 18px;
+  border-right: 1px solid #efeeeb;
+}
+
+.info-item:first-child {
+  padding-left: 0;
+}
+
+.info-item:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.info-item > span {
+  color: #999;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.info-item > strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+  color: #444;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.online-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #39834d;
+}
+
+// =========================================================
+// ACCESSIBILITY
+// =========================================================
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #777;
+  outline-offset: 2px;
+}
+
+// =========================================================
+// LARGE TABLET
+// =========================================================
+
+@media (max-width: 1000px) {
+  .account-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .info-item {
+    border-right: 0;
+    border-bottom: 1px solid #efeeeb;
+  }
+
+  .info-item:nth-child(odd) {
+    padding-left: 0;
+    padding-right: 18px;
+    border-right: 1px solid #efeeeb;
+  }
+
+  .info-item:nth-child(even) {
+    padding-left: 18px;
+  }
+
+  .info-item:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+// =========================================================
+// TABLET
+// =========================================================
+
+@media (max-width: 700px) {
+  .page-header {
+    margin-bottom: 22px;
+  }
+
+  .header-copy h1 {
+    font-size: 26px;
+  }
+
+  .header-copy p {
+    font-size: 13px;
+  }
+
+  .settings-card-header {
+    padding: 19px;
+  }
+
+  .settings-list {
+    padding: 0 19px;
+  }
+
+  .setting-item {
+    min-height: 76px;
+  }
+
+  .settings-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 15px 19px;
+  }
+
+  .settings-footer .save-btn {
+    width: 100%;
+  }
+
+  .security-status {
+    margin-left: 19px;
+    margin-right: 19px;
+  }
+
+  .password-section {
+    padding: 20px 19px;
+  }
+
+  .password-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .password-actions .save-btn {
+    width: 100%;
+  }
+
+  .account-info-grid {
+    padding: 0 19px;
+  }
+}
+
+// =========================================================
+// MOBILE
+// =========================================================
+
+@media (max-width: 520px) {
+  .header-copy h1 {
+    font-size: 24px;
+  }
+
+  .settings-heading {
+    gap: 10px;
+  }
+
+  .settings-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    font-size: 18px;
+  }
+
+  .settings-heading h2 {
+    font-size: 15px;
+  }
+
+  .setting-copy {
+    gap: 9px;
+  }
+
+  .setting-icon {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+  }
+
+  .setting-icon i {
+    font-size: 15px;
+  }
+
+  .setting-copy strong {
+    font-size: 11px;
+  }
+
+  .setting-copy span {
+    font-size: 9px;
+  }
+
+  .security-status {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .security-status-copy {
+    flex: 1 1 calc(100% - 55px);
+  }
+
+  .security-badge {
+    margin-left: 48px;
+  }
+
+  .account-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item,
+  .info-item:nth-child(odd),
+  .info-item:nth-child(even) {
+    min-height: 65px;
+    padding: 13px 0;
+    border-right: 0;
+    border-bottom: 1px solid #efeeeb;
+  }
+
+  .info-item:last-child {
+    border-bottom: 0;
+  }
+}
+
+// =========================================================
+// SMALL MOBILE
+// =========================================================
+
+@media (max-width: 380px) {
+  .header-copy h1 {
+    font-size: 22px;
+  }
+
+  .header-copy p {
+    font-size: 12px;
+  }
+
+  .settings-heading p {
+    font-size: 10px;
+  }
+
+  .setting-item {
+    gap: 10px;
+  }
+
+  .toggle {
+    width: 38px;
+    flex-basis: 38px;
+  }
+
+  .toggle.active span {
+    transform: translateX(14px);
+  }
+}

@@ -59,7 +59,6 @@ export class InventoryComponent implements OnInit {
       this.movements.set(movements.slice(0, 5));
 
       console.log('Inventory loaded:', ingredients);
-
       console.log('Recent movements loaded:', movements);
     } catch (error) {
       console.error('Failed to load inventory:', error);
@@ -126,5 +125,43 @@ export class InventoryComponent implements OnInit {
 
   get alerts(): Ingredient[] {
     return this.ingredients().filter((item) => item.stock <= item.reorderLevel);
+  }
+
+  // ==========================================
+  // YIELD ALERTS
+  // ==========================================
+
+  get yieldAlerts(): Ingredient[] {
+    return this.ingredients().filter((item) => (item.recipeYield ?? 0) <= 5);
+  }
+
+  // ==========================================
+  // TOTAL ALERTS
+  // ==========================================
+
+  get totalAlerts(): number {
+    const stockAlertIds = new Set(this.alerts.map((item) => item.id));
+
+    const yieldAlertIds = new Set(this.yieldAlerts.map((item) => item.id));
+
+    return new Set([...stockAlertIds, ...yieldAlertIds]).size;
+  }
+
+  // ==========================================
+  // YIELD STATUS
+  // ==========================================
+
+  getYieldStatus(item: Ingredient): 'Good' | 'Low' | 'Out of Yield' {
+    const recipeYield = item.recipeYield ?? 0;
+
+    if (recipeYield <= 0) {
+      return 'Out of Yield';
+    }
+
+    if (recipeYield <= 5) {
+      return 'Low';
+    }
+
+    return 'Good';
   }
 }

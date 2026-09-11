@@ -6,7 +6,10 @@
 
       <h1>Inventory Overview</h1>
 
-      <p>Monitor ingredients, stock levels, and recent inventory movements.</p>
+      <p>
+        Monitor ingredients, stock levels, recipe yield, and recent inventory
+        movements.
+      </p>
     </div>
 
     <div class="page-actions">
@@ -115,6 +118,58 @@
           <strong>Everything looks good</strong>
 
           <span> No ingredients need attention right now. </span>
+        </div>
+      }
+    </section>
+
+    <!-- RECIPE YIELD ALERTS -->
+    <section class="panel alerts-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">RECIPE CAPACITY</span>
+          <h2>Yield Alerts</h2>
+        </div>
+
+        <a routerLink="/admin/inventory/ingredients" class="view-link">
+          View all
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
+      </div>
+
+      @if (yieldAlerts.length > 0) {
+        <div class="alert-list">
+          @for (item of yieldAlerts; track item.id) {
+            <div class="alert-item">
+              <div class="ingredient-icon">
+                <i class="bx bx-food-menu"></i>
+              </div>
+
+              <div class="alert-info">
+                <strong>{{ item.name }}</strong>
+
+                <span>
+                  {{ item.recipeYield }}
+                  {{ item.recipeUnit || "servings" }} remaining
+                </span>
+              </div>
+
+              <span
+                class="status"
+                [class.low]="getYieldStatus(item) === 'Low'"
+                [class.out]="getYieldStatus(item) === 'Out of Yield'"
+              >
+                {{ getYieldStatus(item) }}
+              </span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <i class="bx bx-check-circle"></i>
+
+          <strong>Yield levels are good</strong>
+
+          <span> No ingredients have low recipe yield. </span>
         </div>
       }
     </section>

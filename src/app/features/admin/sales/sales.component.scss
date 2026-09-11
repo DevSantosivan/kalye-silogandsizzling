@@ -1,347 +1,463 @@
 :host {
   display: block;
-  width: 100%;
 }
 
 * {
   box-sizing: border-box;
 }
 
-.page {
+// =========================================================
+// SALES PAGE
+// =========================================================
+
+.sales-page {
   width: 100%;
-  min-height: 100%;
-
-  padding: 28px 30px 35px;
-
-  background: #f6f5f2;
-  color: #292725;
+  max-width: 1500px;
+  margin: 0 auto;
+  min-width: 0;
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
+// =========================================================
+// PAGE HEADER
+// SAME STRUCTURE AS ORDERS
+// =========================================================
 
 .page-header {
-  margin-bottom: 24px;
-
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
 
+.header-content {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 24px;
 }
 
-.eyebrow,
-.panel-eyebrow {
+.header-copy {
+  min-width: 0;
+}
+
+.eyebrow {
   display: block;
-
-  color: #a19b93;
-
-  font-size: 9px;
-  font-weight: 700;
-
-  letter-spacing: 1.2px;
-}
-
-.page-header h1 {
-  margin: 7px 0 5px;
-
-  color: #211f1d;
-
-  font-size: 26px;
-  font-weight: 750;
-
-  line-height: 1.15;
-}
-
-.page-header p {
-  margin: 7px 0 0;
-
-  color: #8c867e;
-
+  margin-bottom: 7px;
+  color: #8a8a8a;
   font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.header-copy h1 {
+  margin: 0;
+  color: #191919;
+  font-size: 30px;
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.header-copy p {
+  max-width: 650px;
+  margin: 9px 0 0;
+  color: #777;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+// =========================================================
+// HEADER ACTIONS
+// =========================================================
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
 }
 
 .export-btn {
-  height: 38px;
-
-  padding: 0 14px;
+  height: 44px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  gap: 7px;
+  gap: 8px;
 
-  border: 1px solid #dedad3;
-  border-radius: 8px;
+  padding: 0 14px;
 
   background: #ffffff;
-  color: #4c4740;
+  border: 1px solid #e9e7e3;
+  border-radius: 10px;
+
+  color: #555;
 
   font-family: inherit;
-
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
 
   cursor: pointer;
 
   transition:
-    background 0.18s ease,
-    transform 0.18s ease;
-}
-
-.export-btn i {
-  font-size: 15px;
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .export-btn:hover {
-  background: #f7f4ef;
-  transform: translateY(-1px);
+  background: #fcfbf9;
+  border-color: #d8d6d1;
+  color: #191919;
 }
 
-/* =========================================================
-   SUMMARY
-========================================================= */
+.export-btn i {
+  font-size: 17px;
+}
+
+// =========================================================
+// SUMMARY GRID
+// SAME AS ORDERS
+// =========================================================
 
 .summary-grid {
   display: grid;
 
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
-  gap: 13px;
+  gap: 14px;
 
   margin-bottom: 18px;
 }
 
+// =========================================================
+// SUMMARY CARD
+// =========================================================
+
 .summary-card {
-  min-height: 125px;
+  min-width: 0;
+  min-height: 132px;
 
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
-  border: 1px solid #e7e3dc;
-  border-radius: 11px;
+  padding: 20px;
 
   background: #ffffff;
+  border: 1px solid #e9e7e3;
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
+
+.summary-card:hover {
+  border-color: #d8d6d1;
+  transform: translateY(-1px);
+}
+
+// =========================================================
+// SUMMARY TOP
+// =========================================================
 
 .summary-top {
+  width: 100%;
+
   display: flex;
   align-items: center;
+  gap: 11px;
 }
+
+// =========================================================
+// SUMMARY ICON
+// SAME ORDER / DASHBOARD STYLE
+// =========================================================
 
 .summary-icon {
-  width: 31px;
-  height: 31px;
+  width: 42px;
+  height: 42px;
 
-  display: grid;
-  place-items: center;
+  flex: 0 0 42px;
 
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  background: #f8f2e7;
-  color: #b87a1c;
+  border-radius: 10px;
+
+  background: #f1f1ef;
+  color: #292929;
+
+  font-size: 20px;
 }
 
-.summary-icon i {
-  font-size: 16px;
-}
-
-.week-icon {
-  background: #edf5ff;
-  color: #4d80b3;
-}
-
-.month-icon {
-  background: #edf7ef;
-  color: #4e9560;
-}
-
-.year-icon {
-  background: #fff4df;
-  color: #c48616;
-}
+// =========================================================
+// SUMMARY LABEL
+// =========================================================
 
 .summary-label {
-  margin-left: auto;
+  min-width: 0;
 
-  color: #aaa39a;
+  overflow: hidden;
 
-  font-size: 8px;
-  font-weight: 700;
+  color: #777;
 
-  letter-spacing: 0.8px;
+  font-size: 12px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+// =========================================================
+// SUMMARY VALUE
+// =========================================================
 
 .summary-value {
   margin-top: 13px;
 
-  color: #292622;
+  overflow: hidden;
 
-  font-size: 24px;
+  color: #191919;
+
+  font-size: 26px;
   font-weight: 750;
+  line-height: 1;
+
+  letter-spacing: -0.03em;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+// =========================================================
+// SUMMARY META
+// =========================================================
+
 .summary-meta {
-  margin-top: 9px;
+  min-width: 0;
 
   display: flex;
   align-items: center;
 
-  gap: 5px;
+  gap: 6px;
 
-  font-size: 8px;
+  margin-top: 8px;
+
+  color: #999;
+
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .summary-meta i {
-  font-size: 12px;
+  color: #777;
+  font-size: 14px;
 }
 
-.summary-meta.positive {
-  color: #568b5e;
+.summary-meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* =========================================================
-   PANELS
-========================================================= */
-
-.panel,
-.transactions-panel {
-  border: 1px solid #e7e3dc;
-  border-radius: 12px;
-
-  background: #ffffff;
-}
-
-.panel {
-  padding: 18px;
-}
+// =========================================================
+// MAIN GRID
+// =========================================================
 
 .main-grid {
   display: grid;
 
   grid-template-columns:
-    1.65fr
-    0.85fr;
+    minmax(0, 1.55fr)
+    minmax(320px, 0.85fr);
 
-  gap: 16px;
+  gap: 14px;
 
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
+
+// =========================================================
+// SECONDARY GRID
+// =========================================================
 
 .secondary-grid {
   display: grid;
 
   grid-template-columns:
-    0.85fr
-    1.65fr;
+    minmax(320px, 0.85fr)
+    minmax(0, 1.55fr);
 
-  gap: 16px;
+  gap: 14px;
 
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-/* =========================================================
-   PANEL HEADER
-========================================================= */
+// =========================================================
+// PANELS
+// SAME CARD LANGUAGE AS ORDERS
+// =========================================================
+
+.panel,
+.transactions-panel {
+  min-width: 0;
+
+  background: #ffffff;
+
+  border: 1px solid #e9e7e3;
+  border-radius: 14px;
+}
+
+.panel {
+  padding: 20px;
+}
+
+// =========================================================
+// PANEL HEADER
+// =========================================================
 
 .panel-header {
   display: flex;
+
   align-items: flex-start;
   justify-content: space-between;
 
   gap: 20px;
 }
 
-.panel-header h2 {
-  margin: 5px 0 0;
+.panel-eyebrow {
+  display: block;
 
-  color: #35312d;
+  color: #8a8a8a;
 
-  font-size: 15px;
+  font-size: 10px;
   font-weight: 700;
+
+  letter-spacing: 0.12em;
 }
 
+.panel-header h2 {
+  margin: 6px 0 0;
+
+  color: #191919;
+
+  font-size: 17px;
+  font-weight: 750;
+
+  line-height: 1.25;
+
+  letter-spacing: -0.01em;
+}
+
+// =========================================================
+// SELECT
+// =========================================================
+
 .panel-header select {
-  height: 33px;
+  height: 38px;
 
-  padding: 0 10px;
+  padding: 0 11px;
 
-  border: 1px solid #dedad3;
-  border-radius: 7px;
+  background: #ffffff;
+
+  border: 1px solid #e9e7e3;
+  border-radius: 8px;
 
   outline: none;
 
-  background: #ffffff;
-  color: #5f5952;
+  color: #555;
 
   font-family: inherit;
-
-  font-size: 9px;
+  font-size: 11px;
 
   cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
 }
 
-/* =========================================================
-   CHART SUMMARY
-========================================================= */
+.panel-header select:hover {
+  background: #fcfbf9;
+  border-color: #d8d6d1;
+}
+
+.panel-header select:focus {
+  border-color: #d0cec8;
+}
+
+// =========================================================
+// CHART SUMMARY
+// =========================================================
 
 .chart-summary {
-  margin-top: 22px;
+  margin-top: 24px;
 
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
+  gap: 20px;
 }
 
 .chart-summary > div:first-child {
   display: flex;
   flex-direction: column;
 
-  gap: 3px;
+  gap: 4px;
 }
 
 .chart-summary strong {
-  color: #292622;
+  color: #191919;
 
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 750;
+
+  line-height: 1;
+
+  letter-spacing: -0.03em;
 }
 
 .chart-summary span {
-  color: #99938b;
+  color: #999;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .chart-growth {
-  display: flex;
+  display: inline-flex;
+
   align-items: center;
 
-  gap: 4px;
+  gap: 5px;
 
-  color: #568b5e;
+  color: #39834d;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 }
 
 .chart-growth i {
-  font-size: 13px;
+  font-size: 14px;
 }
 
-/* =========================================================
-   BAR CHART
-========================================================= */
+// =========================================================
+// BAR CHART
+// =========================================================
 
 .chart {
   position: relative;
 
   height: 270px;
 
-  margin-top: 16px;
+  margin-top: 18px;
 
-  padding: 0 5px 24px;
+  padding: 0 6px 28px;
 
   display: flex;
   align-items: stretch;
@@ -350,7 +466,7 @@
 .chart-grid-lines {
   position: absolute;
 
-  inset: 0 5px 24px;
+  inset: 0 6px 28px;
 
   display: flex;
   flex-direction: column;
@@ -362,21 +478,21 @@
 .chart-grid-lines span {
   width: 100%;
 
-  border-top: 1px dashed #eeeae4;
+  border-top: 1px dashed #efeeeb;
 }
 
 .bars {
   position: relative;
-
   z-index: 1;
 
   width: 100%;
 
   display: flex;
+
   align-items: flex-end;
   justify-content: space-between;
 
-  gap: 8px;
+  gap: 10px;
 }
 
 .bar-group {
@@ -388,20 +504,21 @@
 
   display: flex;
   flex-direction: column;
+
   justify-content: flex-end;
   align-items: center;
 
-  gap: 8px;
+  gap: 9px;
 }
 
 .bar {
-  width: min(24px, 65%);
+  width: min(28px, 65%);
 
-  min-height: 10px;
+  min-height: 8px;
 
-  border-radius: 5px 5px 2px 2px;
+  border-radius: 6px 6px 3px 3px;
 
-  background: #c48616;
+  background: #191919;
 
   transition:
     opacity 0.18s ease,
@@ -410,30 +527,29 @@
 
 .bar:hover {
   opacity: 0.75;
-
   transform: translateY(-2px);
 }
 
 .bar-group > span {
-  color: #aaa49c;
+  color: #999;
 
-  font-size: 7px;
+  font-size: 9px;
 }
 
-/* =========================================================
-   DONUT
-========================================================= */
+// =========================================================
+// DONUT
+// =========================================================
 
 .donut-wrapper {
-  min-height: 190px;
+  min-height: 205px;
 
   display: grid;
   place-items: center;
 }
 
 .donut {
-  width: 145px;
-  height: 145px;
+  width: 150px;
+  height: 150px;
 
   display: grid;
   place-items: center;
@@ -442,11 +558,12 @@
 }
 
 .donut-center {
-  width: 100px;
-  height: 100px;
+  width: 104px;
+  height: 104px;
 
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
@@ -456,36 +573,38 @@
 }
 
 .donut-center strong {
-  color: #302d29;
+  color: #191919;
 
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 750;
+
+  letter-spacing: -0.03em;
 }
 
 .donut-center span {
-  margin-top: 2px;
+  margin-top: 3px;
 
-  color: #99938b;
+  color: #999;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
-/* =========================================================
-   BREAKDOWN
-========================================================= */
+// =========================================================
+// BREAKDOWN
+// =========================================================
 
 .breakdown-list {
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .break-row {
-  min-height: 61px;
+  min-height: 62px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid #efeeeb;
 }
 
 .break-row:last-child {
@@ -496,67 +615,69 @@
   display: flex;
   align-items: center;
 
-  gap: 9px;
+  gap: 10px;
 }
 
 .legend {
   width: 8px;
   height: 8px;
 
-  flex-shrink: 0;
+  flex: 0 0 8px;
 
   border-radius: 50%;
 }
 
 .legend.dine-in {
-  background: #c48616;
+  background: #191919;
 }
 
 .legend.take-out {
-  background: #ddd8cf;
+  background: #d9d7d2;
 }
 
 .break-label div {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  gap: 3px;
 }
 
 .break-label strong {
-  color: #4c4740;
+  color: #444;
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.break-label small {
+  color: #999;
 
   font-size: 9px;
 }
 
-.break-label small {
-  color: #aaa49c;
-
-  font-size: 7px;
-}
-
 .break-row > strong {
-  color: #35312d;
+  color: #191919;
 
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 750;
 }
 
-/* =========================================================
-   PAYMENT
-========================================================= */
+// =========================================================
+// PAYMENT METHODS
+// =========================================================
 
 .payment-list {
   margin-top: 20px;
 }
 
 .payment-row {
-  min-height: 63px;
+  min-height: 64px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid #efeeeb;
 }
 
 .payment-row:last-child {
@@ -567,87 +688,78 @@
   display: flex;
   align-items: center;
 
-  gap: 9px;
+  gap: 10px;
 }
 
 .payment-icon {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border-radius: 8px;
+  border-radius: 10px;
+
+  background: #f1f1ef;
+  color: #292929;
 }
 
 .payment-icon i {
-  font-size: 15px;
-}
-
-.payment-icon.cash {
-  background: #edf7ef;
-  color: #568b5e;
-}
-
-.payment-icon.gcash {
-  background: #edf5ff;
-  color: #4d80b3;
-}
-
-.payment-icon.card {
-  background: #fff4df;
-  color: #c48616;
+  font-size: 18px;
 }
 
 .payment-name div {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  gap: 3px;
 }
 
 .payment-name strong {
-  color: #4c4740;
+  color: #444;
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.payment-name small {
+  color: #999;
 
   font-size: 9px;
 }
 
-.payment-name small {
-  color: #aaa49c;
-
-  font-size: 7px;
-}
-
 .payment-row > strong {
-  color: #35312d;
+  color: #191919;
 
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 750;
 }
 
-/* =========================================================
-   TOP ITEMS
-========================================================= */
+// =========================================================
+// TOP ITEMS
+// =========================================================
 
 .top-items {
   margin-top: 16px;
 }
 
 .top-item {
-  min-height: 54px;
+  min-height: 57px;
 
   display: grid;
 
   grid-template-columns:
-    24px
-    1fr
-    60px
-    85px;
+    30px
+    minmax(0, 1fr)
+    65px
+    90px;
 
   align-items: center;
 
   gap: 10px;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid #efeeeb;
 }
 
 .top-item:last-child {
@@ -655,18 +767,18 @@
 }
 
 .rank {
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
 
   display: grid;
   place-items: center;
 
-  border-radius: 6px;
+  border-radius: 7px;
 
-  background: #f7f3ec;
-  color: #8f641f;
+  background: #f1f1ef;
+  color: #555;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 750;
 }
 
@@ -676,65 +788,73 @@
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  gap: 3px;
 }
 
 .item-info strong {
   overflow: hidden;
 
-  color: #403c37;
+  color: #444;
 
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 650;
 
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .item-info small {
-  color: #aaa49c;
+  color: #999;
 
-  font-size: 7px;
+  font-size: 9px;
 }
 
 .item-sales {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  gap: 3px;
 }
 
 .item-sales strong {
-  color: #403c37;
+  color: #444;
 
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 650;
 }
 
 .item-sales small {
-  color: #aaa49c;
+  color: #999;
 
-  font-size: 7px;
+  font-size: 9px;
 }
 
 .item-revenue {
-  color: #35312d;
+  color: #191919;
 
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 750;
 
   text-align: right;
 }
 
-/* =========================================================
-   TRANSACTIONS
-========================================================= */
+// =========================================================
+// TRANSACTIONS PANEL
+// SAME AS ORDERS CARD
+// =========================================================
 
 .transactions-panel {
-  overflow: visible;
+  overflow: hidden;
 }
+
+// =========================================================
+// TRANSACTIONS HEADER
+// =========================================================
 
 .transactions-header {
   min-height: 82px;
 
-  padding: 16px 18px;
+  padding: 18px 20px;
 
   display: flex;
   align-items: center;
@@ -742,43 +862,49 @@
 
   gap: 20px;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid #efeeeb;
 }
 
 .section-title {
-  margin-top: 5px;
+  margin-top: 6px;
 
   display: flex;
   align-items: center;
 
-  gap: 7px;
+  gap: 8px;
 }
 
 .section-title h2 {
   margin: 0;
 
-  color: #37332e;
+  color: #191919;
 
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 750;
+
+  line-height: 1.25;
+
+  letter-spacing: -0.01em;
 }
 
 .section-title > span {
-  min-width: 21px;
-  height: 19px;
-
-  padding: 0 6px;
+  min-width: 23px;
+  height: 22px;
 
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
-  border-radius: 5px;
+  padding: 0 6px;
 
-  background: #f4f1ec;
-  color: #8c867e;
+  background: #f1f1ef;
 
-  font-size: 8px;
+  border-radius: 6px;
+
+  color: #666;
+
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -786,27 +912,32 @@
   display: flex;
   align-items: center;
 
-  gap: 15px;
+  gap: 18px;
 }
 
 .transaction-summary span {
-  color: #99938b;
+  color: #999;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .transaction-summary strong {
-  color: #4d4943;
+  color: #555;
+
+  font-weight: 700;
 }
 
-/* =========================================================
-   TRANSACTION TABLE
-========================================================= */
+// =========================================================
+// TRANSACTION TABLE
+// SAME TABLE LANGUAGE AS ORDERS
+// =========================================================
 
 .transaction-table-wrapper {
   width: 100%;
 
   overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
 }
 
 .transaction-table {
@@ -829,30 +960,37 @@
 
   gap: 14px;
 
-  padding: 0 18px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .table-head {
-  height: 42px;
+  min-height: 46px;
 
-  background: #faf8f5;
+  background: #faf9f7;
 
-  color: #99938b;
+  border-bottom: 1px solid #efeeeb;
 
-  font-size: 8px;
-  font-weight: 800;
+  color: #999;
 
-  letter-spacing: 0.4px;
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
 }
 
 .table-row {
-  min-height: 67px;
+  min-height: 72px;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid #efeeeb;
 
-  color: #5e5952;
+  color: #666;
 
-  font-size: 9px;
+  font-size: 12px;
+
+  transition: background 0.15s ease;
 }
 
 .table-row:last-child {
@@ -863,7 +1001,41 @@
   background: #fcfbf9;
 }
 
-.transaction-id,
+// =========================================================
+// TRANSACTION
+// =========================================================
+
+.transaction-id {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.transaction-id strong {
+  overflow: hidden;
+
+  color: #222;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.transaction-id small {
+  color: #999;
+
+  font-size: 9px;
+}
+
+// =========================================================
+// CUSTOMER
+// =========================================================
+
 .customer-cell {
   min-width: 0;
 
@@ -873,53 +1045,43 @@
   gap: 9px;
 }
 
-.transaction-id {
-  flex-direction: column;
-  align-items: flex-start;
-
-  gap: 3px;
-}
-
-.transaction-id strong {
-  color: #37332e;
-
-  font-size: 9px;
-}
-
-.transaction-id small {
-  color: #aaa49c;
-
-  font-size: 7px;
-}
-
 .avatar {
-  width: 31px;
-  height: 31px;
+  width: 30px;
+  height: 30px;
 
-  flex-shrink: 0;
+  flex: 0 0 30px;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f1f1ef;
 
   border-radius: 50%;
 
-  background: #f3eadc;
-  color: #8f641f;
+  color: #555;
 
-  font-size: 8px;
-  font-weight: 750;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .customer-cell > strong {
+  min-width: 0;
+
   overflow: hidden;
 
-  color: #403c37;
+  color: #444;
 
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 650;
 
-  white-space: nowrap;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+// =========================================================
+// TYPE
+// =========================================================
 
 .type-cell,
 .payment-cell {
@@ -928,84 +1090,166 @@
 
   gap: 6px;
 
-  color: #77716a;
+  color: #777;
+
+  font-size: 10px;
 }
 
 .type-cell i,
 .payment-cell i {
-  color: #a87525;
+  color: #777;
 
-  font-size: 13px;
+  font-size: 15px;
 }
+
+// =========================================================
+// AMOUNT
+// =========================================================
 
 .amount-cell {
-  color: #35312d;
+  color: #191919;
 
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 750;
 }
+
+// =========================================================
+// STATUS
+// =========================================================
 
 .status {
   width: fit-content;
 
-  padding: 6px 9px;
-
   display: inline-flex;
   align-items: center;
 
-  gap: 5px;
+  gap: 6px;
 
-  border-radius: 50px;
+  padding: 5px 8px;
 
-  background: #edf7ef;
-  color: #568b5e;
+  border-radius: 6px;
 
-  font-size: 8px;
-  font-weight: 650;
+  background: #eef7f0;
+  color: #39834d;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  white-space: nowrap;
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 5px;
 
   border-radius: 50%;
 
-  background: #62a56c;
+  background: #39834d;
 }
 
 .status.refunded {
-  background: #fff0ef;
-  color: #b45b52;
+  background: #fff0f0;
+  color: #bd4141;
 }
 
 .status.refunded .status-dot {
-  background: #c7645b;
+  background: #bd4141;
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
+// =========================================================
+// EMPTY STATE
+// =========================================================
+
+.empty-state {
+  min-height: 240px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  background: #f1f1ef;
+
+  border-radius: 12px;
+
+  color: #999;
+}
+
+.empty-icon i {
+  font-size: 22px;
+}
+
+.empty-state strong {
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.empty-state > span {
+  max-width: 280px;
+
+  margin-top: 5px;
+
+  color: #999;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+// =========================================================
+// FOOTER
+// =========================================================
 
 .table-footer {
-  min-height: 55px;
-
-  padding: 10px 18px;
+  min-height: 60px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  border-top: 1px solid #eeeae4;
+  gap: 16px;
+
+  padding: 0 20px;
+
+  border-top: 1px solid #efeeeb;
 }
 
 .results-count {
-  color: #99938b;
+  color: #999;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .results-count strong {
-  color: #5c5750;
+  color: #555;
+
+  font-weight: 700;
 }
+
+// =========================================================
+// PAGINATION
+// SAME AS ORDERS
+// =========================================================
 
 .pagination {
   display: flex;
@@ -1015,49 +1259,55 @@
 }
 
 .pagination button {
-  width: 27px;
-  height: 27px;
+  width: 30px;
+  height: 30px;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border: 1px solid #dedad3;
-  border-radius: 6px;
+  background: transparent;
 
-  background: #ffffff;
-  color: #77716a;
+  border: 0;
+  border-radius: 7px;
+
+  color: #777;
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 10px;
+  font-weight: 650;
 
   cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 
 .pagination button:hover:not(:disabled) {
-  background: #f6f3ee;
+  background: #f1f1ef;
+  color: #191919;
 }
 
 .pagination button.current {
-  border-color: #171716;
-
-  background: #171716;
+  background: #191919;
   color: #ffffff;
 }
 
 .pagination button:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
 
   cursor: not-allowed;
 }
 
-.pagination i {
-  font-size: 14px;
+.pagination button i {
+  font-size: 16px;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+// =========================================================
+// LARGE TABLET
+// =========================================================
 
 @media (max-width: 1200px) {
   .summary-grid {
@@ -1068,25 +1318,188 @@
   .secondary-grid {
     grid-template-columns: 1fr;
   }
+
+  .header-content {
+    align-items: flex-end;
+  }
 }
 
-@media (max-width: 800px) {
-  .page {
-    padding: 24px 20px 30px;
+// =========================================================
+// TABLET
+// =========================================================
+
+@media (max-width: 900px) {
+  .sales-page {
+    max-width: 100%;
   }
 
   .page-header {
-    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .header-content {
+    gap: 18px;
+  }
+
+  .header-copy h1 {
+    font-size: 27px;
+  }
+
+  .header-copy p {
+    font-size: 13px;
+  }
+
+  .transaction-summary {
+    gap: 12px;
+  }
+}
+
+// =========================================================
+// MOBILE
+// =========================================================
+
+@media (max-width: 700px) {
+  .page-header {
+    margin-bottom: 22px;
+  }
+
+  .header-content {
+    align-items: stretch;
+
     flex-direction: column;
+
+    gap: 18px;
+  }
+
+  .header-copy h1 {
+    font-size: 25px;
+  }
+
+  .header-copy p {
+    margin-top: 7px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+  }
+
+  // -------------------------------------------------------
+  // HEADER
+  // -------------------------------------------------------
+
+  .header-actions {
+    width: 100%;
   }
 
   .export-btn {
-    width: auto;
+    width: 100%;
+  }
+
+  // -------------------------------------------------------
+  // SUMMARY
+  // -------------------------------------------------------
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+  }
+
+  .summary-card {
+    min-height: 108px;
+
+    padding: 17px;
+  }
+
+  .summary-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-basis: 40px;
+  }
+
+  .summary-value {
+    margin-top: 11px;
+
+    font-size: 23px;
+  }
+
+  // -------------------------------------------------------
+  // PANELS
+  // -------------------------------------------------------
+
+  .panel {
+    padding: 17px;
+  }
+
+  .panel-header h2 {
+    font-size: 16px;
+  }
+
+  .panel-header select {
+    height: 36px;
+  }
+
+  // -------------------------------------------------------
+  // CHART
+  // -------------------------------------------------------
+
+  .chart {
+    height: 230px;
+  }
+
+  .bar {
+    width: 20px;
+  }
+
+  .bar-group > span {
+    font-size: 8px;
+  }
+
+  // -------------------------------------------------------
+  // DONUT
+  // -------------------------------------------------------
+
+  .donut {
+    width: 140px;
+    height: 140px;
+  }
+
+  .donut-center {
+    width: 98px;
+    height: 98px;
+  }
+
+  // -------------------------------------------------------
+  // TOP ITEMS
+  // -------------------------------------------------------
+
+  .top-item {
+    grid-template-columns:
+      30px
+      minmax(0, 1fr)
+      60px
+      75px;
+  }
+
+  // -------------------------------------------------------
+  // TRANSACTIONS
+  // -------------------------------------------------------
+
+  .transactions-panel {
+    border-radius: 12px;
   }
 
   .transactions-header {
+    min-height: auto;
+
     align-items: flex-start;
+
     flex-direction: column;
+
+    padding: 16px;
   }
 
   .transaction-summary {
@@ -1094,87 +1507,107 @@
 
     justify-content: space-between;
   }
-}
 
-@media (max-width: 600px) {
-  .page {
-    padding: 20px 14px 25px;
+  .table-head,
+  .table-row {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
-  .summary-grid {
-    grid-template-columns: 1fr;
+  // -------------------------------------------------------
+  // FOOTER
+  // -------------------------------------------------------
+
+  .table-footer {
+    min-height: 56px;
+
+    padding: 0 16px;
+  }
+}
+
+// =========================================================
+// SMALL MOBILE
+// =========================================================
+
+@media (max-width: 420px) {
+  .header-copy h1 {
+    font-size: 23px;
+  }
+
+  .header-copy p {
+    font-size: 12px;
+  }
+
+  .summary-card {
+    padding: 15px;
+  }
+
+  .summary-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-basis: 38px;
+
+    font-size: 18px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+  }
+
+  .summary-value {
+    font-size: 22px;
+  }
+
+  .summary-meta {
+    font-size: 10px;
   }
 
   .panel {
     padding: 14px;
   }
 
-  .panel-header {
-    align-items: flex-start;
-  }
-
-  .panel-header select {
-    height: 31px;
-  }
-
   .chart {
-    height: 230px;
+    height: 210px;
+
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
   .bar {
-    width: 17px;
+    width: 16px;
   }
 
   .bar-group > span {
-    font-size: 6px;
-  }
-
-  .transactions-header {
-    padding: 14px;
+    font-size: 7px;
   }
 
   .transaction-summary {
     align-items: flex-start;
+
     flex-direction: column;
 
-    gap: 5px;
+    gap: 6px;
+  }
+
+  .top-item {
+    grid-template-columns:
+      30px
+      minmax(0, 1fr)
+      55px;
+  }
+
+  .item-revenue {
+    display: none;
   }
 
   .table-footer {
-    align-items: flex-start;
-    flex-direction: column;
-
-    gap: 10px;
+    padding: 0 15px;
   }
 
   .pagination {
     width: 100%;
 
     justify-content: flex-end;
-  }
-}
-
-@media (max-width: 430px) {
-  .page {
-    padding: 18px 12px 24px;
-  }
-
-  .page-header h1 {
-    font-size: 23px;
-  }
-
-  .export-btn {
-    width: 100%;
-  }
-
-  .top-item {
-    grid-template-columns:
-      24px
-      1fr
-      50px;
-  }
-
-  .item-revenue {
-    display: none;
   }
 }

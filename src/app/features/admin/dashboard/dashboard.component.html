@@ -1,469 +1,645 @@
 <section class="dashboard">
-  <!-- PAGE HEADER -->
-  <div class="page-heading">
-    <div class="heading-copy">
-      <span class="eyebrow">OVERVIEW</span>
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
 
-      <h1>
-        Good morning, Owner
-        <span class="heading-wave">👋</span>
-      </h1>
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow">BUSINESS OVERVIEW</span>
 
-      <p>Here's what's happening with Kalye Silog today.</p>
+        <h1>Dashboard</h1>
+
+        <p>
+          Monitor your restaurant performance, sales, orders, and customer
+          activity.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <div class="period-control">
+          <button
+            type="button"
+            class="period-btn"
+            (click)="togglePeriodDropdown()"
+          >
+            <i class="bx bx-calendar"></i>
+
+            <span>{{ selectedPeriod }}</span>
+
+            <i
+              class="bx"
+              [class.bx-chevron-down]="!isPeriodDropdownOpen"
+              [class.bx-chevron-up]="isPeriodDropdownOpen"
+            ></i>
+          </button>
+
+          @if (isPeriodDropdownOpen) {
+            <div class="period-dropdown">
+              @for (period of periods; track period) {
+                <button
+                  type="button"
+                  [class.active]="selectedPeriod === period"
+                  (click)="selectPeriod(period)"
+                >
+                  <span>{{ period }}</span>
+
+                  @if (selectedPeriod === period) {
+                    <i class="bx bx-check"></i>
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="refresh-btn"
+          (click)="refresh()"
+          [disabled]="loading"
+          aria-label="Refresh dashboard"
+        >
+          <i class="bx bx-refresh" [class.is-spinning]="loading"></i>
+
+          <span>Refresh</span>
+        </button>
+      </div>
     </div>
-
-    <button class="date-button" type="button">
-      <i class="bx bx-calendar"></i>
-
-      <span>Today</span>
-
-      <i class="bx bx-chevron-down"></i>
-    </button>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="stats-grid">
-    <article class="stat-card">
-      <div class="stat-top">
-        <div class="stat-title">
-          <span>Today's Sales</span>
-          <small>Revenue</small>
-        </div>
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
 
-        <div class="stat-icon sales">
-          <i class="bx bx-money"></i>
-        </div>
+  @if (errorMessage) {
+    <div class="error-banner">
+      <div class="error-icon">
+        <i class="bx bx-error-circle"></i>
       </div>
 
-      <div class="stat-value">
-        {{ formatCurrency(stats.todaySales) }}
+      <div>
+        <strong>Unable to load dashboard</strong>
+
+        <span>{{ errorMessage }}</span>
       </div>
 
-      <div class="stat-footer">
-        <span class="trend positive">
-          <i class="bx bx-up-arrow-alt"></i>
-          12.5%
-        </span>
+      <button type="button" (click)="refresh()">Try again</button>
+    </div>
+  }
 
-        <span>vs yesterday</span>
+  <!-- =====================================================
+     SUMMARY
+====================================================== -->
+
+  <div class="summary-grid">
+    <!-- ===================================================
+       TOTAL SALES
+  ==================================================== -->
+
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-wallet"></i>
+        </div>
+
+        <span class="summary-label">TOTAL SALES</span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.sales) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-trending-up"></i>
+        <span>Completed revenue</span>
       </div>
     </article>
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <div class="stat-title">
-          <span>Total Orders</span>
-          <small>Orders today</small>
-        </div>
+    <!-- ===================================================
+       COMPLETED ORDERS
+  ==================================================== -->
 
-        <div class="stat-icon orders">
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
           <i class="bx bx-receipt"></i>
         </div>
+
+        <span class="summary-label">COMPLETED ORDERS</span>
       </div>
 
-      <div class="stat-value">
-        {{ stats.totalOrders }}
+      <div class="summary-value">
+        {{ stats.orders | number }}
       </div>
 
-      <div class="stat-footer">
-        <span class="trend positive">
-          <i class="bx bx-up-arrow-alt"></i>
-          8
-        </span>
-
-        <span>more than yesterday</span>
+      <div class="summary-meta">
+        <i class="bx bx-check-circle"></i>
+        <span>Successfully completed</span>
       </div>
     </article>
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <div class="stat-title">
-          <span>Average Order</span>
-          <small>Per transaction</small>
+    <!-- ===================================================
+       INVENTORY
+  ==================================================== -->
+
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-package"></i>
         </div>
 
-        <div class="stat-icon average">
-          <i class="bx bx-bar-chart-alt-2"></i>
-        </div>
+        <span class="summary-label">INVENTORY ITEMS</span>
       </div>
 
-      <div class="stat-value">
-        {{ formatCurrency(stats.averageOrder) }}
+      <div class="summary-value">
+        {{ stats.inventoryItems | number }}
       </div>
 
-      <div class="stat-footer">
-        <span class="trend positive">
-          <i class="bx bx-up-arrow-alt"></i>
-          5.2%
-        </span>
-
-        <span>vs last week</span>
+      <div class="summary-meta">
+        @if (stats.outOfStock > 0) {
+          <i class="bx bx-error-circle"></i>
+          <span> {{ stats.outOfStock }} out of stock </span>
+        } @else if (stats.lowStock > 0) {
+          <i class="bx bx-error"></i>
+          <span> {{ stats.lowStock }} low stock </span>
+        } @else {
+          <i class="bx bx-check-circle"></i>
+          <span> Inventory in good condition </span>
+        }
       </div>
     </article>
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <div class="stat-title">
-          <span>Customers</span>
-          <small>Served today</small>
-        </div>
+    <!-- ===================================================
+       STAFF
+  ==================================================== -->
 
-        <div class="stat-icon customers">
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
           <i class="bx bx-group"></i>
         </div>
+
+        <span class="summary-label">STAFF</span>
       </div>
 
-      <div class="stat-value">
-        {{ stats.customers }}
+      <div class="summary-value">
+        {{ stats.staff | number }}
       </div>
 
-      <div class="stat-footer">
-        <span class="trend positive">
-          <i class="bx bx-up-arrow-alt"></i>
-          6
-        </span>
+      <div class="summary-meta">
+        <i class="bx bx-user-check"></i>
+        <span>Active restaurant staff</span>
+      </div>
+    </article>
 
-        <span>today</span>
+    <!-- ===================================================
+       EXPENSES
+  ==================================================== -->
+
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-money-withdraw"></i>
+        </div>
+
+        <span class="summary-label">EXPENSES</span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.expenses) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-wallet-alt"></i>
+        <span>Recorded business expenses</span>
+      </div>
+    </article>
+
+    <!-- ===================================================
+       CUSTOMERS
+  ==================================================== -->
+
+    <article class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-user"></i>
+        </div>
+
+        <span class="summary-label">CUSTOMERS</span>
+      </div>
+
+      <div class="summary-value">
+        {{ stats.customers | number }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-group"></i>
+        <span>Unique completed customers</span>
       </div>
     </article>
   </div>
 
-  <!-- ANALYTICS -->
-  <div class="analytics-grid">
-    <!-- SALES -->
-    <article class="panel sales-panel">
-      <div class="panel-heading">
+  <!-- =====================================================
+       MAIN GRID
+  ====================================================== -->
+
+  <div class="main-grid">
+    <!-- ===================================================
+         SALES PERFORMANCE
+    ==================================================== -->
+
+    <article class="panel chart-panel">
+      <!-- HEADER -->
+      <div class="panel-header">
         <div>
-          <span class="panel-label">REVENUE</span>
-          <h2>Sales overview</h2>
+          <span class="panel-eyebrow">REVENUE</span>
+
+          <h2>Sales performance</h2>
         </div>
 
-        <select>
-          <option>This week</option>
-          <option>This month</option>
-          <option>This year</option>
-        </select>
+        <div class="chart-period">
+          {{ selectedPeriod }}
+        </div>
       </div>
 
-      <div class="sales-summary">
-        <strong>{{ formatCurrency(stats.todaySales) }}</strong>
+      <!-- SUMMARY -->
 
-        <span class="summary-positive">
-          <i class="bx bx-trending-up"></i>
-          12.5%
-        </span>
-      </div>
+      <div class="chart-summary">
+        <!-- TOTAL REVENUE -->
+        <div class="chart-revenue">
+          <strong>
+            {{ formatCurrency(stats.sales) }}
+          </strong>
 
-      <div class="chart">
-        <div class="chart-y">
-          <span>₱15k</span>
-          <span>₱10k</span>
-          <span>₱5k</span>
-          <span>₱0</span>
+          <span>Total revenue</span>
         </div>
 
-        <div class="chart-area">
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
+        <!-- ORDERS -->
+        <div class="chart-orders">
+          <span class="chart-orders-icon">
+            <i class="bx bx-receipt"></i>
+          </span>
 
-          <svg
-            viewBox="0 0 700 240"
-            preserveAspectRatio="none"
-            class="sales-line"
+          <div class="chart-orders-copy">
+            <strong>{{ stats.orders }}</strong>
+
+            <span>orders</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="chart-container">
+        <canvas #salesChart></canvas>
+      </div>
+
+      <!-- EMPTY -->
+
+      @if (salesData.length === 0) {
+        <div class="chart-empty">
+          <i class="bx bx-bar-chart-alt-2"></i>
+
+          <span>No sales data available</span>
+        </div>
+      }
+    </article>
+
+    <!-- ===================================================
+         ORDER TYPE
+    ==================================================== -->
+
+    <article class="panel breakdown-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">BREAKDOWN</span>
+
+          <h2>Orders by type</h2>
+        </div>
+      </div>
+
+      <div class="order-type-visual">
+        <div class="donut">
+          <div
+            class="donut-progress"
+            [style.background]="
+              'conic-gradient(#191919 0% ' +
+              orderType.dineInPercent +
+              '%, #e9e7e3 ' +
+              orderType.dineInPercent +
+              '% 100%)'
+            "
           >
-            <defs>
-              <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#f3a51c" stop-opacity=".20" />
+            <div class="donut-center">
+              <strong> {{ orderType.dineInPercent }}% </strong>
 
-                <stop offset="100%" stop-color="#f3a51c" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-
-            <polygon
-              points="
-                0,185
-                100,150
-                200,165
-                300,100
-                400,125
-                500,65
-                600,90
-                700,40
-                700,240
-                0,240
-              "
-              fill="url(#salesGradient)"
-            />
-
-            <polyline
-              points="
-                0,185
-                100,150
-                200,165
-                300,100
-                400,125
-                500,65
-                600,90
-                700,40
-              "
-              fill="none"
-              stroke="currentColor"
-              stroke-width="4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <circle cx="500" cy="65" r="5"></circle>
-            <circle cx="600" cy="90" r="5"></circle>
-            <circle cx="700" cy="40" r="6"></circle>
-          </svg>
-
-          <div class="chart-days">
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-            <span>Sun</span>
+              <span> Dine In </span>
+            </div>
           </div>
         </div>
       </div>
-    </article>
 
-    <!-- ORDER STATUS -->
-    <article class="panel status-panel">
-      <div class="panel-heading">
-        <div>
-          <span class="panel-label">ORDERS</span>
-          <h2>Order status</h2>
-        </div>
+      <div class="breakdown-list">
+        <!-- DINE IN -->
 
-        <a routerLink="/admin/orders" class="panel-action">
-          View all
-          <i class="bx bx-right-arrow-alt"></i>
-        </a>
-      </div>
-
-      <div class="status-list">
-        <div class="status-row">
-          <div class="status-left">
-            <span class="status-icon new">
-              <i class="bx bx-bell"></i>
-            </span>
+        <div class="break-row">
+          <div class="break-label">
+            <span class="legend dine-in"></span>
 
             <div>
-              <strong>New</strong>
-              <span>Waiting for action</span>
+              <strong>Dine In</strong>
+
+              <small> {{ orderType.dineIn }} orders </small>
             </div>
           </div>
 
-          <strong class="status-count">8</strong>
+          <strong> {{ orderType.dineInPercent }}% </strong>
         </div>
 
-        <div class="status-row">
-          <div class="status-left">
-            <span class="status-icon preparing">
-              <i class="bx bx-loader-circle"></i>
-            </span>
+        <!-- TAKE OUT -->
+
+        <div class="break-row">
+          <div class="break-label">
+            <span class="legend take-out"></span>
 
             <div>
-              <strong>Preparing</strong>
-              <span>Currently in kitchen</span>
+              <strong>Take Out</strong>
+
+              <small> {{ orderType.takeOut }} orders </small>
             </div>
           </div>
 
-          <strong class="status-count">12</strong>
-        </div>
-
-        <div class="status-row">
-          <div class="status-left">
-            <span class="status-icon ready">
-              <i class="bx bx-check"></i>
-            </span>
-
-            <div>
-              <strong>Ready</strong>
-              <span>Waiting for customer</span>
-            </div>
-          </div>
-
-          <strong class="status-count">6</strong>
-        </div>
-
-        <div class="status-row">
-          <div class="status-left">
-            <span class="status-icon completed">
-              <i class="bx bx-check-double"></i>
-            </span>
-
-            <div>
-              <strong>Completed</strong>
-              <span>Successfully served</span>
-            </div>
-          </div>
-
-          <strong class="status-count">22</strong>
+          <strong> {{ orderType.takeOutPercent }}% </strong>
         </div>
       </div>
     </article>
   </div>
 
-  <!-- BEST SELLERS + ORDER TYPE -->
-  <div class="lower-grid">
-    <!-- BEST SELLERS -->
-    <article class="panel best-panel">
-      <div class="panel-heading">
+  <!-- =====================================================
+       SECONDARY GRID
+  ====================================================== -->
+
+  <div class="secondary-grid">
+    <!-- ===================================================
+         PAYMENT METHODS
+    ==================================================== -->
+    <!-- ===================================================
+     PAYMENT METHODS
+==================================================== -->
+
+    <article class="panel payment-panel">
+      <div class="panel-header">
         <div>
-          <span class="panel-label">POPULAR</span>
-          <h2>Best sellers</h2>
+          <span class="panel-eyebrow">PAYMENT</span>
+
+          <h2>Payment methods</h2>
         </div>
 
-        <select>
-          <option>This week</option>
-          <option>This month</option>
-          <option>This year</option>
-        </select>
+        <span class="panel-count"> {{ paymentMethodTotal }} orders </span>
       </div>
 
-      <div class="seller-list">
-        @for (item of bestSellers; track item.rank) {
-          <div class="seller-item">
-            <div class="seller-rank">#{{ item.rank }}</div>
+      @if (paymentMethodData.length > 0) {
+        <div class="payment-list">
+          @for (payment of paymentMethodData; track payment.label) {
+            <div class="payment-row">
+              <!-- PAYMENT NAME -->
+              <div class="payment-name">
+                <span class="payment-icon">
+                  <i
+                    class="bx"
+                    [class.bx-money]="payment.label.toLowerCase() === 'cash'"
+                    [class.bx-mobile]="
+                      payment.label.toLowerCase() === 'gcash' ||
+                      payment.label.toLowerCase() === 'maya'
+                    "
+                    [class.bx-credit-card]="
+                      payment.label.toLowerCase() === 'card'
+                    "
+                    [class.bx-wallet]="
+                      payment.label.toLowerCase() !== 'cash' &&
+                      payment.label.toLowerCase() !== 'gcash' &&
+                      payment.label.toLowerCase() !== 'maya' &&
+                      payment.label.toLowerCase() !== 'card'
+                    "
+                  ></i>
+                </span>
 
-            <div class="food-image">
-              <img [src]="item.image" [alt]="item.name" />
+                <div>
+                  <strong>
+                    {{ payment.label }}
+                  </strong>
+
+                  <small>
+                    {{ payment.value }}
+                    {{ payment.value === 1 ? "order" : "orders" }}
+                  </small>
+                </div>
+              </div>
+
+              <!-- PERCENTAGE -->
+              <strong class="payment-percentage">
+                {{ getPaymentPercentage(payment.value) }}%
+              </strong>
             </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-small">
+          <div class="empty-icon">
+            <i class="bx bx-credit-card"></i>
+          </div>
 
-            <div class="seller-info">
+          <strong>No payment data</strong>
+
+          <span> Completed payment information will appear here. </span>
+        </div>
+      }
+    </article>
+    <!-- ===================================================
+         BEST SELLERS
+    ==================================================== -->
+
+    <article class="panel best-sellers-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">PERFORMANCE</span>
+
+          <h2>Best selling items</h2>
+        </div>
+
+        <span class="panel-count"> Top 5 </span>
+      </div>
+
+      @if (bestSellers.length > 0) {
+        <div class="best-sellers">
+          @for (item of bestSellers; track item.name; let i = $index) {
+            <div class="best-seller-row">
+              <!-- RANK -->
+
+              <span class="rank">
+                {{ i + 1 }}
+              </span>
+
+              <!-- IMAGE -->
+
+              <div class="item-image">
+                @if (item.image) {
+                  <img [src]="item.image" [alt]="item.name" />
+                } @else {
+                  <i class="bx bx-dish"></i>
+                }
+              </div>
+
+              <!-- INFO -->
+
+              <div class="item-info">
+                <strong>
+                  {{ item.name }}
+                </strong>
+
+                <small> {{ item.orders }} sold </small>
+              </div>
+
+              <!-- REVENUE -->
+
+              <div class="item-revenue">
+                <strong>
+                  {{ formatCurrency(item.revenue) }}
+                </strong>
+
+                <small> Revenue </small>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-small">
+          <div class="empty-icon">
+            <i class="bx bx-dish"></i>
+          </div>
+
+          <strong>No best sellers</strong>
+
+          <span> Completed order items will appear here. </span>
+        </div>
+      }
+    </article>
+  </div>
+
+  <!-- =====================================================
+       RECENT ORDERS
+  ====================================================== -->
+
+  <section class="transactions-panel">
+    <!-- HEADER -->
+
+    <div class="transactions-header">
+      <div>
+        <span class="panel-eyebrow"> SALES ACTIVITY </span>
+
+        <div class="section-title">
+          <h2>Recent orders</h2>
+
+          <span>
+            {{ recentOrders.length }}
+          </span>
+        </div>
+      </div>
+
+      <a routerLink="/admin/orders" class="view-all">
+        View all
+
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="transaction-table-wrapper">
+      <div class="transaction-table">
+        <!-- HEAD -->
+
+        <div class="table-head">
+          <span>ORDER</span>
+
+          <span>CUSTOMER</span>
+
+          <span>TYPE</span>
+
+          <span>AMOUNT</span>
+
+          <span>STATUS</span>
+        </div>
+
+        <!-- ROWS -->
+
+        @for (order of recentOrders; track order.orderNumber) {
+          <div class="table-row">
+            <!-- ORDER -->
+
+            <div class="transaction-id">
               <strong>
-                {{ item.name }}
+                {{ order.orderNumber }}
               </strong>
 
-              <span> {{ item.orders }} orders </span>
+              <small> Recent transaction </small>
             </div>
 
-            <div class="seller-sales">
+            <!-- CUSTOMER -->
+
+            <div class="customer-cell">
+              <div class="avatar">
+                {{ order.customer.charAt(0).toUpperCase() }}
+              </div>
+
               <strong>
-                {{ formatCurrency(item.price) }}
+                {{ order.customer }}
               </strong>
-
-              <span>sales</span>
             </div>
+
+            <!-- TYPE -->
+
+            <span class="type-cell">
+              <i
+                class="bx"
+                [class.bx-restaurant]="order.type === 'Dine In'"
+                [class.bx-shopping-bag]="order.type === 'Take Out'"
+              ></i>
+
+              {{ order.type }}
+            </span>
+
+            <!-- AMOUNT -->
+
+            <strong class="amount-cell">
+              {{ formatCurrency(order.total) }}
+            </strong>
+
+            <!-- STATUS -->
+
+            <span class="status" [class.pending]="order.status !== 'Completed'">
+              <span class="status-dot"></span>
+
+              {{ order.status }}
+            </span>
+          </div>
+        }
+
+        <!-- EMPTY -->
+
+        @if (recentOrders.length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="bx bx-receipt"></i>
+            </div>
+
+            <strong> No recent orders </strong>
+
+            <span> Completed transactions will appear here. </span>
           </div>
         }
       </div>
-
-      <a routerLink="/admin/menu" class="view-link">
-        View menu analytics
-        <i class="bx bx-right-arrow-alt"></i>
-      </a>
-    </article>
-
-    <!-- ORDER TYPE -->
-    <article class="panel order-type-panel">
-      <div class="panel-heading">
-        <div>
-          <span class="panel-label">ORDERS</span>
-          <h2>Order type</h2>
-        </div>
-      </div>
-
-      <div class="donut-wrapper">
-        <div class="donut">
-          <div class="donut-center">
-            <strong>48</strong>
-            <span>Orders</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="order-type-legend">
-        <div>
-          <span class="legend-dot dine"></span>
-
-          <div>
-            <strong>Dine In</strong>
-            <span>30 orders</span>
-          </div>
-
-          <strong class="legend-percent"> 62% </strong>
-        </div>
-
-        <div>
-          <span class="legend-dot takeout"></span>
-
-          <div>
-            <strong>Take Out</strong>
-            <span>18 orders</span>
-          </div>
-
-          <strong class="legend-percent"> 38% </strong>
-        </div>
-      </div>
-    </article>
-  </div>
-
-  <!-- RECENT ORDERS -->
-  <article class="panel recent-panel">
-    <div class="panel-heading">
-      <div>
-        <span class="panel-label">ACTIVITY</span>
-        <h2>Recent orders</h2>
-      </div>
-
-      <a routerLink="/admin/orders" class="view-link">
-        View all
-        <i class="bx bx-right-arrow-alt"></i>
-      </a>
     </div>
-
-    <div class="orders-table">
-      <div class="table-head">
-        <span>ORDER</span>
-        <span>CUSTOMER</span>
-        <span>TYPE</span>
-        <span>TOTAL</span>
-        <span>STATUS</span>
-      </div>
-
-      @for (order of recentOrders; track order.orderNumber) {
-        <div class="table-row">
-          <strong class="order-number">
-            {{ order.orderNumber }}
-          </strong>
-
-          <div class="customer-cell">
-            <span class="customer-avatar">
-              {{ order.customer.charAt(0) }}
-            </span>
-
-            <span>
-              {{ order.customer }}
-            </span>
-          </div>
-
-          <span class="order-type">
-            {{ order.type }}
-          </span>
-
-          <strong>
-            {{ formatCurrency(order.total) }}
-          </strong>
-
-          <span
-            class="status-pill"
-            [class.preparing]="order.status === 'Preparing'"
-            [class.ready]="order.status === 'Ready'"
-            [class.completed]="order.status === 'Completed'"
-          >
-            <span></span>
-            {{ order.status }}
-          </span>
-        </div>
-      }
-    </div>
-  </article>
+  </section>
 </section>

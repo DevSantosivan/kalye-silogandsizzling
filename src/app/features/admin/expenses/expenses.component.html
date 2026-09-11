@@ -1,383 +1,905 @@
-<section class="page">
-  <!-- PAGE HEADER -->
+<div class="expenses-page">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
 
   <div class="page-header">
-    <div>
-      <span class="eyebrow">BUSINESS MANAGEMENT</span>
-      <h1>Expenses</h1>
-      <p>Track business expenses and monitor where your money goes.</p>
-    </div>
+    <div class="header-content">
+      <div class="header-copy">
+        <span class="eyebrow">FINANCIAL OVERVIEW</span>
 
-    <button type="button" class="primary-btn" (click)="openAddExpense()">
-      <i class="bx bx-plus"></i>
-      <span>Add Expense</span>
-    </button>
+        <h1>Expenses</h1>
+
+        <p>Track your restaurant expenses and operating costs.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="add-btn" (click)="openAddExpenseModal()">
+          <i class="bx bx-plus"></i>
+          <span>Add expense</span>
+        </button>
+
+        <button
+          type="button"
+          class="export-btn"
+          (click)="exportReport()"
+          [disabled]="loading || expenses.length === 0"
+        >
+          <i class="bx bx-export"></i>
+          <span>Export report</span>
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- SUMMARY -->
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage) {
+    <div class="error-message">
+      <i class="bx bx-error-circle"></i>
+      <span>{{ errorMessage }}</span>
+
+      <button type="button" (click)="loadExpenses()">Try again</button>
+    </div>
+  }
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  @if (loading) {
+    <div class="loading-state">
+      <i class="bx bx-loader-alt bx-spin"></i>
+      <span>Loading expenses...</span>
+    </div>
+  }
+
+  <!-- =====================================================
+       EXPENSE SUMMARY
+  ====================================================== -->
 
   <div class="summary-grid">
+    <!-- TODAY -->
+
     <div class="summary-card">
       <div class="summary-top">
         <div class="summary-icon">
-          <i class="bx bx-wallet"></i>
+          <i class="bx bx-receipt"></i>
         </div>
-        <span class="summary-label">TOTAL EXPENSES</span>
+
+        <span class="summary-label">TODAY</span>
       </div>
 
       <div class="summary-value">
-        {{ formatCurrency(totalExpenses) }}
+        {{ formatCurrency(stats.today) }}
       </div>
 
       <div class="summary-meta">
         <i class="bx bx-calendar"></i>
-        <span>This month</span>
+        <span>Today's expenses</span>
       </div>
     </div>
 
+    <!-- WEEK -->
+
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon expense-icon">
-          <i class="bx bx-receipt"></i>
+        <div class="summary-icon">
+          <i class="bx bx-calendar-week"></i>
         </div>
-        <span class="summary-label">TRANSACTIONS</span>
+
+        <span class="summary-label">THIS WEEK</span>
       </div>
 
       <div class="summary-value">
-        {{ filteredExpenses.length }}
+        {{ formatCurrency(stats.week) }}
       </div>
 
       <div class="summary-meta">
-        <i class="bx bx-list-ul"></i>
-        <span>Recorded expenses</span>
+        <i class="bx bx-wallet"></i>
+        <span>Weekly expenses</span>
       </div>
     </div>
 
+    <!-- MONTH -->
+
     <div class="summary-card">
       <div class="summary-top">
-        <div class="summary-icon category-icon">
-          <i class="bx bx-category"></i>
+        <div class="summary-icon">
+          <i class="bx bx-calendar"></i>
         </div>
-        <span class="summary-label">TOP CATEGORY</span>
+
+        <span class="summary-label">THIS MONTH</span>
       </div>
 
-      <div class="summary-value category-value">
-        {{ topCategory }}
+      <div class="summary-value">
+        {{ formatCurrency(stats.month) }}
+      </div>
+
+      <div class="summary-meta">
+        <i class="bx bx-bar-chart-alt-2"></i>
+        <span>Monthly expenses</span>
+      </div>
+    </div>
+
+    <!-- YEAR -->
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <div class="summary-icon">
+          <i class="bx bx-bar-chart-alt-2"></i>
+        </div>
+
+        <span class="summary-label">THIS YEAR</span>
+      </div>
+
+      <div class="summary-value">
+        {{ formatCurrency(stats.year) }}
       </div>
 
       <div class="summary-meta">
         <i class="bx bx-trending-up"></i>
-        <span>{{ formatCurrency(topCategoryAmount) }}</span>
-      </div>
-    </div>
-
-    <div class="summary-card">
-      <div class="summary-top">
-        <div class="summary-icon average-icon">
-          <i class="bx bx-money"></i>
-        </div>
-        <span class="summary-label">AVG. EXPENSE</span>
-      </div>
-
-      <div class="summary-value">
-        {{ formatCurrency(averageExpense) }}
-      </div>
-
-      <div class="summary-meta">
-        <i class="bx bx-calculator"></i>
-        <span>Per transaction</span>
+        <span>Yearly expenses</span>
       </div>
     </div>
   </div>
 
-  <!-- EXPENSE SECTION -->
+  <!-- =====================================================
+       MAIN GRID
+  ====================================================== -->
 
-  <section class="expense-section">
-    <!-- TOOLBAR -->
-    <div class="expense-toolbar">
-      <div class="toolbar-left">
-        <div class="section-title">
-          <h2>Expense List</h2>
-          <span>{{ filteredExpenses.length }}</span>
+  <div class="main-grid">
+    <!-- ===================================================
+         EXPENSE PERFORMANCE
+    ==================================================== -->
+
+    <article class="panel chart-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">EXPENSES</span>
+
+          <h2>Expense performance</h2>
         </div>
 
-        <div class="filters">
-          @for (filter of expenseFilters; track filter) {
-            <button
-              type="button"
-              class="filter-btn"
-              [class.active]="activeFilter === filter"
-              (click)="setFilter(filter)"
-            >
-              {{ filter }}
-            </button>
+        <select
+          [value]="selectedPeriod"
+          (change)="setPeriod($any($event.target).value)"
+        >
+          @for (period of periods; track period) {
+            <option [value]="period">
+              {{ period }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="chart-summary">
+        <div>
+          <strong>{{ formatCurrency(chartTotal) }}</strong>
+
+          <span> Total expenses </span>
+        </div>
+
+        <div class="chart-growth">
+          <i class="bx bx-receipt"></i>
+
+          <span> {{ selectedPeriod }} period </span>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="chart">
+        <div class="chart-grid-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="bars">
+          @for (item of chartData; track trackChart($index, item)) {
+            <div class="bar-group">
+              <div
+                class="bar"
+                [style.height.%]="item.value"
+                [title]="item.label + ': ' + formatCurrency(item.amount)"
+              ></div>
+
+              <span>
+                {{ item.label }}
+              </span>
+            </div>
           }
         </div>
       </div>
 
-      <!-- SEARCH -->
-      <div class="toolbar-right">
-        <div class="search">
-          <i class="bx bx-search"></i>
-
-          <input
-            type="text"
-            placeholder="Search expense"
-            [value]="searchTerm"
-            (input)="onSearch($event)"
-          />
-
-          @if (searchTerm) {
-            <button type="button" class="clear-search" (click)="clearSearch()">
-              <i class="bx bx-x"></i>
-            </button>
-          }
+      @if (chartData.length === 0) {
+        <div class="chart-empty">
+          <i class="bx bx-bar-chart-alt-2"></i>
+          <span>No expense data available.</span>
         </div>
+      }
+    </article>
+
+    <!-- ===================================================
+         EXPENSE CATEGORIES
+    ==================================================== -->
+
+    <article class="panel breakdown-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">BREAKDOWN</span>
+
+          <h2>Expenses by category</h2>
+        </div>
+      </div>
+
+      <div class="donut-wrapper">
+        <div class="donut" [style.background]="getCategoryDonut()">
+          <div class="donut-center">
+            <strong> {{ getTopCategoryPercentage() }}% </strong>
+
+            <span>
+              {{ getTopCategoryName() }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-list">
+        @for (item of categoryBreakdown; track trackCategory($index, item)) {
+          <div class="break-row">
+            <div class="break-label">
+              <span class="legend" [ngClass]="item.className"></span>
+
+              <div>
+                <strong>
+                  {{ item.category }}
+                </strong>
+
+                <small>
+                  {{ item.description }}
+                </small>
+              </div>
+            </div>
+
+            <div class="break-value">
+              <strong> {{ item.percentage }}% </strong>
+
+              <small>
+                {{ formatCurrency(item.amount) }}
+              </small>
+            </div>
+          </div>
+        }
+
+        @if (categoryBreakdown.length === 0) {
+          <div class="breakdown-empty">
+            <i class="bx bx-pie-chart-alt"></i>
+
+            <span> No category data available. </span>
+          </div>
+        }
+      </div>
+    </article>
+  </div>
+
+  <!-- =====================================================
+       SECONDARY GRID
+  ====================================================== -->
+
+  <div class="secondary-grid">
+    <!-- ===================================================
+         EXPENSE OVERVIEW
+    ==================================================== -->
+
+    <article class="panel overview-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">OVERVIEW</span>
+
+          <h2>Expense summary</h2>
+        </div>
+      </div>
+
+      <div class="overview-list">
+        @for (item of categoryBreakdown; track trackCategory($index, item)) {
+          <div class="overview-row">
+            <div class="overview-name">
+              <span class="overview-icon" [ngClass]="item.className">
+                <i class="bx" [ngClass]="item.icon"></i>
+              </span>
+
+              <div>
+                <strong>
+                  {{ item.category }}
+                </strong>
+
+                <small>
+                  {{ item.description }}
+                </small>
+              </div>
+            </div>
+
+            <strong>
+              {{ formatCurrency(item.amount) }}
+            </strong>
+          </div>
+        }
+
+        @if (categoryBreakdown.length === 0) {
+          <div class="overview-empty">
+            <i class="bx bx-receipt"></i>
+
+            <span> No expense records available. </span>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- ===================================================
+         LARGEST EXPENSES
+    ==================================================== -->
+
+    <article class="panel top-expenses-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-eyebrow">PERFORMANCE</span>
+
+          <h2>Largest expenses</h2>
+        </div>
+      </div>
+
+      <div class="top-expenses">
+        @for (
+          expense of topExpenses;
+          track trackExpense($index, expense);
+          let i = $index
+        ) {
+          <div class="expense-item">
+            <span class="rank">
+              {{ i + 1 }}
+            </span>
+
+            <div class="expense-info">
+              <strong>
+                {{ expense.title }}
+              </strong>
+
+              <small>
+                {{ expense.category }}
+              </small>
+            </div>
+
+            <div class="expense-date">
+              <small>
+                {{ formatRelativeDate(expense.expenseDate) }}
+              </small>
+            </div>
+
+            <strong class="expense-amount">
+              {{ formatCurrency(expense.amount) }}
+            </strong>
+          </div>
+        }
+
+        @if (topExpenses.length === 0) {
+          <div class="top-expenses-empty">
+            <i class="bx bx-receipt"></i>
+
+            <strong> No expenses found </strong>
+
+            <span> Add expenses to see your largest costs. </span>
+          </div>
+        }
+      </div>
+    </article>
+  </div>
+
+  <!-- =====================================================
+       PAYMENT METHODS
+  ====================================================== -->
+
+  <section class="panel payment-panel">
+    <div class="panel-header">
+      <div>
+        <span class="panel-eyebrow"> PAYMENT METHODS </span>
+
+        <h2>Expenses by payment method</h2>
+      </div>
+    </div>
+
+    <div class="payment-grid">
+      @for (item of paymentMethods; track trackPayment($index, item)) {
+        <div class="payment-card">
+          <div class="payment-card-top">
+            <div class="payment-icon">
+              <i class="bx" [ngClass]="item.icon"></i>
+            </div>
+
+            <span> {{ item.percentage }}% </span>
+          </div>
+
+          <strong>
+            {{ item.method }}
+          </strong>
+
+          <small>
+            {{ item.description }}
+          </small>
+
+          <div class="payment-amount">
+            {{ formatCurrency(item.amount) }}
+          </div>
+        </div>
+      }
+
+      @if (paymentMethods.length === 0) {
+        <div class="payment-empty">
+          <i class="bx bx-credit-card"></i>
+
+          <span> No payment method data available. </span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- =====================================================
+       RECENT EXPENSES
+  ====================================================== -->
+
+  <section class="transactions-panel">
+    <!-- HEADER -->
+
+    <div class="transactions-header">
+      <div>
+        <span class="panel-eyebrow"> EXPENSE ACTIVITY </span>
+
+        <div class="section-title">
+          <h2>Recent expenses</h2>
+
+          <span>
+            {{ expenses.length }}
+          </span>
+        </div>
+      </div>
+
+      <div class="transaction-summary">
+        <span>
+          Total:
+          <strong>
+            {{ expenses.length }}
+          </strong>
+        </span>
+
+        <span>
+          Value:
+          <strong>
+            {{ formatCurrency(expensesTotal()) }}
+          </strong>
+        </span>
       </div>
     </div>
 
     <!-- TABLE -->
-    <div class="expense-table-wrapper">
-      <div class="expense-table">
+
+    <div class="transaction-table-wrapper">
+      <div class="transaction-table">
+        <!-- TABLE HEAD -->
+
         <div class="table-head">
           <span>EXPENSE</span>
           <span>CATEGORY</span>
+          <span>DESCRIPTION</span>
           <span>DATE</span>
-          <span>PAYMENT</span>
           <span>AMOUNT</span>
-          <span></span>
+          <span>PAYMENT</span>
+          <span>ACTION</span>
         </div>
 
-        @for (expense of paginatedExpenses; track expense.id) {
+        <!-- TABLE ROWS -->
+
+        @for (
+          expense of paginatedExpenses;
+          track trackExpense($index, expense)
+        ) {
           <div class="table-row">
             <!-- EXPENSE -->
-            <div class="expense-cell">
-              <div class="expense-icon-small">
-                <i class="bx" [class]="getCategoryIcon(expense.category)"></i>
+
+            <div class="expense-id">
+              <div class="expense-avatar">
+                {{ getExpenseInitials(expense.title) }}
               </div>
 
-              <div class="expense-info">
-                <strong>{{ expense.title }}</strong>
-                <small>{{ expense.description }}</small>
+              <div>
+                <strong>
+                  EXP-{{ expense.id.toString().padStart(4, "0") }}
+                </strong>
+
+                <small>
+                  {{ expense.title }}
+                </small>
               </div>
             </div>
 
             <!-- CATEGORY -->
-            <span class="category-badge">
+
+            <span class="category-cell">
+              <i class="bx" [ngClass]="getCategoryIcon(expense.category)"></i>
+
               {{ expense.category }}
             </span>
 
-            <!-- DATE -->
-            <div class="date-cell">
-              <strong>{{ expense.date }}</strong>
-              <small>{{ expense.time }}</small>
+            <!-- DESCRIPTION -->
+
+            <div class="description-cell">
+              <strong>
+                {{ expense.description || "No description" }}
+              </strong>
+
+              <small>
+                {{ expense.title }}
+              </small>
             </div>
 
-            <!-- PAYMENT -->
-            <div class="payment-cell">
-              <i class="bx" [class]="getPaymentIcon(expense.payment)"></i>
-              <span>{{ expense.payment }}</span>
-            </div>
+            <!-- DATE -->
+
+            <span class="date-cell">
+              {{ formatDate(expense.expenseDate) }}
+            </span>
 
             <!-- AMOUNT -->
+
             <strong class="amount-cell">
               {{ formatCurrency(expense.amount) }}
             </strong>
 
-            <!-- ACTIONS -->
-            <div class="action-wrapper">
+            <!-- PAYMENT -->
+
+            <span class="payment-cell">
+              <i
+                class="bx"
+                [ngClass]="
+                  expense.paymentMethod === 'Cash'
+                    ? 'bx-money'
+                    : expense.paymentMethod === 'GCash'
+                      ? 'bx-mobile'
+                      : expense.paymentMethod === 'Bank Transfer'
+                        ? 'bx-transfer'
+                        : 'bx-credit-card'
+                "
+              ></i>
+
+              {{ expense.paymentMethod }}
+            </span>
+
+            <!-- ACTION -->
+
+            <div class="row-actions">
               <button
                 type="button"
-                class="more"
-                aria-label="Expense actions"
-                (click)="toggleActionMenu(expense.id)"
+                class="delete-btn"
+                title="Delete expense"
+                [disabled]="deletingId === expense.id"
+                (click)="deleteExpense(expense)"
               >
-                <i class="bx bx-dots-vertical-rounded"></i>
+                @if (deletingId === expense.id) {
+                  <i class="bx bx-loader-alt bx-spin"></i>
+                } @else {
+                  <i class="bx bx-trash"></i>
+                }
               </button>
-
-              @if (openMenuId === expense.id) {
-                <div class="action-menu">
-                  <button type="button" (click)="viewExpense(expense)">
-                    <i class="bx bx-show"></i>
-                    <span>View details</span>
-                  </button>
-
-                  <button type="button" (click)="editExpense(expense)">
-                    <i class="bx bx-edit-alt"></i>
-                    <span>Edit</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="danger"
-                    (click)="deleteExpense(expense)"
-                  >
-                    <i class="bx bx-trash"></i>
-                    <span>Delete</span>
-                  </button>
-                </div>
-              }
             </div>
           </div>
         }
 
         <!-- EMPTY -->
-        @if (paginatedExpenses.length === 0) {
+
+        @if (!loading && paginatedExpenses.length === 0) {
           <div class="empty-state">
             <div class="empty-icon">
               <i class="bx bx-receipt"></i>
             </div>
 
-            <strong>No expenses found</strong>
+            <strong> No expenses found </strong>
 
-            <span> Try changing your search or filter. </span>
-
-            @if (searchTerm || activeFilter !== "All") {
-              <button type="button" class="reset-btn" (click)="clearFilters()">
-                Clear filters
-              </button>
-            }
+            <span> There are no expense records to display. </span>
           </div>
         }
       </div>
     </div>
 
     <!-- FOOTER -->
+
     <div class="table-footer">
       <span class="results-count">
-        @if (filteredExpenses.length > 0) {
-          Showing
-          <strong>{{ startItem }}</strong>
-          -
-          <strong>{{ endItem }}</strong>
-          of
-          <strong>{{ filteredExpenses.length }}</strong>
-          expenses
-        } @else {
-          No expenses found
-        }
+        Showing
+
+        <strong>
+          {{ startItem }}
+        </strong>
+
+        -
+
+        <strong>
+          {{ endItem }}
+        </strong>
+
+        of
+
+        <strong>
+          {{ expenses.length }}
+        </strong>
+
+        expenses
       </span>
 
-      @if (totalPages > 1) {
-        <div class="pagination">
+      <div class="pagination">
+        <button
+          type="button"
+          [disabled]="currentPage === 1 || totalPages === 0"
+          aria-label="Previous page"
+          (click)="previousPage()"
+        >
+          <i class="bx bx-chevron-left"></i>
+        </button>
+
+        @for (page of pageNumbers; track page) {
           <button
             type="button"
-            [disabled]="currentPage === 1"
-            (click)="previousPage()"
+            [class.current]="currentPage === page"
+            (click)="goToPage(page)"
           >
-            <i class="bx bx-chevron-left"></i>
+            {{ page }}
           </button>
+        }
 
-          @for (page of pageNumbers; track page) {
+        <button
+          type="button"
+          [disabled]="currentPage === totalPages || totalPages === 0"
+          aria-label="Next page"
+          (click)="nextPage()"
+        >
+          <i class="bx bx-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+     ADD EXPENSE MODAL
+====================================================== -->
+
+  @if (showAddExpenseModal) {
+    <div class="modal-backdrop" (click)="closeAddExpenseModal()">
+      <div
+        class="expense-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="addExpenseTitle"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+          <div class="modal-heading">
+            <div class="modal-icon">
+              <i class="bx bx-receipt"></i>
+            </div>
+
+            <div>
+              <span class="modal-eyebrow">EXPENSE MANAGEMENT</span>
+
+              <h2 id="addExpenseTitle">Add expense</h2>
+
+              <p>Record a new restaurant expense.</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeAddExpenseModal()"
+            [disabled]="savingExpense"
+            aria-label="Close modal"
+          >
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+
+        <!-- MODAL BODY -->
+
+        <form
+          class="expense-form"
+          (ngSubmit)="saveExpense()"
+          #expenseForm="ngForm"
+        >
+          <!-- TITLE -->
+
+          <div class="form-group">
+            <label for="expenseTitle">
+              Expense title
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+              <i class="bx bx-receipt"></i>
+
+              <input
+                id="expenseTitle"
+                type="text"
+                name="title"
+                [(ngModel)]="newExpense.title"
+                placeholder="e.g. Grocery supplies"
+                required
+                maxlength="100"
+                [disabled]="savingExpense"
+              />
+            </div>
+          </div>
+
+          <!-- CATEGORY + AMOUNT -->
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expenseCategory">
+                Category
+                <span>*</span>
+              </label>
+
+              <div class="input-wrapper select-wrapper">
+                <i class="bx bx-category"></i>
+
+                <select
+                  id="expenseCategory"
+                  name="category"
+                  [(ngModel)]="newExpense.category"
+                  required
+                  [disabled]="savingExpense"
+                >
+                  @for (category of expenseCategories; track category) {
+                    <option [value]="category">
+                      {{ category }}
+                    </option>
+                  }
+                </select>
+
+                <i class="bx bx-chevron-down select-arrow"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="expenseAmount">
+                Amount
+                <span>*</span>
+              </label>
+
+              <div class="input-wrapper">
+                <span class="currency-prefix">₱</span>
+
+                <input
+                  id="expenseAmount"
+                  type="number"
+                  name="amount"
+                  [(ngModel)]="newExpense.amount"
+                  placeholder="0.00"
+                  min="0.01"
+                  step="0.01"
+                  required
+                  [disabled]="savingExpense"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- DESCRIPTION -->
+
+          <div class="form-group">
+            <label for="expenseDescription"> Description </label>
+
+            <div class="textarea-wrapper">
+              <i class="bx bx-detail"></i>
+
+              <textarea
+                id="expenseDescription"
+                name="description"
+                [(ngModel)]="newExpense.description"
+                placeholder="Add additional details about this expense..."
+                rows="3"
+                maxlength="500"
+                [disabled]="savingExpense"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- DATE + PAYMENT -->
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expenseDate">
+                Expense date
+                <span>*</span>
+              </label>
+
+              <div class="input-wrapper">
+                <i class="bx bx-calendar"></i>
+
+                <input
+                  id="expenseDate"
+                  type="date"
+                  name="expenseDate"
+                  [(ngModel)]="newExpense.expenseDate"
+                  required
+                  [disabled]="savingExpense"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="paymentMethod">
+                Payment method
+                <span>*</span>
+              </label>
+
+              <div class="input-wrapper select-wrapper">
+                <i class="bx bx-wallet"></i>
+
+                <select
+                  id="paymentMethod"
+                  name="paymentMethod"
+                  [(ngModel)]="newExpense.paymentMethod"
+                  required
+                  [disabled]="savingExpense"
+                >
+                  @for (method of paymentMethodOptions; track method) {
+                    <option [value]="method">
+                      {{ method }}
+                    </option>
+                  }
+                </select>
+
+                <i class="bx bx-chevron-down select-arrow"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- FOOTER -->
+
+          <div class="modal-footer">
             <button
               type="button"
-              [class.current]="currentPage === page"
-              (click)="goToPage(page)"
+              class="cancel-btn"
+              (click)="closeAddExpenseModal()"
+              [disabled]="savingExpense"
             >
-              {{ page }}
+              Cancel
             </button>
-          }
 
-          <button
-            type="button"
-            [disabled]="currentPage === totalPages"
-            (click)="nextPage()"
-          >
-            <i class="bx bx-chevron-right"></i>
-          </button>
-        </div>
-      }
-    </div>
-  </section>
-</section>
-
-<!-- ADD / EDIT MODAL -->
-
-@if (showModal) {
-  <div class="modal-backdrop" (click)="closeModal()">
-    <div class="expense-modal" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div>
-          <span class="eyebrow">EXPENSE MANAGEMENT</span>
-          <h2>{{ editingExpense ? "Edit Expense" : "Add Expense" }}</h2>
-        </div>
-
-        <button type="button" class="modal-close" (click)="closeModal()">
-          <i class="bx bx-x"></i>
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Expense Title</label>
-          <input
-            type="text"
-            [(ngModel)]="form.title"
-            placeholder="e.g. Electricity Bill"
-          />
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Category</label>
-
-            <select [(ngModel)]="form.category">
-              @for (category of categories; track category) {
-                <option [value]="category">
-                  {{ category }}
-                </option>
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="
+                savingExpense ||
+                expenseForm.invalid ||
+                !newExpense.amount ||
+                newExpense.amount <= 0
+              "
+            >
+              @if (savingExpense) {
+                <i class="bx bx-loader-alt bx-spin"></i>
+                <span>Saving...</span>
+              } @else {
+                <i class="bx bx-check"></i>
+                <span>Save expense</span>
               }
-            </select>
+            </button>
           </div>
-
-          <div class="form-group">
-            <label>Amount</label>
-
-            <input type="number" [(ngModel)]="form.amount" placeholder="0.00" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Date</label>
-
-            <input type="date" [(ngModel)]="form.date" />
-          </div>
-
-          <div class="form-group">
-            <label>Payment Method</label>
-
-            <select [(ngModel)]="form.payment">
-              @for (payment of paymentMethods; track payment) {
-                <option [value]="payment">
-                  {{ payment }}
-                </option>
-              }
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Description</label>
-
-          <textarea
-            [(ngModel)]="form.description"
-            placeholder="Optional description..."
-            rows="3"
-          ></textarea>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="cancel-btn" (click)="closeModal()">
-          Cancel
-        </button>
-
-        <button type="button" class="save-btn" (click)="saveExpense()">
-          <i class="bx bx-check"></i>
-          {{ editingExpense ? "Save Changes" : "Add Expense" }}
-        </button>
+        </form>
       </div>
     </div>
-  </div>
-}
+  }
+</div>

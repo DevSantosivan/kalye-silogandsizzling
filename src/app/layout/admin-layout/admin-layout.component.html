@@ -5,6 +5,7 @@
 
   <aside class="sidebar" [class.open]="sidebarOpen()">
     <!-- BRAND -->
+
     <div class="sidebar-brand">
       <div class="brand-logo">KS</div>
 
@@ -15,6 +16,7 @@
     </div>
 
     <!-- PRIMARY NAVIGATION -->
+
     <nav class="sidebar-nav">
       <a
         routerLink="/admin/dashboard"
@@ -81,7 +83,10 @@
         <span class="nav-label"> Inventory </span>
       </a>
 
-      <!-- SECTION -->
+      <!-- =================================================
+           PEOPLE
+      ================================================== -->
+
       <div class="nav-section-title">
         <span>PEOPLE</span>
       </div>
@@ -99,20 +104,10 @@
         <span class="nav-label"> Staff </span>
       </a>
 
-      <a
-        routerLink="/admin/customers"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: false }"
-        (click)="closeSidebar()"
-      >
-        <span class="nav-icon">
-          <i class="bx bx-user"></i>
-        </span>
+      <!-- =================================================
+           BUSINESS
+      ================================================== -->
 
-        <span class="nav-label"> Customers </span>
-      </a>
-
-      <!-- SECTION -->
       <div class="nav-section-title">
         <span>BUSINESS</span>
       </div>
@@ -157,6 +152,19 @@
       </a>
 
       <a
+        routerLink="/admin/notifications"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">
+          <i class="bx bx-bell"></i>
+        </span>
+
+        <span class="nav-label"> Notifications </span>
+      </a>
+
+      <a
         routerLink="/admin/settings"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: false }"
@@ -170,9 +178,12 @@
       </a>
     </nav>
 
-    <!-- SIDEBAR FOOTER -->
+    <!-- =====================================================
+         SIDEBAR FOOTER
+    ====================================================== -->
+
     <div class="sidebar-footer">
-      <button type="button" class="logout-button">
+      <button type="button" class="logout-button" (click)="logout()">
         <span class="nav-icon">
           <i class="bx bx-log-out"></i>
         </span>
@@ -289,7 +300,10 @@
   ====================================================== -->
 
   <div class="admin-main" [class.has-secondary]="activeModule() !== ''">
-    <!-- HEADER -->
+    <!-- ===================================================
+         HEADER
+    ==================================================== -->
+
     <header class="admin-header">
       <button
         class="menu-button"
@@ -302,38 +316,273 @@
 
       <div class="header-spacer"></div>
 
-      <!-- NOTIFICATION -->
-      <button
-        class="notification-button"
-        type="button"
-        aria-label="Notifications"
-      >
-        <i class="bx bx-bell"></i>
+      <!-- =================================================
+           NOTIFICATION
+      ================================================== -->
+      <!-- =================================================
+     NOTIFICATION
+================================================== -->
 
-        <span class="notification-dot"></span>
-      </button>
-
-      <!-- PROFILE -->
-      <div class="admin-profile">
-        <div class="profile-avatar">O</div>
-
-        <div class="profile-info">
-          <strong> Owner </strong>
-
-          <span> Administrator </span>
-        </div>
-
+      <div class="notification-wrapper" (click)="$event.stopPropagation()">
         <button
-          class="profile-arrow"
           type="button"
+          class="notification-button"
+          [class.open]="notificationMenuOpen()"
+          aria-label="Notifications"
+          [attr.aria-expanded]="notificationMenuOpen()"
+          (click)="toggleNotificationMenu()"
+        >
+          <i class="bx bx-bell"></i>
+
+          @if (unreadNotificationCount() > 0) {
+            <span class="notification-dot"></span>
+
+            <span class="notification-count">
+              {{
+                unreadNotificationCount() > 9 ? "9+" : unreadNotificationCount()
+              }}
+            </span>
+          }
+        </button>
+
+        <!-- =================================================
+       NOTIFICATION DROPDOWN
+  ================================================== -->
+
+        @if (notificationMenuOpen()) {
+          <div class="notification-dropdown">
+            <!-- HEADER -->
+
+            <div class="notification-header">
+              <div>
+                <span class="notification-eyebrow"> ACTIVITY </span>
+
+                <h3>Notifications</h3>
+              </div>
+
+              @if (unreadNotificationCount() > 0) {
+                <button
+                  type="button"
+                  class="mark-read-btn"
+                  (click)="markAllNotificationsAsRead()"
+                >
+                  Mark all as read
+                </button>
+              }
+            </div>
+
+            <!-- NOTIFICATION LIST -->
+
+            <div class="notification-list">
+              @if (notifications().length > 0) {
+                @for (notification of notifications(); track notification.id) {
+                  <button
+                    type="button"
+                    class="notification-item"
+                    [class.unread]="!notification.read"
+                    (click)="readNotification(notification.id)"
+                  >
+                    <!-- ICON -->
+
+                    <span
+                      class="notification-icon"
+                      [class.order]="notification.type === 'order'"
+                      [class.stock]="notification.type === 'stock'"
+                      [class.system]="notification.type === 'system'"
+                    >
+                      @if (notification.type === "order") {
+                        <i class="bx bx-receipt"></i>
+                      }
+
+                      @if (notification.type === "stock") {
+                        <i class="bx bx-package"></i>
+                      }
+
+                      @if (notification.type === "system") {
+                        <i class="bx bx-info-circle"></i>
+                      }
+                    </span>
+
+                    <!-- CONTENT -->
+
+                    <span class="notification-content">
+                      <span class="notification-title">
+                        {{ notification.title }}
+                      </span>
+
+                      <span class="notification-message">
+                        {{ notification.message }}
+                      </span>
+
+                      <span class="notification-time">
+                        {{ notification.time }}
+                      </span>
+                    </span>
+
+                    <!-- UNREAD DOT -->
+
+                    @if (!notification.read) {
+                      <span class="notification-unread-dot"></span>
+                    }
+                  </button>
+                }
+              } @else {
+                <!-- EMPTY -->
+
+                <div class="notification-empty">
+                  <div class="notification-empty-icon">
+                    <i class="bx bx-bell-off"></i>
+                  </div>
+
+                  <strong> No notifications </strong>
+
+                  <span> You're all caught up. </span>
+                </div>
+              }
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="notification-footer">
+              <button type="button" (click)="openNotifications()">
+                <span> View notification activity </span>
+
+                <i class="bx bx-right-arrow-alt"></i>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- =================================================
+           PROFILE
+      ================================================== -->
+
+      <div class="profile-wrapper" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="admin-profile"
+          [class.open]="profileMenuOpen()"
+          (click)="toggleProfileMenu()"
           aria-label="Open profile menu"
         >
-          <i class="bx bx-chevron-down"></i>
+          <!-- DYNAMIC INITIALS -->
+
+          <div class="profile-avatar">
+            {{ userInitials }}
+          </div>
+
+          <!-- DYNAMIC USER INFO -->
+
+          <div class="profile-info">
+            <strong>
+              {{ userName }}
+            </strong>
+
+            <span>
+              {{ userRole }}
+            </span>
+          </div>
+
+          <span class="profile-arrow">
+            <i
+              class="bx"
+              [class.bx-chevron-down]="!profileMenuOpen()"
+              [class.bx-chevron-up]="profileMenuOpen()"
+            ></i>
+          </span>
         </button>
+
+        <!-- =================================================
+             PROFILE DROPDOWN
+        ================================================== -->
+
+        @if (profileMenuOpen()) {
+          <div class="profile-dropdown">
+            <!-- PROFILE HEADER -->
+
+            <div class="dropdown-user">
+              <div class="dropdown-avatar">
+                {{ userInitials }}
+              </div>
+
+              <div class="dropdown-user-info">
+                <strong>
+                  {{ userName }}
+                </strong>
+
+                <span>
+                  {{ userEmail }}
+                </span>
+              </div>
+            </div>
+
+            <div class="dropdown-divider"></div>
+
+            <!-- VIEW PROFILE -->
+
+            <button type="button" class="dropdown-item" (click)="viewProfile()">
+              <span class="dropdown-item-icon">
+                <i class="bx bx-user"></i>
+              </span>
+
+              <span class="dropdown-item-content">
+                <strong> View Profile </strong>
+
+                <small> View your account information </small>
+              </span>
+
+              <i class="bx bx-chevron-right dropdown-arrow"></i>
+            </button>
+
+            <!-- SETTINGS -->
+
+            <button
+              type="button"
+              class="dropdown-item"
+              (click)="openSettings()"
+            >
+              <span class="dropdown-item-icon">
+                <i class="bx bx-cog"></i>
+              </span>
+
+              <span class="dropdown-item-content">
+                <strong> Settings </strong>
+
+                <small> Manage system preferences </small>
+              </span>
+
+              <i class="bx bx-chevron-right dropdown-arrow"></i>
+            </button>
+
+            <div class="dropdown-divider"></div>
+
+            <!-- LOGOUT -->
+
+            <button
+              type="button"
+              class="dropdown-item logout-item"
+              (click)="logout()"
+            >
+              <span class="dropdown-item-icon">
+                <i class="bx bx-log-out"></i>
+              </span>
+
+              <span class="dropdown-item-content">
+                <strong> Logout </strong>
+
+                <small> Sign out of your account </small>
+              </span>
+            </button>
+          </div>
+        }
       </div>
     </header>
 
-    <!-- ROUTER CONTENT -->
+    <!-- ===================================================
+         ROUTER CONTENT
+    ==================================================== -->
+
     <main class="admin-content">
       <router-outlet />
     </main>
