@@ -18,6 +18,8 @@
     <!-- PRIMARY NAVIGATION -->
 
     <nav class="sidebar-nav">
+      <!-- DASHBOARD -->
+
       <a
         routerLink="/admin/dashboard"
         routerLinkActive="active"
@@ -30,6 +32,8 @@
 
         <span class="nav-label"> Dashboard </span>
       </a>
+
+      <!-- ORDERS -->
 
       <a
         routerLink="/admin/orders"
@@ -44,6 +48,8 @@
         <span class="nav-label"> Orders </span>
       </a>
 
+      <!-- MENU -->
+
       <a
         routerLink="/admin/menu"
         routerLinkActive="active"
@@ -57,6 +63,8 @@
         <span class="nav-label"> Menu </span>
       </a>
 
+      <!-- CATEGORIES -->
+
       <a
         routerLink="/admin/categories"
         routerLinkActive="active"
@@ -69,6 +77,8 @@
 
         <span class="nav-label"> Categories </span>
       </a>
+
+      <!-- INVENTORY -->
 
       <a
         routerLink="/admin/inventory"
@@ -84,12 +94,14 @@
       </a>
 
       <!-- =================================================
-           PEOPLE
-      ================================================== -->
+       PEOPLE
+  ================================================== -->
 
       <div class="nav-section-title">
         <span>PEOPLE</span>
       </div>
+
+      <!-- STAFF -->
 
       <a
         routerLink="/admin/staff"
@@ -104,13 +116,32 @@
         <span class="nav-label"> Staff </span>
       </a>
 
+      <!-- CUSTOMERS
+  <a
+    routerLink="/admin/customers"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+    (click)="closeSidebar()"
+  >
+    <span class="nav-icon">
+      <i class="bx bx-user"></i>
+    </span>
+
+    <span class="nav-label">
+      Customers
+    </span>
+  </a>
+  -->
+
       <!-- =================================================
-           BUSINESS
-      ================================================== -->
+       BUSINESS
+  ================================================== -->
 
       <div class="nav-section-title">
         <span>BUSINESS</span>
       </div>
+
+      <!-- SALES -->
 
       <a
         routerLink="/admin/sales"
@@ -125,6 +156,8 @@
         <span class="nav-label"> Sales </span>
       </a>
 
+      <!-- EXPENSES -->
+
       <a
         routerLink="/admin/expenses"
         routerLinkActive="active"
@@ -137,6 +170,8 @@
 
         <span class="nav-label"> Expenses </span>
       </a>
+
+      <!-- REPORTS -->
 
       <a
         routerLink="/admin/reports"
@@ -151,6 +186,8 @@
         <span class="nav-label"> Reports </span>
       </a>
 
+      <!-- NOTIFICATIONS -->
+
       <a
         routerLink="/admin/notifications"
         routerLinkActive="active"
@@ -163,6 +200,8 @@
 
         <span class="nav-label"> Notifications </span>
       </a>
+
+      <!-- SETTINGS -->
 
       <a
         routerLink="/admin/settings"
@@ -179,8 +218,8 @@
     </nav>
 
     <!-- =====================================================
-         SIDEBAR FOOTER
-    ====================================================== -->
+     SIDEBAR FOOTER
+====================================================== -->
 
     <div class="sidebar-footer">
       <button type="button" class="logout-button" (click)="logout()">
@@ -202,11 +241,13 @@
   }
 
   <!-- =====================================================
-       SECONDARY SIDEBAR
+       INVENTORY SECONDARY SIDEBAR
   ====================================================== -->
 
   @if (activeModule() === "inventory") {
     <aside class="secondary-sidebar">
+      <!-- MODULE HEADER -->
+
       <div class="secondary-header">
         <span class="secondary-eyebrow"> MODULE </span>
 
@@ -217,7 +258,11 @@
         </span>
       </div>
 
+      <!-- MODULE NAVIGATION -->
+
       <nav class="secondary-nav">
+        <!-- OVERVIEW -->
+
         <a
           routerLink="/admin/inventory"
           routerLinkActive="active"
@@ -229,6 +274,8 @@
 
           <span> Overview </span>
         </a>
+
+        <!-- INGREDIENTS -->
 
         <a
           routerLink="/admin/inventory/ingredients"
@@ -242,6 +289,8 @@
           <span> Ingredients </span>
         </a>
 
+        <!-- STOCK IN -->
+
         <a
           routerLink="/admin/inventory/stock-in"
           routerLinkActive="active"
@@ -253,6 +302,8 @@
 
           <span> Stock In </span>
         </a>
+
+        <!-- STOCK OUT -->
 
         <a
           routerLink="/admin/inventory/stock-out"
@@ -266,6 +317,8 @@
           <span> Stock Out </span>
         </a>
 
+        <!-- HISTORY -->
+
         <a
           routerLink="/admin/inventory/history"
           routerLinkActive="active"
@@ -278,6 +331,8 @@
           <span> History </span>
         </a>
       </nav>
+
+      <!-- MODULE FOOTER -->
 
       <div class="secondary-footer">
         <div class="module-tip">
@@ -301,10 +356,12 @@
 
   <div class="admin-main" [class.has-secondary]="activeModule() !== ''">
     <!-- ===================================================
-         HEADER
-    ==================================================== -->
+     HEADER
+==================================================== -->
 
     <header class="admin-header">
+      <!-- MOBILE MENU -->
+
       <button
         class="menu-button"
         type="button"
@@ -317,11 +374,8 @@
       <div class="header-spacer"></div>
 
       <!-- =================================================
-           NOTIFICATION
-      ================================================== -->
-      <!-- =================================================
-     NOTIFICATION
-================================================== -->
+       NOTIFICATION
+  ================================================== -->
 
       <div class="notification-wrapper" (click)="$event.stopPropagation()">
         <button
@@ -345,9 +399,7 @@
           }
         </button>
 
-        <!-- =================================================
-       NOTIFICATION DROPDOWN
-  ================================================== -->
+        <!-- NOTIFICATION DROPDOWN -->
 
         @if (notificationMenuOpen()) {
           <div class="notification-dropdown">
@@ -427,7 +479,7 @@
                   </button>
                 }
               } @else {
-                <!-- EMPTY -->
+                <!-- EMPTY STATE -->
 
                 <div class="notification-empty">
                   <div class="notification-empty-icon">
@@ -455,8 +507,8 @@
       </div>
 
       <!-- =================================================
-           PROFILE
-      ================================================== -->
+       PROFILE
+  ================================================== -->
 
       <div class="profile-wrapper" (click)="$event.stopPropagation()">
         <button
@@ -484,6 +536,8 @@
             </span>
           </div>
 
+          <!-- ARROW -->
+
           <span class="profile-arrow">
             <i
               class="bx"
@@ -494,8 +548,8 @@
         </button>
 
         <!-- =================================================
-             PROFILE DROPDOWN
-        ================================================== -->
+         PROFILE DROPDOWN
+    ================================================== -->
 
         @if (profileMenuOpen()) {
           <div class="profile-dropdown">
@@ -580,8 +634,8 @@
     </header>
 
     <!-- ===================================================
-         ROUTER CONTENT
-    ==================================================== -->
+     ROUTER CONTENT
+==================================================== -->
 
     <main class="admin-content">
       <router-outlet />
